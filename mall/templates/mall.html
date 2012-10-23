@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}shop square - mall{% endblock %}
+
+{% block content %}
+<a href="/edit_floorplan/{{mall.id}}/">edit floorplan</a>
+<form action="/add_store/" method="POST"> {% csrf_token %}
+	{% if form.errors %}
+	{{ form.errors }}
+	{% endif %}
+	<label for="id_domain"> Store URL {{form.domain}}<br>
+	<label for="id_name"> Store Name {{form.name}}
+	<input type="submit" value="Go"><br>
+</form>
+This is {{request.user.first_name}}'s mall, {{mall.name}}.
+Stores:
+{% for store in stores %}
+<div>
+	[#{{store.id}}] ({{store.floor}},{{store.position}}) {{store.name}}: <a href="http://{{store.domain}}" target="_new">{{store.domain}}</a>
+</div>
+{% endfor %}
+{% endblock %}

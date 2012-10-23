@@ -1,0 +1,14 @@
+#header-content {
+    height:100px;
+}
+
+#header-logo {
+    width:100px;
+    height:100px;
+    float:left;
+    background-color:gray;
+}
+
+#header-user-links {
+    float:right;
+}

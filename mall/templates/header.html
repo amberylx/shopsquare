@@ -1,0 +1,14 @@
+<div id="header-content">
+	<div id="header-logo">
+		<a href="/">SHOP SQUARE</a>
+	</div>
+	<div id="header-user-links">
+		{% if request.user.is_authenticated %}
+		<a href="/mall/{{request.user.ssuser.mall.id}}/">mall</a>
+		<a href="/logout">log out</a>
+		{% else %}
+		<a href="/login/">log in</a>
+		<a href="/register/">sign up</a>
+		{% endif %}
+	</div>
+</div>

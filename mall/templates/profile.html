@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}shop square - profile{% endblock %}
+
+{% block content %}
+Profile.<br>
+Bio {{request.user.ssuser.bio}}<br>
+Gender {{request.user.ssuser.gender}}<br>
+{% endblock %}

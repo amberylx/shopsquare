@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block css %}{% endblock %}
+{% block js %}{% endblock %}
+
+{% block title %}shop square - register{% endblock %}
+
+
+{% block content %}
+  <form action="." method="POST"> {% csrf_token %}
+	{% if form.first_name.errors %}
+	  {{ form.first_name.errors }}
+	{% endif %}
+	<label for="id_first_name">First Name:</label> {{ form.first_name }}<br>
+
+	{% if form.last_name.errors %}
+	  {{ form.last_name.errors }}
+	{% endif %}
+	<label for="id_last_name">Last Name: {{ form.last_name }}<br>
+
+	{% if form.email.errors %}
+	  {{ form.email.errors }}
+	{% endif %}
+	<label for="id_email">Email: {{ form.email }}<br>
+
+	{% if form.password.errors %}
+	  {{ form.password.errors }}
+	{% endif %}
+	<label for="id_password">Password: {{ form.password }}<br>
+
+	{% if form.mall_name.errors %}
+	  {{ form.mall_name.errors }}
+	{% endif %}
+	<label for="id_mall_name">Mall name: {{ form.mall_name }}<br>
+
+	<input type="submit" value="Register" />
+  </label>
+{% endblock %}

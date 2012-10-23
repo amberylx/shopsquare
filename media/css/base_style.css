@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    line-height: 1.5;
+    font-family:"Verdana", sans-serif;
+}
+
+article, aside, figcaption, figure, footer, header, hgroup, nav, section {
+    display: block;
+}
+
+h1, h2, h3, h4 {
+    margin: 1em 0 .5em;
+    line-height: 1.25;
+}
+
+ul, ol {
+    margin: 1em 0;
+    padding-left: 40px;
+}
+
+p, figure {
+    margin: 1em 0;
+}
+
+a img {
+    border: none;
+}
+
+#content {
+    width:900px;
+    margin:auto;
+    min-height:600px;
+}
