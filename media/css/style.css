@@ -3,7 +3,7 @@ body {
     padding: 0;
     font-size: 100%;
     line-height: 1.5;
-    font-family:"Verdana", sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans
 }
 
 article, aside, figcaption, figure, footer, header, hgroup, nav, section {
@@ -16,8 +16,8 @@ h1, h2, h3, h4 {
 }
 
 ul, ol {
-    margin: 1em 0;
-    padding-left: 40px;
+    margin: 0;
+    padding: 0;
 }
 
 p, figure {
@@ -26,6 +26,14 @@ p, figure {
 
 a img {
     border: none;
+}
+
+a {
+    color: silver;
+    text-decoration: none;
+}
+a:visited {
+    color: #FFF;
 }
 
 #content {

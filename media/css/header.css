@@ -1,14 +1,27 @@
 #header-content {
-    height:100px;
+    height: 40px;
+    background-color: #000;
 }
 
 #header-logo {
-    width:100px;
-    height:100px;
+    width:150px;
+    height: inherit;
     float:left;
     background-color:gray;
 }
 
 #header-user-links {
     float:right;
+    height: inherit;
+}
+#header-nav {
+    height: inherit;
+}
+#header-nav li {
+    height: inherit;
+    width: 80px;
+    list-style: none;
+    float: left;
+    color: white;
+    border-left: 1px solid silver;
 }

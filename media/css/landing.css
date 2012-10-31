@@ -1,0 +1,7 @@
+#content {
+    background-image: url('/ssmedia/images/storefront.jpg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+}
