@@ -3,7 +3,7 @@ body {
     padding: 0;
     font-size: 100%;
     line-height: 1.5;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans
+    font-family: "Helvetica Neue", Helvetica, Arial, sans;
 }
 
 article, aside, figcaption, figure, footer, header, hgroup, nav, section {
@@ -34,6 +34,19 @@ a {
 }
 a:visited {
     color: #FFF;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
 }
 
 #content {

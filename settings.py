@@ -102,4 +102,4 @@ AUTHENTICATION_BACKENDS = (
     'mall.email-auth.EmailBackend',
 )
 
-STATIC_MEDIA_ROOT = 'C:\\Users\\Stephanie\\shopsquare\\media'
+STATIC_MEDIA_ROOT = 'C:\\Users\\Stephanie\\Documents\\GitHub\\shopsquare\\media'
