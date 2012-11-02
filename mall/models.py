@@ -74,15 +74,20 @@ class Mall(models.Model):
 	    	       fp.position = x
 	    	       fp.save()
 
-	    	new_floor = list(self.get_floor(newf))
-	    	new_floor[newp:newp] = [my_fp]
+                new_floor = list(self.get_floor(newf))
+                if not new_floor:
+                    fp = Floorplan(store=my_store, mall=self, floor=newf, position=0)
+                    fp.save()
+                    my_fp.delete()
+                else:
+                    new_floor[newp:newp] = [my_fp]
 
-	    	for x,fp in enumerate(new_floor):
-	    	    if fp.position == x:
-	    	        continue
-	    	    else:
-	    	       fp.position = x
-	    	       fp.save()
+                    for x,fp in enumerate(new_floor):
+                        if fp.position == x:
+                            continue
+                        else:
+                            fp.position = x
+                            fp.save()
 	except Exception, e:
 	    print "[ERROR] unable to move store"
 	    raise Exception(e)

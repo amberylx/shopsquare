@@ -1,0 +1,25 @@
+<form id="addstoreform" action="/add_store/" method="POST"> {% csrf_token %}
+  <table>
+    <tr>
+      <td colspan="2">{% for error in form.domain.errors %}{{error}}{% endfor %}</td>
+    </tr>
+    <tr>
+      <td><label for="id_domain"> Store URL </td>
+      <td><input type="url" id="id_domain" name="domain" maxlength="200" placeholder="your store url"></td>
+    </tr>
+
+    <tr>
+      <td colspan="2">{% for error in form.name.errors %}{{error}}{% endfor %}</td>
+    </tr>
+    <tr>
+      <td><label for="id_domain"> Store Name </td>
+      <td>{{form.name}}</td>
+    </tr>
+
+    <tr>
+      <td colspan="2" style="text-align:center;">
+	<input type="submit" class="button tinybutton" value="Add Store">
+      </td>
+    </tr>
+  </table>
+</form>

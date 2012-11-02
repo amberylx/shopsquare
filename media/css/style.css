@@ -6,15 +6,6 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans;
 }
 
-article, aside, figcaption, figure, footer, header, hgroup, nav, section {
-    display: block;
-}
-
-h1, h2, h3, h4 {
-    margin: 1em 0 .5em;
-    line-height: 1.25;
-}
-
 ul, ol {
     margin: 0;
     padding: 0;
@@ -53,4 +44,16 @@ a:visited {
     width:900px;
     margin:auto;
     min-height:600px;
+}
+
+.thinborder {
+    border: 1px solid silver;
+    border-radius: 5px;
+}
+
+form input[type="text"],
+form input[type="url"] {
+    border-radius: 3px;
+    padding: 2px 4px;
+    border: 2px solid silver;
 }

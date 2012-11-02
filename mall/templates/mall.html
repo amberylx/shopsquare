@@ -11,28 +11,25 @@
 {% block content %}
 <a href="/edit_floorplan/{{mall.id}}/">edit floorplan</a>
 <div class="addstorecontainer">+</div>
-<div class="addstoreformcontainer">
-  <form action="/add_store/" method="POST"> {% csrf_token %}
-    {% if form.errors %}
-    {{ form.errors }}
-    {% endif %}
-    <label for="id_domain"> Store URL {{form.domain}}<br>
-    <label for="id_name"> Store Name {{form.name}}
-    <input type="submit" value="Go"><br>
-  </form>
+<div class="addstoreformcontainer thinborder">
+  {% include 'add_store_snippet.html' %}
 </div>
 <div>
 This is {{request.user.first_name}}'s mall, {{mall.name}}.
 Stores:
 </div>
-<div id="mall" class="clearfix">
-  {% for store in stores %}
-  <div class="store">
-    <div>[#{{store.id}}] ({{store.floor}},{{store.position}}) {{store.name}}:</div>
-    <div class="storename">
-      <a href="http://{{store.domain}}" target="_new">{{store.domain}}</a>
+<div id="mall">
+  {% for floor,stores in stores_dict.items %}
+  <div class="floor floor{{floor}} thinborder clearfix">
+    {% for store in stores %}
+    <div class="store thinborder">
+      <div>[#{{store.id}}] ({{store.floor}},{{store.position}}) {{store.name}}:</div>
+      <div class="storename">
+	<a href="http://{{store.domain}}" target="_new">{{store.domain}}</a>
+      </div>
     </div>
+    {% endfor %}
   </div>
-{% endfor %}
+  {% endfor %}
 </div>
 {% endblock %}

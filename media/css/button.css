@@ -1,0 +1,17 @@
+.button {
+    border: 1px solid #D1D102;
+    border-radius: 5px;
+    background-color: #FCFC6A;
+    cursor: pointer;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-size: 10px;
+}
+
+.tinybutton {
+    padding: 5px 10px;
+}
+
+.actionbutton {
+    font-size: 20px;
+}

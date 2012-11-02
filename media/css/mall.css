@@ -16,15 +16,20 @@ div.addstorecontainer {
 }
 div.addstoreformcontainer {
     display: none;
+    width: 30%;
+    padding: 10px;
 }
 
+div.floor {
+    width: 97.5%;
+    padding: 10px;
+}
 div.store {
     width: 150px;
     height: 100px;
-    border: 1px solid silver;
     background-color: #666;
     padding: 10px;
-    margin-left: 10px;
+    margin: 10px;
     float: left;
 }
 div.storename {
