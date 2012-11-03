@@ -19,12 +19,19 @@ def landing(request):
 def mall(request, mall_id):
     form = AddStoreForm()
     mall = Mall.objects.get(pk=mall_id)
-    stores = mall.stores.all().order_by('floorplan__position') if mall else []
+
+    all_stores = mall.stores.all().order_by('floorplan__floor', 'floorplan__position') if mall else []
+    stores_dict = {}
+    for store in all_stores:
+        try:
+            stores_dict[store.floor].append(store)
+        except:
+            stores_dict[store.floor] = [store]
 
     ctx_dict = {
     	'form':form,
     	'mall':mall,
-    	'stores':stores,
+    	'stores_dict':stores_dict,
     	'request':request,
     	'ssmedia':'/ssmedia',
     }
@@ -39,7 +46,7 @@ def add_store(request):
 	    domain = data['domain']
 	    new_store = Store.objects.create(name=name, domain=domain)
 	    mall = Mall.objects.get(owner=request.user)
-	    floor = 1
+	    floor = 0
 	    pos_count = len(mall.get_floor(floor))
 	    floorplan = Floorplan(store=new_store, mall=mall, floor=floor, position=pos_count)
 	    floorplan.save()
@@ -81,7 +88,8 @@ def edit_floorplan(request, mall_id):
 
 def login(request):
     if request.user.is_authenticated():
-    	return HttpResponseRedirect("/mall/")
+        mall = Mall.objects.get(owner=request.user)
+    	return HttpResponseRedirect("/mall/%s/"%mall.id)
 
     if request.method == 'POST':
     	email = request.POST.get('email', '')

@@ -5,6 +5,12 @@
 <link rel="stylesheet" href="{{ssmedia}}/css/mall.css"/>
 {% endblock %}
 {% block js %}
+<script type="text/javascript">
+//<![CDATA[
+var removeStoreURL = "{% url remove_store %}";
+var mallid = '{{mall.id}}';
+//]]>
+</script>
 <script type="text/javascript" src="{{ssmedia}}/js/mall.js"></script>
 {% endblock %}
 
@@ -20,9 +26,10 @@ Stores:
 </div>
 <div id="mall">
   {% for floor,stores in stores_dict.items %}
-  <div id="floor{{floor}}" class="floor thinborder clearfix">
+  <div id="floor_{{floor}}" class="floor thinborder clearfix">
     {% for store in stores %}
-    <div id="store{{store.id}}" class="store thinborder">
+    <div id="store_{{store.id}}" class="store thinborder">
+      <div id="rmv_{{store.id}}" class="storermv thinborder">x</div>
       <div>[#{{store.id}}] ({{store.floor}},{{store.position}}) {{store.name}}:</div>
       <div class="storename">
 	<a href="http://{{store.domain}}" target="_new">{{store.domain}}</a>

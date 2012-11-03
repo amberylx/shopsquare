@@ -32,6 +32,17 @@ div.store {
     margin: 10px;
     float: left;
 }
+div.storermv {
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    background-color: #CCC;
+    float: right;
+    border-radius: 8px;
+    text-align: center;
+    margin-left: 5px;
+    cursor: pointer;
+}
 div.storename {
     text-align: center;
 }

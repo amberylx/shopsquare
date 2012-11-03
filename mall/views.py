@@ -1,8 +1,10 @@
+import json
+
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib import auth
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from models import Store, Mall, Floorplan, SSUser
@@ -60,6 +62,32 @@ def add_store(request):
    	'ssmedia':'/ssmedia',
     }
     return render_to_response("mall.html", RequestContext(request, ctx_dict))
+
+def remove_store(request):
+    mallid = request.POST.get("mallid")
+    storeid = request.POST.get("storeid")
+    success_msg = ''
+    error_msg = ''
+    try:
+        if not (mallid and storeid):
+            raise Exception("invalid mallid or storeid: %s; %s" % (mallid, storeid))
+        store = Store.objects.get(pk=storeid)
+        fp = Floorplan.objects.get(store__id=storeid, mall__id=mallid)
+        fp.delete()
+        status = 'ok'
+        success_msg = "We've removed the store '%s' from your mall." % (store.name)
+    except Exception, e:
+        print "error removing store: %s" % str(e)
+        status = 'error'
+        error_msg = "We're sorry, we're unable to remove this store at this time."
+
+    response = {
+        'status':status,
+        'errorMsg':error_msg,
+        'successMsg':success_msg
+        }
+
+    return HttpResponse(json.dumps(response), mimetype="application/json")
 
 def edit_floorplan(request, mall_id):
     mall = Mall.objects.get(pk=mall_id)
