@@ -20,9 +20,9 @@ Stores:
 </div>
 <div id="mall">
   {% for floor,stores in stores_dict.items %}
-  <div class="floor floor{{floor}} thinborder clearfix">
+  <div id="floor{{floor}}" class="floor thinborder clearfix">
     {% for store in stores %}
-    <div class="store thinborder">
+    <div id="store{{store.id}}" class="store thinborder">
       <div>[#{{store.id}}] ({{store.floor}},{{store.position}}) {{store.name}}:</div>
       <div class="storename">
 	<a href="http://{{store.domain}}" target="_new">{{store.domain}}</a>
