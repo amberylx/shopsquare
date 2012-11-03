@@ -63,6 +63,24 @@ def add_store(request):
     }
     return render_to_response("mall.html", RequestContext(request, ctx_dict))
 
+def move_store(request):
+    mallid = request.POST.get("mallid")
+    storeid = request.POST.get("storeid")
+    oldfloorid = request.POST.get("oldfloorid")
+    oldfloororder = request.POST.get("oldfloororder")
+    newfloorid = request.POST.get("newfloorid")
+    newfloororder = request.POST.get("newfloororder")
+
+    try:
+        status = 'ok'
+    except Exception, e:
+        status = 'error'
+    
+    response = {
+        'status':status
+        }
+    return HttpResponse(json.dumps(response), mimetype="application/json")
+
 def remove_store(request):
     mallid = request.POST.get("mallid")
     storeid = request.POST.get("storeid")

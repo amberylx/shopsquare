@@ -5,6 +5,7 @@
   <div id="header-user-links">
     <ul id="header-nav">
     {% if request.user.is_authenticated %}
+    <li>Welcome, {{request.user.first_name}}</li>
     <li><a href="/mall/{{request.user.ssuser.mall.id}}/">mall</a></li>
     <li><a href="/logout">log out</a></li>
     {% else %}

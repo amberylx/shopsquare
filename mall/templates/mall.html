@@ -8,6 +8,7 @@
 <script type="text/javascript">
 //<![CDATA[
 var removeStoreURL = "{% url remove_store %}";
+var moveStoreURL = "{% url move_store %}";
 var mallid = '{{mall.id}}';
 //]]>
 </script>
@@ -15,14 +16,11 @@ var mallid = '{{mall.id}}';
 {% endblock %}
 
 {% block content %}
+<div class="mallname">{{mall.name}}</div>
 <a href="/edit_floorplan/{{mall.id}}/">edit floorplan</a>
 <div class="addstorecontainer">+</div>
 <div class="addstoreformcontainer thinborder">
   {% include 'add_store_snippet.html' %}
-</div>
-<div>
-This is {{request.user.first_name}}'s mall, {{mall.name}}.
-Stores:
 </div>
 <div id="mall">
   {% for floor,stores in stores_dict.items %}

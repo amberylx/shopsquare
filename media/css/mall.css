@@ -4,6 +4,13 @@
     font-size: 12px;
 }
 
+div.mallname {
+    font-size: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .3em;
+}
+
 div.addstorecontainer {
     width: 20px;
     height: 20px;
