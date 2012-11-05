@@ -9,7 +9,6 @@
 //<![CDATA[
 var removeStoreURL = "{% url remove_store %}";
 var moveStoreURL = "{% url move_store %}";
-var addToWishlistURL = "{% url add_to_wishlist %}";  
 var mallid = '{{mall.id}}';
 //]]>
 </script>
@@ -23,9 +22,6 @@ var mallid = '{{mall.id}}';
   <div class="addstoreformcontainer thinborder">
     {% include 'add_store_snippet.html' %}
   </div>
-  <div class="addwishlistformcontainer">
-    {% include 'add_to_wishlist_snippet.html' %}  
-  </div>  
   <div id="mall">
     {% for floor,stores in stores_dict.items %}
       <div id="floor_{{floor}}" class="floor thinborder clearfix">

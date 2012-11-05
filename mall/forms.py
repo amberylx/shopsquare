@@ -39,6 +39,6 @@ class EditFloorplanForm(forms.Form):
     new_floor = forms.IntegerField()
     new_position = forms.IntegerField()
 
-class WishlistForm(forms.Form):
+class WishlistItemForm(forms.Form):
     url = forms.CharField(max_length=2000)
     tags = forms.CharField(max_length=1000)

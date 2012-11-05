@@ -107,7 +107,14 @@ class Floorplan(models.Model):
     	return "%s (%s, %s)" % (self.store.name, self.floor, self.position)
 
 class Wishlist(models.Model):
+    user = models.ForeignKey(User)
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=1000)
+    date_added = models.DateTimeField(auto_now_add=True)
+    
+class WishlistItem(models.Model):
     #    store = models.ForeignKey(Store)
+    wishlist = models.ForeignKey(Wishlist)
     url = models.CharField(max_length=2000)
     tags = models.CharField(max_length=1000)
     date_added = models.DateTimeField(auto_now_add=True)

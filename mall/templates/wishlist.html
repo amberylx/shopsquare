@@ -2,8 +2,29 @@
 
 {% block title %}shop square - wishlist{% endblock %}
 
+{% block js %}
+<script type="text/javascript">
+//<![CDATA[
+var addToWishlistURL = "{% url add_to_wishlist %}";
+//]]>
+</script>
+<script type="text/javascript" src="{{ssmedia}}/js/wishlist.js"></script>
+{% endblock %}
+
 {% block content %}
 <div id="workspace">
-
+  <div class="addwishlistformcontainer">
+    {% include 'add_to_wishlist_snippet.html' %}
+  </div>
+  {% for wishlist,wishlistitems in all_wishlists.items %}  
+    <div class="wishlist thinborder">
+      <div>{{wishlist.name}}: {{wishlist.description}}</div>
+      {% for wli in wishlistitems %}
+	<div class="wishlistitem">
+	  {{wli.url}} [{{wli.tags}}]	  
+	</div>	
+      {% endfor %}	
+    </div>
+  {% endfor %}
 </div>
 {% endblock %}

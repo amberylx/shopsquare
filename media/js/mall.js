@@ -3,7 +3,6 @@ $(function() {
     $(".addstorecontainer").on("click", function() {
 	$(".addstoreformcontainer").slideDown(500);
     });
-    $("#addtowishlistbutton").on("click", addToWishlist);
     $(".storermv").on("click", function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
@@ -85,13 +84,5 @@ function removeStore(storeid) {
 	      } else {
 		  alert(response.errorMsg);
 	      }
-	  });
-}
-
-function addToWishlist() {
-    data = $("#addwishlistform").serialize();
-    $.post(addToWishlistURL,
-	  data,
-	  function(response) {
 	  });
 }

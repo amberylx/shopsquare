@@ -7,8 +7,9 @@ from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from models import Store, Mall, Floorplan, SSUser, Wishlist
-from forms import RegisterForm, AddStoreForm, EditFloorplanForm
+from django.core.exceptions import ObjectDoesNotExist
+from models import Store, Mall, Floorplan, SSUser, Wishlist, WishlistItem
+from forms import RegisterForm, AddStoreForm, EditFloorplanForm, WishlistItemForm
 
 def landing(request):
     ctx_dict = {
@@ -39,29 +40,6 @@ def mall(request, mall_id):
     }
     return render_to_response('mall.html', RequestContext(request, ctx_dict))
 
-def add_to_wishlist(request):
-    url = request.POST.get('url')
-    tags = request.POST.get('tags')
-    successMsg = ''
-    errorMsg = ''
-
-    try:
-        wl = Wishlist(url=url, tags=tags)
-        wl.save()
-        status = 'ok'
-        successMsg = '%s has been added to your wishlist.' % url
-    except Exception, e:
-        status = 'error'
-        errorMsg = 'Unable to add %s to your wishlist.' % url
-        print "Unable to add %s to wishlist: %s" % (url, str(e))
-        
-    response = {
-        'status':status,
-        'successMsg':successMsg,
-        'errorMsg':errorMsg
-        }
-    return HttpResponse(json.dumps(response), mimetype="application/json")
-    
 def add_store(request):
     if request.method == 'POST':
 	form = AddStoreForm(request.POST)
@@ -254,10 +232,52 @@ def profile(request, userid):
     return render_to_response("profile.html", RequestContext(request, ctx_dict))
 
 def wishlist(request, userid):
+    form = WishlistItemForm()
+
+    wishlist_dict = {}
+    wishlists = Wishlist.objects.filter(user=request.user)
+    for wishlist in wishlists:
+        wishlistitems = WishlistItem.objects.filter(wishlist=wishlist)
+        wishlist_dict[wishlist] = wishlistitems
+    
     ctx_dict = {
+        'form':form,
+        'all_wishlists':wishlist_dict,
         'ssmedia':'/ssmedia',
     }
     return render_to_response("wishlist.html", RequestContext(request, ctx_dict))    
+
+def add_to_wishlist(request):
+    url = request.POST.get('url')
+    tags = request.POST.get('tags')
+    successMsg = ''
+    errorMsg = ''
+
+    try:
+        # add to default wishlist for now
+        try:
+            wl = Wishlist.objects.get(user=request.user)
+        except ObjectDoesNotExist:
+            wl = Wishlist(user=request.user, name="default", description="default wishlist")
+            wl.save()
+
+        wli = WishlistItem(wishlist=wl, url=url, tags=tags)
+        wli.save()
+        status = 'ok'
+        successMsg = '%s has been added to your wishlist.' % url
+    except Exception, e:
+        status = 'error'
+        errorMsg = 'Unable to add %s to your wishlist.' % url
+        print "Unable to add %s to wishlist: %s" % (url, str(e))
+        
+    response = {
+        'status':status,
+        'successMsg':successMsg,
+        'errorMsg':errorMsg
+        }
+    return HttpResponse(json.dumps(response), mimetype="application/json")
+    
+
     
 def about(request):
     ctx_dict = {
