@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" href="{{ssmedia}}/css/style.css" />
   <link rel="stylesheet" href="{{ssmedia}}/css/header.css" />
+  <link rel="stylesheet" href="{{ssmedia}}/css/footer.css" />
   <link rel="stylesheet" href="{{ssmedia}}/css/button.css" />
   {% block css %}
   {% endblock %}
@@ -11,25 +12,25 @@
   {% block js %}
   {% endblock %}
 
-    <title>{% block title %}shop square{% endblock %}</title>
+  <title>{% block title %}shop square{% endblock %}</title>
 </head>
 
 <body>
-	<div id="header">
-		{% block header %}
-		{% include "header.html" %}
-		{% endblock %}
-	</div>
-
-    <div id="content">
-        {% block content %}
-        {% endblock %}
-    </div>
-
-    <div id="footer">
-		{% block footer %}
-		{% include "footer.html" %}
-		{% endblock %}
-    </div>
+  <div id="header">
+    {% block header %}
+      {% include "header.html" %}
+    {% endblock %}
+  </div>
+  
+  <div id="content">
+      {% block content %}
+      {% endblock %}
+  </div>
+  
+  <div id="footer">
+    {% block footer %}
+      {% include "footer.html" %}
+    {% endblock %}
+  </div>
 </body>
 </html>
