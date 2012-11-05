@@ -31,8 +31,14 @@ class RegisterForm(forms.Form):
 class AddStoreForm(forms.Form):
     name = forms.CharField(max_length=100)
     domain = forms.CharField(max_length=200)
+    tags = forms.CharField(max_length=1000)
+    #is_public = forms.
     
 class EditFloorplanForm(forms.Form):
     store_id = forms.IntegerField()
     new_floor = forms.IntegerField()
     new_position = forms.IntegerField()
+
+class WishlistForm(forms.Form):
+    url = forms.CharField(max_length=2000)
+    tags = forms.CharField(max_length=1000)

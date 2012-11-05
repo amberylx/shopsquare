@@ -105,5 +105,9 @@ class Floorplan(models.Model):
     
     def __unicode__(self):
     	return "%s (%s, %s)" % (self.store.name, self.floor, self.position)
-    	
-    	
+
+class Wishlist(models.Model):
+    #    store = models.ForeignKey(Store)
+    url = models.CharField(max_length=2000)
+    tags = models.CharField(max_length=1000)
+    date_added = models.DateTimeField(auto_now_add=True)
