@@ -41,17 +41,32 @@ a:visited {
 }
 
 #content {
+    color: #CCC;
+    background-color: #555;
+    background-size: 100%;
+    font-size: 12px;
+    padding: 20px 0px;
+}
+#workspace {
     width:900px;
     margin:auto;
     min-height:600px;
+    background-color: #000;
+    padding: 10px;
+    border-radius: 20px;
 }
 
 .thinborder {
     border: 1px solid silver;
     border-radius: 5px;
 }
+.icontext {
+    color: #000;
+    font-size: 12px;
+}
 
 form input[type="text"],
+form input[type="password"],
 form input[type="url"] {
     border-radius: 3px;
     padding: 2px 4px;

@@ -3,6 +3,7 @@ $(function() {
     $(".addstorecontainer").on("click", function() {
 	$(".addstoreformcontainer").slideDown(500);
     });
+    $("#addtowishlistbutton").on("click", addToWishlist);
     $(".storermv").on("click", function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
@@ -27,10 +28,21 @@ function setSortable() {
 	    update: function(e, ui) {
 		storeid = getStoreidFromEl(ui.item);
 		newfloorid = getFlooridFromEl(ui.item.parent());
-		// if store's new floor is same as old floor, moved store within same floor
-		oldfloororder = getFloororderFromFloorid(oldfloorid);
-		newfloororder = getFloorOrder(newfloorid);
-		moveStore(storeid, oldfloorid, oldfloororder, newfloorid, newfloororder);
+		if (oldfloorid == newfloorid) {
+		    // if store's new floor is same as old floor, moved store within same floor
+		    oldfloororder = getFloororderFromFloorid(oldfloorid);
+		    newfloororder = getFloorOrder(newfloorid);
+		    moveStore(storeid, 'samefloor', oldfloorid, oldfloororder, newfloorid, newfloororder);		    
+		} else {
+		    // moved store from another floor
+		    thisfloorid = getFlooridFromEl(this);
+		    if (newfloorid != thisfloorid) {
+			// only trigger move store for update event for new floor
+			oldfloororder = getFloororderFromFloorid(oldfloorid);
+			newfloororder = getFloorOrder(newfloorid);
+			moveStore(storeid, 'difffloor', oldfloorid, oldfloororder, newfloorid, newfloororder);
+		    }
+		}
 	    },
 	}).disableSelection();
     });
@@ -48,10 +60,11 @@ function getStoreidFromEl(el) {
 function getFloorOrder(floorid) {
     return $("#floor_"+floorid).sortable("serialize", { key:'store' });
 }
-function moveStore(storeid, oldfloorid, oldfloororder, newfloorid, newfloororder) {
+function moveStore(storeid, movetype, oldfloorid, oldfloororder, newfloorid, newfloororder) {
     data = {
 	'mallid':mallid,
 	'storeid':storeid,
+	'movetype':movetype,
 	'oldfloorid':oldfloorid,
 	'oldfloororder':oldfloororder,
 	'newfloorid':newfloorid,
@@ -75,3 +88,10 @@ function removeStore(storeid) {
 	  });
 }
 
+function addToWishlist() {
+    data = $("#addwishlistform").serialize();
+    $.post(addToWishlistURL,
+	  data,
+	  function(response) {
+	  });
+}

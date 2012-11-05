@@ -1,4 +1,4 @@
-import json
+import json, re
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -7,7 +7,7 @@ from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from models import Store, Mall, Floorplan, SSUser
+from models import Store, Mall, Floorplan, SSUser, Wishlist
 from forms import RegisterForm, AddStoreForm, EditFloorplanForm
 
 def landing(request):
@@ -39,6 +39,29 @@ def mall(request, mall_id):
     }
     return render_to_response('mall.html', RequestContext(request, ctx_dict))
 
+def add_to_wishlist(request):
+    url = request.POST.get('url')
+    tags = request.POST.get('tags')
+    successMsg = ''
+    errorMsg = ''
+
+    try:
+        wl = Wishlist(url=url, tags=tags)
+        wl.save()
+        status = 'ok'
+        successMsg = '%s has been added to your wishlist.' % url
+    except Exception, e:
+        status = 'error'
+        errorMsg = 'Unable to add %s to your wishlist.' % url
+        print "Unable to add %s to wishlist: %s" % (url, str(e))
+        
+    response = {
+        'status':status,
+        'successMsg':successMsg,
+        'errorMsg':errorMsg
+        }
+    return HttpResponse(json.dumps(response), mimetype="application/json")
+    
 def add_store(request):
     if request.method == 'POST':
 	form = AddStoreForm(request.POST)
@@ -66,16 +89,58 @@ def add_store(request):
 def move_store(request):
     mallid = request.POST.get("mallid")
     storeid = request.POST.get("storeid")
+    movetype = request.POST.get("movetype")
     oldfloorid = request.POST.get("oldfloorid")
-    oldfloororder = request.POST.get("oldfloororder")
     newfloorid = request.POST.get("newfloorid")
-    newfloororder = request.POST.get("newfloororder")
+    oldfloororder = [re.sub('store=', '', s) for s in request.POST.get("oldfloororder").split('&')]
+    newfloororder = [re.sub('store=', '', s) for s in request.POST.get("newfloororder").split('&')]
 
     try:
+        if movetype == 'samefloor':
+            for x,store in enumerate(newfloororder):
+                # iterate through new order. for every store that has changed, update to its new position
+                if oldfloororder[x] != store:
+                    s = Store.objects.get(pk=store)
+                    fp = Floorplan.objects.get(store=s, mall__id=mallid)
+                    fp.position = x
+                    fp.save()
+                    print "moving store %s to position %s" % (store, x)
+        elif movetype == 'difffloor':
+            do_shift = False
+            for x,store in enumerate(oldfloororder):
+                # iterate over old floor, shift all stores following moved store
+                if do_shift:
+                    s = Store.objects.get(pk=store)
+                    fp = Floorplan.objects.get(mall__id=mallid, store=s)
+                    fp.position = fp.position - 1
+                    fp.save()
+                    print "moving store %s to position %s" % (store, fp.position)
+                if oldfloororder[x] == store:
+                    do_shift = True
+                    continue
+
+            do_shift = False
+            for x,store in enumerate(newfloororder):
+                # iterate over new floor, shift all stores following moved store
+                if do_shift:
+                    s = Store.objects.get(pk=store)
+                    fp = Floorplan.objects.get(mall__id=mallid, store=s)
+                    fp.position = fp.position + 1
+                    fp.save()
+                    print "moving store %s to position %s" % (store, fp.position)
+                if newfloororder[x] == store:
+                    do_shift = True
+                    s = Store.objects.get(pk=store)
+                    fp = Floorplan.objects.get(mall__id=mallid, store=s)
+                    fp.floor = newfloorid
+                    fp.position = x
+                    fp.save()
+                    print "moving store %s to floor %s, position %s" % (newfloorid, fp.floor, fp.position)
         status = 'ok'
     except Exception, e:
         status = 'error'
-    
+        print "error when moving store: %s" % str(e)
+        
     response = {
         'status':status
         }
@@ -178,13 +243,23 @@ def register(request):
 
     ctx_dict = {
     	'form':form,
-   	'ssmedia':'/ssmedia',
+        'ssmedia':'/ssmedia',
     }
     return render_to_response("register.html", RequestContext(request, ctx_dict))
 
-def profile(request):
+def profile(request, userid):
     ctx_dict = {
-    	'request':request,
-   	'ssmedia':'/ssmedia',
+        'ssmedia':'/ssmedia',
     }
     return render_to_response("profile.html", RequestContext(request, ctx_dict))
+
+def wishlist(request, userid):
+    ctx_dict = {
+        'ssmedia':'/ssmedia',
+    }
+    return render_to_response("wishlist.html", RequestContext(request, ctx_dict))    
+    
+def about(request):
+    ctx_dict = {
+        }
+    return render_to_response("about.html", RequestContext(request, ctx_dict))

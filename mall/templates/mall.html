@@ -9,6 +9,7 @@
 //<![CDATA[
 var removeStoreURL = "{% url remove_store %}";
 var moveStoreURL = "{% url move_store %}";
+var addToWishlistURL = "{% url add_to_wishlist %}";  
 var mallid = '{{mall.id}}';
 //]]>
 </script>
@@ -16,25 +17,29 @@ var mallid = '{{mall.id}}';
 {% endblock %}
 
 {% block content %}
-<div class="mallname">{{mall.name}}</div>
-<a href="/edit_floorplan/{{mall.id}}/">edit floorplan</a>
-<div class="addstorecontainer">+</div>
-<div class="addstoreformcontainer thinborder">
-  {% include 'add_store_snippet.html' %}
-</div>
-<div id="mall">
-  {% for floor,stores in stores_dict.items %}
-  <div id="floor_{{floor}}" class="floor thinborder clearfix">
-    {% for store in stores %}
-    <div id="store_{{store.id}}" class="store thinborder">
-      <div id="rmv_{{store.id}}" class="storermv thinborder">x</div>
-      <div>[#{{store.id}}] ({{store.floor}},{{store.position}}) {{store.name}}:</div>
-      <div class="storename">
-	<a href="http://{{store.domain}}" target="_new">{{store.domain}}</a>
+<div id="workspace">  
+  <div class="mallname">{{mall.name}}</div>
+  <div class="addstorecontainer thinborder icontext">+</div>
+  <div class="addstoreformcontainer thinborder">
+    {% include 'add_store_snippet.html' %}
+  </div>
+  <div class="addwishlistformcontainer">
+    {% include 'add_to_wishlist_snippet.html' %}  
+  </div>  
+  <div id="mall">
+    {% for floor,stores in stores_dict.items %}
+      <div id="floor_{{floor}}" class="floor thinborder clearfix">
+	{% for store in stores %}
+	  <div id="store_{{store.id}}" class="store thinborder">
+	    <div id="rmv_{{store.id}}" class="storermv thinborder icontext">x</div>
+	    <div>[#{{store.id}}] {{store.name}}:</div>
+	    <div class="storename">
+	      <a href="http://{{store.domain}}" target="_new">{{store.domain}}</a>
+	    </div>
+	  </div>
+	{% endfor %}
       </div>
-    </div>
     {% endfor %}
   </div>
-  {% endfor %}
-</div>
+</div>  
 {% endblock %}
