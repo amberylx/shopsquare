@@ -41,60 +41,6 @@ class Mall(models.Model):
     def get_floor(self, floor_number):
         return self.floorplan_set.filter(floor=floor_number).order_by('position')
     	#return self.stores.filter(floorplan__floor=floor_number).order_by('floorplan__position')
-
-    def move_store(self, store_id, newf, newp):
-    	print "--> move store"
-    	my_store = Store.objects.get(pk=store_id)
-    	my_fp = Floorplan.objects.get(store=my_store, mall__id=self.id)
-    	oldf = my_fp.floor
-    	oldp = my_fp.position
-    	print "current position: (%s, %s)" % (oldf, oldp)
-    	
-    	try:
-	    if oldf == newf:
-	    	print "moving within same floor"
-	    	old_floor = list(self.get_floor(oldf))
-	    	del old_floor[old_floor.index(my_fp)]
-	    	old_floor[newp:newp] = [my_fp]
-
-	    	for x,fp in enumerate(old_floor):
-	    	    if fp.position == x:
-	    	        continue
-	    	    else:
-	    	       fp.position = x
-	    	       fp.save()
-	    else:
-	    	print "moving to different floor"
-	    	old_floor = list(self.get_floor(oldf))
-	    	del old_floor[old_floor.index(my_fp)]
-	    	for x,fp in enumerate(old_floor):
-	    	    if fp.position == x:
-	    	        continue
-	    	    else:
-	    	       fp.position = x
-	    	       fp.save()
-
-                new_floor = list(self.get_floor(newf))
-                if not new_floor:
-                    fp = Floorplan(store=my_store, mall=self, floor=newf, position=0)
-                    fp.save()
-                    my_fp.delete()
-                else:
-                    new_floor[newp:newp] = [my_fp]
-
-                    for x,fp in enumerate(new_floor):
-                        if fp.position == x:
-                            continue
-                        else:
-                            fp.position = x
-                            fp.save()
-	except Exception, e:
-	    print "[ERROR] unable to move store"
-	    raise Exception(e)
-	else:
-	    print "moved store [%s]" % my_store.name
-
-    	return
     
 class Floorplan(models.Model):
     store = models.ForeignKey(Store)

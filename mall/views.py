@@ -16,7 +16,7 @@ def landing(request):
     	'request':request,
     	'ssmedia':'/ssmedia',
     }
-    return render_to_response('landing.html', RequestContext(request, ctx_dict))
+    return render_to_response('landing.html', ctx_dict, context_instance=RequestContext(request))
 
 @login_required
 def mall(request, mall_id):
@@ -38,7 +38,7 @@ def mall(request, mall_id):
     	'request':request,
     	'ssmedia':'/ssmedia',
     }
-    return render_to_response('mall.html', RequestContext(request, ctx_dict))
+    return render_to_response("mall.html", ctx_dict, context_instance=RequestContext(request))
 
 def add_store(request):
     if request.method == 'POST':
@@ -60,9 +60,9 @@ def add_store(request):
     ctx_dict = {
     	'form':form,
     	'request':request,
-   	'ssmedia':'/ssmedia',
+        'ssmedia':'/ssmedia',
     }
-    return render_to_response("mall.html", RequestContext(request, ctx_dict))
+    return render_to_response("mall.html", ctx_dict, context_instance=RequestContext(request))
 
 def move_store(request):
     mallid = request.POST.get("mallid")
@@ -150,31 +150,6 @@ def remove_store(request):
 
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
-def edit_floorplan(request, mall_id):
-    mall = Mall.objects.get(pk=mall_id)
-    stores = mall.stores.all().order_by('floorplan__position') if mall else []
-    
-    if request.method == 'POST':
-    	form = EditFloorplanForm(request.POST)
-    	if form.is_valid():
-    	    data = form.cleaned_data
-    	    sid = data['store_id']
-    	    new_floor = data['new_floor']
-    	    new_position = data['new_position']
-    	    mall.move_store(sid, new_floor, new_position)
-    	    return HttpResponseRedirect("/edit_floorplan/%s/"%mall_id)
-    else:
-        form = EditFloorplanForm()
-
-    ctx_dict = {
-    	'form':form,
-    	'mall':mall,
-    	'stores':stores,
-    	'request':request,
-   	'ssmedia':'/ssmedia',
-    }
-    return render_to_response("edit_floorplan.html", RequestContext(request, ctx_dict))
-
 def login(request):
     if request.user.is_authenticated():
         mall = Mall.objects.get(owner=request.user)
@@ -192,7 +167,7 @@ def login(request):
     ctx_dict = {
    	'ssmedia':'/ssmedia',
     }
-    return render_to_response("login.html", RequestContext(request, ctx_dict))
+    return render_to_response("login.html", ctx_dict, context_instance=RequestContext(request))
 
 def logout(request):
     auth.logout(request)
@@ -223,13 +198,13 @@ def register(request):
     	'form':form,
         'ssmedia':'/ssmedia',
     }
-    return render_to_response("register.html", RequestContext(request, ctx_dict))
+    return render_to_response("register.html", ctx_dict, context_instance=RequestContext(request))
 
 def profile(request, userid):
     ctx_dict = {
         'ssmedia':'/ssmedia',
     }
-    return render_to_response("profile.html", RequestContext(request, ctx_dict))
+    return render_to_response("profile.html", ctx_dict, context_instance=RequestContext(request))
 
 def wishlist(request, userid):
     form = WishlistItemForm()
@@ -245,7 +220,7 @@ def wishlist(request, userid):
         'all_wishlists':wishlist_dict,
         'ssmedia':'/ssmedia',
     }
-    return render_to_response("wishlist.html", RequestContext(request, ctx_dict))    
+    return render_to_response("wishlist.html", ctx_dict, context_instance=RequestContext(request))
 
 def add_to_wishlist(request):
     url = request.POST.get('url')
@@ -282,4 +257,4 @@ def add_to_wishlist(request):
 def about(request):
     ctx_dict = {
         }
-    return render_to_response("about.html", RequestContext(request, ctx_dict))
+    return render_to_response("about.html", ctx_dict, context_instance=RequestContext(request))
