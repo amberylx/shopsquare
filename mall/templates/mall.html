@@ -7,6 +7,7 @@
 {% block js %}
 <script type="text/javascript">
 //<![CDATA[
+var addStoreURL = "{% url add_store %}";
 var removeStoreURL = "{% url remove_store %}";
 var moveStoreURL = "{% url move_store %}";
 var mallid = '{{mall.id}}';
@@ -18,24 +19,14 @@ var mallid = '{{mall.id}}';
 {% block content %}
 <div id="workspace">  
   <div class="mallname">{{mall.name}}</div>
+  <div class="successMsg success"></div>
+  <div class="errorMsg error">Error.</div>  
   <div class="addstorecontainer thinborder icontext">+</div>
   <div class="addstoreformcontainer thinborder">
     {% include 'add_store_snippet.html' %}
   </div>
   <div id="mall">
-    {% for floor,stores in stores_dict.items %}
-      <div id="floor_{{floor}}" class="floor thinborder clearfix">
-	{% for store in stores %}
-	  <div id="store_{{store.id}}" class="store thinborder">
-	    <div id="rmv_{{store.id}}" class="storermv thinborder icontext">x</div>
-	    <div>[#{{store.id}}] {{store.name}}:</div>
-	    <div class="storename">
-	      <a href="http://{{store.domain}}" target="_new">{{store.domain}}</a>
-	    </div>
-	  </div>
-	{% endfor %}
-      </div>
-    {% endfor %}
+    {% include 'mall_snippet.html' %}    
   </div>
 </div>  
 {% endblock %}

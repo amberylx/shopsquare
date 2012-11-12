@@ -8,8 +8,10 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from models import Store, Mall, Floorplan, SSUser, Wishlist, WishlistItem
-from forms import RegisterForm, AddStoreForm, EditFloorplanForm, WishlistItemForm
+from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem
+from mall.forms import RegisterForm, AddStoreForm, WishlistItemForm
+from utils import ImageScraper2
+import MyGlobals
 
 def landing(request):
     ctx_dict = {
@@ -21,48 +23,71 @@ def landing(request):
 @login_required
 def mall(request, mall_id):
     form = AddStoreForm()
+    stores_dict = _getmall(mall_id)
     mall = Mall.objects.get(pk=mall_id)
-
-    all_stores = mall.stores.all().order_by('floorplan__floor', 'floorplan__position') if mall else []
-    stores_dict = {}
-    for store in all_stores:
-        try:
-            stores_dict[store.floor].append(store)
-        except:
-            stores_dict[store.floor] = [store]
-
+    
     ctx_dict = {
     	'form':form,
     	'mall':mall,
     	'stores_dict':stores_dict,
     	'request':request,
     	'ssmedia':'/ssmedia',
+        'MyGlobals':MyGlobals
     }
     return render_to_response("mall.html", ctx_dict, context_instance=RequestContext(request))
 
+def _getmall(mall_id):
+    mall = Mall.objects.get(pk=mall_id)
+    all_stores = Store.objects.filter(mall__id=mall_id).order_by('floor', 'position')
+    stores_dict = {}
+    for store in all_stores:
+        try:
+            si = StoreImages.objects.get(store=store)
+        except:
+            si = None
+
+        try:
+            stores_dict[store.floor].append((store, si))
+        except:
+            stores_dict[store.floor] = [(store, si)]
+    return stores_dict
+    
 def add_store(request):
-    if request.method == 'POST':
-	form = AddStoreForm(request.POST)
-	if form.is_valid():
-	    data = form.cleaned_data
-	    name = data['name']
-	    domain = data['domain']
-	    new_store = Store.objects.create(name=name, domain=domain)
-	    mall = Mall.objects.get(owner=request.user)
-	    floor = 0
-	    pos_count = len(mall.get_floor(floor))
-	    floorplan = Floorplan(store=new_store, mall=mall, floor=floor, position=pos_count)
-	    floorplan.save()
-            return HttpResponseRedirect("/mall/%s/"%mall.id)
+    mallid = request.POST.get('mallid')
+    name = request.POST.get('name')
+    domain = request.POST.get('domain')
+    
+    error_msg = ''
+    try:
+        floor = 0
+        pos = len(Store.objects.filter(mall__id=mallid, floor=0).order_by('position'))
+        new_store = Store.objects.create(mall=Mall.objects.get(pk=mallid), name=name, domain=domain, floor=floor, position=pos)
+        new_store.save()
+    except Exception, e:
+        status = 'error'
+        error_msg = 'We\'re unable to add the store %s at this time' % name
+        print "unable to create store: %s" % str(e)
     else:
-        form = AddStoreForm()
+        try:
+            filename = "%s_%s.jpg" % (re.sub(' ', '_', name), new_store.id)
+            ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
+            #            filename = ImageScraper2.getImagesFromURL('http://www.urbanoutfitters.com/urban/catalog/category.jsp?id=W_APP_SWEATERS', imagedir)
+            print "downloaded image: %s%s" % (MyGlobals.IMGROOT, filename)
+            si = StoreImages(user=request.user, store=new_store, path=filename)
+            si.save()
+            status = 'ok'
+        except Exception, e:
+            status = 'error'
+            error_msg = 'We\'re unable to add the store %s at this time' % name
+            print "unable to save image: %s" % str(e)
 
-    ctx_dict = {
-    	'form':form,
-    	'request':request,
-        'ssmedia':'/ssmedia',
-    }
-    return render_to_response("mall.html", ctx_dict, context_instance=RequestContext(request))
+    success_msg = 'Successfully added store.'
+    response = {
+        'status':status,
+        'successMsg':success_msg,
+        'errorMsg':error_msg
+        }
+    return HttpResponse(json.dumps(response), mimetype="application/json")
 
 def move_store(request):
     mallid = request.POST.get("mallid")
@@ -78,21 +103,19 @@ def move_store(request):
             for x,store in enumerate(newfloororder):
                 # iterate through new order. for every store that has changed, update to its new position
                 if oldfloororder[x] != store:
-                    s = Store.objects.get(pk=store)
-                    fp = Floorplan.objects.get(store=s, mall__id=mallid)
-                    fp.position = x
-                    fp.save()
-                    print "moving store %s to position %s" % (store, x)
+                    s = Store.objects.get(pk=store, mall__id=mallid)
+                    s.position = x
+                    s.save()
+                    print "moving store %s to position %s" % (store, s.position)
         elif movetype == 'difffloor':
             do_shift = False
             for x,store in enumerate(oldfloororder):
                 # iterate over old floor, shift all stores following moved store
                 if do_shift:
-                    s = Store.objects.get(pk=store)
-                    fp = Floorplan.objects.get(mall__id=mallid, store=s)
-                    fp.position = fp.position - 1
-                    fp.save()
-                    print "moving store %s to position %s" % (store, fp.position)
+                    s = Store.objects.get(pk=store, mall__id=mallid)
+                    s.position = s.position - 1
+                    s.save()
+                    print "moving store %s to position %s" % (store, s.position)
                 if oldfloororder[x] == store:
                     do_shift = True
                     continue
@@ -101,19 +124,17 @@ def move_store(request):
             for x,store in enumerate(newfloororder):
                 # iterate over new floor, shift all stores following moved store
                 if do_shift:
-                    s = Store.objects.get(pk=store)
-                    fp = Floorplan.objects.get(mall__id=mallid, store=s)
-                    fp.position = fp.position + 1
-                    fp.save()
-                    print "moving store %s to position %s" % (store, fp.position)
+                    s = Store.objects.get(pk=store, mall__id=mallid)
+                    s.position = s.position + 1
+                    s.save()
+                    print "moving store %s to position %s" % (store, s.position)
                 if newfloororder[x] == store:
                     do_shift = True
-                    s = Store.objects.get(pk=store)
-                    fp = Floorplan.objects.get(mall__id=mallid, store=s)
-                    fp.floor = newfloorid
-                    fp.position = x
-                    fp.save()
-                    print "moving store %s to floor %s, position %s" % (newfloorid, fp.floor, fp.position)
+                    s = Store.objects.get(pk=store, mall__id=mallid)
+                    s.floor = newfloorid
+                    s.position = x
+                    s.save()
+                    print "moving store %s to floor %s, position %s" % (newfloorid, s.floor, s.position)
         status = 'ok'
     except Exception, e:
         status = 'error'
@@ -129,12 +150,14 @@ def remove_store(request):
     storeid = request.POST.get("storeid")
     success_msg = ''
     error_msg = ''
+    mallHTML = ''
     try:
         if not (mallid and storeid):
             raise Exception("invalid mallid or storeid: %s; %s" % (mallid, storeid))
-        store = Store.objects.get(pk=storeid)
-        fp = Floorplan.objects.get(store__id=storeid, mall__id=mallid)
-        fp.delete()
+        store = Store.objects.get(pk=storeid, mall__id=mallid)
+        store.delete()
+        stores_dict = _getmall(mallid)
+        mallHTML = render_to_string()
         status = 'ok'
         success_msg = "We've removed the store '%s' from your mall." % (store.name)
     except Exception, e:
@@ -145,14 +168,15 @@ def remove_store(request):
     response = {
         'status':status,
         'errorMsg':error_msg,
-        'successMsg':success_msg
+        'successMsg':success_msg,
+        'mallHTML':mallHTML
         }
 
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
 def login(request):
     if request.user.is_authenticated():
-        mall = Mall.objects.get(owner=request.user)
+        mall = Mall.objects.get(user=request.user)
     	return HttpResponseRedirect("/mall/%s/"%mall.id)
 
     if request.method == 'POST':
@@ -161,7 +185,7 @@ def login(request):
     	user = auth.authenticate(username=email, password=password)
     	if user is not None:
     	    auth.login(request, user)
-	    mall = Mall.objects.get(owner=request.user)
+	    mall = Mall.objects.get(user=request.user)
             return HttpResponseRedirect("/mall/%s/"%mall.id)
 
     ctx_dict = {
@@ -187,7 +211,7 @@ def register(request):
 	    ssuser.save()
 
 	    mall_name = form.cleaned_data['mall_name']
-	    mall = Mall.objects.create(name=mall_name, owner=user)
+	    mall = Mall.objects.create(name=mall_name, user=user)
 	    mall.save()
 	    auth.login(request, user)
             return HttpResponseRedirect("/mall/%s/"%mall.id)

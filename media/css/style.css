@@ -46,6 +46,7 @@ a:visited {
     background-size: 100%;
     font-size: 12px;
     padding: 20px 0px;
+    min-height: 600px;
 }
 #workspace {
     width:900px;
@@ -71,4 +72,23 @@ form input[type="url"] {
     border-radius: 3px;
     padding: 2px 4px;
     border: 2px solid silver;
+}
+
+.success {
+    color: goldenrod;
+}
+.successMsg {
+    width: 80%;
+    border: 1px solid goldenrod;
+    display: none;
+}
+.error {
+    color: red;
+}
+.errorMsg {
+    width: 90%;
+    border: 1px solid red;
+    display: none;
+    border-radius: 7px;
+    padding: 5px;
 }

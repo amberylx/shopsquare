@@ -1,0 +1,18 @@
+{% for floor,stores in stores_dict.items %}
+  <div id="floor_{{floor}}" class="floor thinborder clearfix">
+    {% for storetup in stores %}
+      {% with store=storetup.0 %}
+        {% with storeimg=storetup.1 %}
+        <div id="store_{{store.id}}" class="store thinborder"
+           {% if storeimg %}style="background-image:url('/ssmedia/images/usrimg/{{storeimg}}')"{% endif %}>
+           <div id="rmv_{{store.id}}" class="storermv thinborder icontext">x</div>
+           <div>{{store.name}}:</div>
+           <div class="storename">
+             <a href="{{store.domain}}" target="_new">{{store.domain}}</a>
+           </div>
+        </div>
+        {% endwith %}
+      {% endwith %}
+    {% endfor %}
+  </div>
+{% endfor %}

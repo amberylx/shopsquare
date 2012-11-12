@@ -3,6 +3,9 @@ $(function() {
     $(".addstorecontainer").on("click", function() {
 	$(".addstoreformcontainer").slideDown(500);
     });
+    $(".addstorebutton").on("click", function() {
+	addStore();
+    })
     $(".storermv").on("click", function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
@@ -47,6 +50,20 @@ function setSortable() {
     });
 }
 
+function addStore() {
+    data = $('#addstoreform').serialize();
+    data += ("&mallid="+encodeURIComponent(mallid));
+    $.post(addStoreURL,
+	  data,
+	  function(response) {
+	      if (response.status == 'ok') {
+		  alert(response.successMsg);
+	      } else {
+		  alert(response.errorMsg);
+	      }
+	  });
+}
+
 function getFloororderFromFloorid(floorid) {
     return $('#floor_'+floorid).data("oldfloororder");
 }
@@ -80,9 +97,10 @@ function removeStore(storeid) {
 	  { 'mallid':mallid, 'storeid':storeid },
 	  function(response) {
 	      if (response.status == "ok") {
-		  alert(response.successMsg);
+		  $("#mall").html(response.mallHTML);
+		  showMessage($(".successMsg"), response.successMsg);
 	      } else {
-		  alert(response.errorMsg);
+		  showMessage($(".errorMsg"), response.errorMsg);
 	      }
 	  });
 }

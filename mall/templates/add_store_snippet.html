@@ -1,4 +1,4 @@
-<form id="addstoreform" action="/add_store/" method="POST"> {% csrf_token %}
+<form id="addstoreform">
   <table>
     <tr>
       <td colspan="2">{% for error in form.domain.errors %}{{error}}{% endfor %}</td>
@@ -12,13 +12,21 @@
       <td colspan="2">{% for error in form.name.errors %}{{error}}{% endfor %}</td>
     </tr>
     <tr>
-      <td><label for="id_domain"> Store Name </td>
+      <td><label for="id_name"> Store Name </td>
       <td>{{form.name}}</td>
     </tr>
 
     <tr>
+      <td colspan="2">{% for error in form.tags.errors %}{{error}}{% endfor %}</td>
+    </tr>
+    <tr>
+      <td><label for="id_tags"> Tags </td>
+      <td>{{form.tags}}</td>
+    </tr>
+
+    <tr>
       <td colspan="2" style="text-align:center;">
-	<input type="submit" class="button tinybutton" value="Add Store">
+	<input type="button" class="button tinybutton addstorebutton" value="Add Store">
       </td>
     </tr>
   </table>
