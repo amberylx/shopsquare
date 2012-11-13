@@ -8,24 +8,45 @@ import sys
 
 def getImagesFromURL(url, out_folder="/Users/slee/shopsquare/media/images/usrimg/", filename="image.jpg"):
     """Downloads all the images at 'url' to /test/"""
+    parsed = urlparse.urlparse(url)
     soup = bs(urlopen(url))
-    parsed = list(urlparse.urlparse(url))
     images = soup.findAll("img")
-    print len(images)
 
+    didScrape = False
     for image in images:
-        parsed_base = parsed[:]
+        # get image uri
+        base_split = parsed[:]
+        img_split = urlparse.urlparse(image["src"])
         print "*"*80
         print "iterating over image: %s" % image
-        if image["src"].startswith("http"):
-            full_image_uri = image["src"]
-        elif image["src"].startswith('//'):
-            parsed_base[1] = image["src"].lstrip('/')
-            full_image_uri = urlparse.urlunparse(parsed_base).rstrip('/')
-        else:
-            parsed_base[2] = image["src"]
-            full_image_uri = urlparse.urlunparse(parsed_base).rstrip('/')
+
+        full_image_uri = (
+            img_split[0] if img_split[0] else base_split[0],
+            img_split[1] if img_split[1] else base_split[1],
+            img_split[2],
+            img_split[3],
+            img_split[4],
+            img_split[5]
+            )
+        
+        # if image["src"].startswith("http"):
+        #     full_image_uri = image["src"]
+        # elif image["src"].startswith('//'):
+        #     print image["src"][-4:]
+        #     if image["src"][-4:] in ['.jpg', '.png']:
+        #         parsed_base[1] = image["src"]
+        #         parsed_base[2:] = ''
+        #         print parsed_base
+        #     else:
+        #         parsed_base[1] = image["src"].lstrip('/')
+        # full_image_uri = urlparse.urlunparse(parsed_base).rstrip('/')
+        # else:
+        #     parsed_base[2] = image["src"]
+        #     full_image_uri = urlparse.urlunparse(parsed_base).rstrip('/')
+        full_image_uri = urlparse.urlunparse(full_image_uri)
         print "full image uri: %s" % full_image_uri
+
+
         try:
             (bytes, (w,h)) = getsizes(full_image_uri)
             if w < 80 or h < 80:
@@ -39,13 +60,11 @@ def getImagesFromURL(url, out_folder="/Users/slee/shopsquare/media/images/usrimg
         
         outpath = os.path.join(out_folder, filename)
         print "scraping to file: %s" % outpath
-        if image["src"].lower().startswith("http"):
-            urlretrieve(image["src"], outpath)
-        else:
-            urlretrieve(full_image_uri, outpath)
+        urlretrieve(full_image_uri, outpath)
+        didScrape = True
         break
 
-    return filename
+    return filename if didScrape else ''
 
 def getsizes(uri):
     # get file size *and* image size (None if not known)
@@ -69,7 +88,7 @@ def _usage():
     
 if __name__ == "__main__":
     url = sys.argv[-1]
-    out_folder = "/test/"
+    out_folder = ''
     if not url.lower().startswith("http"):
         out_folder = sys.argv[-1]
         url = sys.argv[-2]
