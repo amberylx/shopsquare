@@ -8,7 +8,7 @@
         {% with storeimg=storetup.1 %}
         <div id="store_{{store.id}}" class="store thinborder"
            {% if storeimg %}style="background-image:url('/ssmedia/images/usrimg/{{storeimg}}')"{% endif %}>
-           <div id="rmv_{{store.id}}" class="storermv thinborder icontext">x</div>
+           <div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
            <div class="storename">
              <a href="{{store.domain}}" target="_new">{{store.name}}</a>
            </div>
@@ -21,7 +21,6 @@
   <div id="floor_{{floor}}" class="floor dotthinborder clearfix">
     <div class="floorlabel">floor {{floor}}</div>
     <div class="floorlabel vert">floor {{floor}}</div>
-    ghost town!    
   </div>    
   {% endif %}    
 {% endfor %}

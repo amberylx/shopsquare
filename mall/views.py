@@ -1,4 +1,4 @@
-import json, re
+import json, re, subprocess
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem
 from mall.forms import RegisterForm, AddStoreForm, WishlistItemForm
-from utils import ImageScraper2
+from utils import ImageScraper2, slugify
 import MyGlobals
 
 def landing(request):
@@ -53,10 +53,12 @@ def _getmall(mall_id):
             stores_dict[store.floor] = [(store, si)]
 
     # add extra floor (next expansion)
-    last_floor = stores_dict.keys()
-    last_floor.sort()
-    last_floor = last_floor[-1]
-    stores_dict[last_floor+1] = []
+    all_floors = stores_dict.keys()
+    if not all_floors:
+        stores_dict[0] = []
+    else:
+        all_floors.sort()
+        stores_dict[all_floors[-1]+1] = []
             
     return stores_dict
     
@@ -85,11 +87,14 @@ def add_store(request):
         print "unable to create store: %s" % str(e)
     else:
         try:
-            filename = "%s_%s.jpg" % (re.sub(' ', '_', name), new_store.id)
-            ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
-            print "downloaded image: %s%s" % (MyGlobals.IMGROOT, filename)
-            si = StoreImages(user=request.user, store=new_store, path=filename)
-            si.save()
+            filename = "%s-%s.jpg" % (slugify.slugify(name), new_store.id)
+            filename = ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
+            if filename:
+                print "downloaded image: %s%s" % (MyGlobals.IMGROOT, filename)
+                si = StoreImages(user=request.user, store=new_store, path=filename)
+                si.save()
+            else:
+                print "no image to download"
 
             stores_dict = _getmall(mallid)
             ctx = {
@@ -196,6 +201,15 @@ def remove_store(request):
     success_msg = ''
     error_msg = ''
     mallHTML = ''
+
+    # delete store image file
+    try:
+        si = StoreImages.objects.get(store__id=storeid)
+        imgpath = "%s%s" % (MyGlobals.IMGROOT, si.path)
+        output = subprocess.Popen(['rm %s'%imgpath], shell=True)
+    except Exception, e:
+        print "unable to delete store image file: %s" % str(e)
+
     try:
         if not (mallid and storeid):
             raise Exception("invalid mallid or storeid: %s; %s" % (mallid, storeid))
