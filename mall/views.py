@@ -2,6 +2,7 @@ import json, re
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.contrib import auth
 from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse
@@ -50,18 +51,33 @@ def _getmall(mall_id):
             stores_dict[store.floor].append((store, si))
         except:
             stores_dict[store.floor] = [(store, si)]
+
+    # add extra floor (next expansion)
+    last_floor = stores_dict.keys()
+    last_floor.sort()
+    last_floor = last_floor[-1]
+    stores_dict[last_floor+1] = []
+            
     return stores_dict
     
 def add_store(request):
     mallid = request.POST.get('mallid')
     name = request.POST.get('name')
     domain = request.POST.get('domain')
-    
+    tags = request.POST.get('tags')
+
+    mallHTML = ''
+    success_msg = ''
     error_msg = ''
     try:
         floor = 0
         pos = len(Store.objects.filter(mall__id=mallid, floor=0).order_by('position'))
-        new_store = Store.objects.create(mall=Mall.objects.get(pk=mallid), name=name, domain=domain, floor=floor, position=pos)
+        new_store = Store.objects.create(mall=Mall.objects.get(pk=mallid),
+                                         name=name,
+                                         domain=domain,
+                                         floor=floor,
+                                         position=pos,
+                                         tags=tags)
         new_store.save()
     except Exception, e:
         status = 'error'
@@ -71,21 +87,28 @@ def add_store(request):
         try:
             filename = "%s_%s.jpg" % (re.sub(' ', '_', name), new_store.id)
             ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
-            #            filename = ImageScraper2.getImagesFromURL('http://www.urbanoutfitters.com/urban/catalog/category.jsp?id=W_APP_SWEATERS', imagedir)
             print "downloaded image: %s%s" % (MyGlobals.IMGROOT, filename)
             si = StoreImages(user=request.user, store=new_store, path=filename)
             si.save()
+
+            stores_dict = _getmall(mallid)
+            ctx = {
+                'stores_dict':stores_dict
+                }
+            mallHTML = render_to_string("mall_snippet.html", ctx)
+
             status = 'ok'
+            success_msg = 'Successfully added store.'
         except Exception, e:
             status = 'error'
             error_msg = 'We\'re unable to add the store %s at this time' % name
             print "unable to save image: %s" % str(e)
 
-    success_msg = 'Successfully added store.'
     response = {
         'status':status,
         'successMsg':success_msg,
-        'errorMsg':error_msg
+        'errorMsg':error_msg,
+        'mallHTML':mallHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
@@ -98,50 +121,72 @@ def move_store(request):
     oldfloororder = [re.sub('store=', '', s) for s in request.POST.get("oldfloororder").split('&')]
     newfloororder = [re.sub('store=', '', s) for s in request.POST.get("newfloororder").split('&')]
 
+    error_msg = ''
     try:
+        mystore = Store.objects.get(pk=storeid)
+        print ".........moving store (storeid: %s, storename: %s, oldfloorid: %s, newfloorid: %s)..........." % (storeid, mystore.name, oldfloorid, newfloorid)
+        print ".........(oldfloororder: %s, newfloororder: %s)..........." % (oldfloororder, newfloororder)
         if movetype == 'samefloor':
+            print "(samefloor)"
             for x,store in enumerate(newfloororder):
                 # iterate through new order. for every store that has changed, update to its new position
                 if oldfloororder[x] != store:
                     s = Store.objects.get(pk=store, mall__id=mallid)
                     s.position = x
                     s.save()
-                    print "moving store %s to position %s" % (store, s.position)
+                    print "  (samefloor) moving store (#%s) %s to position %s" % (s.id, s.name, s.position)
         elif movetype == 'difffloor':
+            print "(difffloor)"
             do_shift = False
             for x,store in enumerate(oldfloororder):
                 # iterate over old floor, shift all stores following moved store
+                print "(iterate over old floor, shift all stores following moved store)"
                 if do_shift:
                     s = Store.objects.get(pk=store, mall__id=mallid)
                     s.position = s.position - 1
                     s.save()
-                    print "moving store %s to position %s" % (store, s.position)
-                if oldfloororder[x] == store:
+                    print "  (difffloor oldfloor) moving store (#%s) %s to position %s" % (s.id, s.name, s.position)
+                if int(oldfloororder[x]) == mystore.id:
                     do_shift = True
                     continue
 
             do_shift = False
             for x,store in enumerate(newfloororder):
+                print "(iterate over new floor, shift all stores following moved store)"
                 # iterate over new floor, shift all stores following moved store
                 if do_shift:
                     s = Store.objects.get(pk=store, mall__id=mallid)
-                    s.position = s.position + 1
+                    s.position = x
                     s.save()
-                    print "moving store %s to position %s" % (store, s.position)
-                if newfloororder[x] == store:
+                    print "  (difffloor newfloor) moving store (#%s) %s to position %s" % (s.id, s.name, s.position)
+                if int(newfloororder[x]) == mystore.id:
                     do_shift = True
-                    s = Store.objects.get(pk=store, mall__id=mallid)
+                    s = mystore
                     s.floor = newfloorid
                     s.position = x
                     s.save()
-                    print "moving store %s to floor %s, position %s" % (newfloorid, s.floor, s.position)
+                    print "  (difffloor newfloor) moving store (#%s) %s to floor %s, position %s" % (s.id, s.name, s.floor, s.position)
         status = 'ok'
     except Exception, e:
         status = 'error'
+        error_msg = "There was an error moving '%s', please try again later. " % mystore.name
         print "error when moving store: %s" % str(e)
+
+    try:
+        stores_dict = _getmall(mallid)
+        ctx = {
+            'stores_dict':stores_dict
+            }
+        mallHTML = render_to_string("mall_snippet.html", ctx)
+    except Exception, e:
+        status = 'error'
+        error_msg += 'Unable to retrieve mall information.'
+        print "unable to generate mall after moving store: %s" % str(e)
         
     response = {
-        'status':status
+        'status':status,
+        'errorMsg':error_msg,
+        'mallHTML':mallHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
@@ -156,8 +201,13 @@ def remove_store(request):
             raise Exception("invalid mallid or storeid: %s; %s" % (mallid, storeid))
         store = Store.objects.get(pk=storeid, mall__id=mallid)
         store.delete()
+
         stores_dict = _getmall(mallid)
-        mallHTML = render_to_string()
+        ctx = {
+            'stores_dict':stores_dict
+            }
+        mallHTML = render_to_string("mall_snippet.html", ctx)
+        
         status = 'ok'
         success_msg = "We've removed the store '%s' from your mall." % (store.name)
     except Exception, e:

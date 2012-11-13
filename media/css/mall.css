@@ -4,6 +4,7 @@ div.mallname {
     text-align: center;
     text-transform: uppercase;
     letter-spacing: .3em;
+    padding: 10px 0px;
 }
 
 div.addstorecontainer {
@@ -25,6 +26,28 @@ div.addstoreformcontainer {
 div.floor {
     width: 97.5%;
     padding: 10px;
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+div.floorlabel.vert {
+    writing-mode: tb-rl;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+    right: -52px;
+    top: 20px;
+    letter-spacing: .2em;
+}
+div.floorlabel { /* remove? */
+    height: 0px;
+    float: right;
+    position: relative;
+    top: -23px;
+    text-transform: uppercase;
+    letter-spacing: .4em;
+    font-size: 10px;
 }
 div.store {
     width: 390px;
@@ -34,17 +57,31 @@ div.store {
     margin: 10px;
     float: left;
 }
+div.store:hover {
+    cursor: pointer;
+}
 div.storermv {
-    width: 16px;
-    height: 16px;
-    line-height: 16px;
-    background-color: #CCC;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 10px;
+    background-color: #FFF;
     float: right;
-    border-radius: 8px;
     text-align: center;
     margin-left: 5px;
     cursor: pointer;
+    position: relative;
+    top: -22px;
+    right: -22px;
 }
 div.storename {
     text-align: center;
+    background: rgb(0,0,0);
+    background: rgba(0,0,0,0.5);
+    color: black;
+    text-shadow: 1px 1px 1px #333;
+}
+div.storename a {
+    font-size: 20px;
+    letter-spacing: .3em;
 }

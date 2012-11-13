@@ -6,7 +6,7 @@ $(function() {
     $(".addstorebutton").on("click", function() {
 	addStore();
     })
-    $(".storermv").on("click", function() {
+    $("#mall").on("click", ".storermv", function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
     });
@@ -50,6 +50,11 @@ function setSortable() {
     });
 }
 
+function loadMall(mallHTML) {
+    $("#mall").html(mallHTML);
+    setSortable();
+}
+
 function addStore() {
     data = $('#addstoreform').serialize();
     data += ("&mallid="+encodeURIComponent(mallid));
@@ -57,9 +62,11 @@ function addStore() {
 	  data,
 	  function(response) {
 	      if (response.status == 'ok') {
-		  alert(response.successMsg);
+		  showMessage($(".successMsg"), response.successMsg);
+		  loadMall(response.mallHTML);
+		  $(".addstorefromcontainer").hide();
 	      } else {
-		  alert(response.errorMsg);
+		  showMessage($(".errorMsg"), response.errorMsg);
 	      }
 	  });
 }
@@ -89,6 +96,12 @@ function moveStore(storeid, movetype, oldfloorid, oldfloororder, newfloorid, new
     $.post(moveStoreURL,
 	   data,
 	   function(response) {
+	       if (response.status == 'ok') {
+		   loadMall(response.mallHTML);
+	       } else {
+		   showMessage($(".errorMsg"), response.errorMsg);
+		   loadMall(response.mallHTML);
+	       }
 	   });
 }
 
@@ -97,7 +110,7 @@ function removeStore(storeid) {
 	  { 'mallid':mallid, 'storeid':storeid },
 	  function(response) {
 	      if (response.status == "ok") {
-		  $("#mall").html(response.mallHTML);
+		  loadMall(response.mallHTML);
 		  showMessage($(".successMsg"), response.successMsg);
 	      } else {
 		  showMessage($(".errorMsg"), response.errorMsg);
