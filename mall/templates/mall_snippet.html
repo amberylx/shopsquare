@@ -1,18 +1,27 @@
 {% for floor,stores in stores_dict.items %}
-  <div id="floor_{{floor}}" class="floor thinborder clearfix">
+  {% if stores %}    
+  <div id="floor_{{floor}}" class="floor clearfix thinborder">
+    <div class="floorlabel">floor {{floor}}</div>
+    <div class="floorlabel vert">floor {{floor}}</div>
     {% for storetup in stores %}
       {% with store=storetup.0 %}
         {% with storeimg=storetup.1 %}
         <div id="store_{{store.id}}" class="store thinborder"
            {% if storeimg %}style="background-image:url('/ssmedia/images/usrimg/{{storeimg}}')"{% endif %}>
            <div id="rmv_{{store.id}}" class="storermv thinborder icontext">x</div>
-           <div>{{store.name}}:</div>
            <div class="storename">
-             <a href="{{store.domain}}" target="_new">{{store.domain}}</a>
+             <a href="{{store.domain}}" target="_new">{{store.name}}</a>
            </div>
         </div>
         {% endwith %}
       {% endwith %}
     {% endfor %}
   </div>
+  {% else %}
+  <div id="floor_{{floor}}" class="floor dotthinborder clearfix">
+    <div class="floorlabel">floor {{floor}}</div>
+    <div class="floorlabel vert">floor {{floor}}</div>
+    ghost town!    
+  </div>    
+  {% endif %}    
 {% endfor %}
