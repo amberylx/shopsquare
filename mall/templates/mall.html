@@ -12,6 +12,7 @@ var addStoreURL = "{% url add_store %}";
 var removeStoreURL = "{% url remove_store %}";
 var moveStoreURL = "{% url move_store %}";
 var mallid = '{{mall.id}}';
+var addformtrigger;
 //]]>
 </script>
 <script type="text/javascript" src="{{ssmedia}}/js/mall.js"></script>
@@ -20,14 +21,14 @@ var mallid = '{{mall.id}}';
 {% endblock %}
 
 {% block content %}
-<div id="addstoreformcontainer" class="addstoreformcontainer thinborder overlay">
+<div id="addstoreoverlay" class="addstoreoverlay thinborder overlay">
   {% include 'add_store_snippet.html' %}
 </div>
 <div id="workspace">  
   <div class="mallname">{{mall.name}}</div>
   <div class="successMsg success"></div>
   <div class="errorMsg error"></div>  
-  <div class="addstorecontainer thinborder icontext" rel="#addstoreformcontainer">+</div>
+  <div class="addstorecontainer thinborder icontext" rel="#addstoreoverlay">+</div>
   <div id="mall">
     {% include 'mall_snippet.html' %}    
   </div>

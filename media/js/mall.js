@@ -4,7 +4,7 @@ $(function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
     });
-    $(".addstorecontainer").overlay({
+    addformtrigger = $(".addstorecontainer").overlay({
 	effect: 'apple',
 	fixed: false,
 	top: '20%',
@@ -70,9 +70,10 @@ function addStore() {
 	  data,
 	  function(response) {
 	      if (response.status == 'ok') {
+		  addformtrigger.overlay().close();
 		  showMessage($(".successMsg"), response.successMsg);
 		  loadMall(response.mallHTML);
-		  $(".addstorefromcontainer").hide();
+//		  $(".addstoreformcontainer").hide();
 	      } else {
 		  showMessage($(".errorMsg"), response.errorMsg);
 	      }

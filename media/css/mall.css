@@ -17,12 +17,12 @@ div.addstorecontainer {
     line-height: 20px; /* vertically center text */
     cursor: pointer;
 }
-div.addstoreformcontainer {
+div.addstoreoverlay {
     width: 50%;
     display: none;
     left: 25%;
 }
-div.addstoreformcontainer table {
+div.addstoreoverlay table {
     width: 70%;
     margin: 0 auto;
 }
