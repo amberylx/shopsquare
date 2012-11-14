@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem
 from mall.forms import RegisterForm, AddStoreForm, WishlistItemForm
-from utils import ImageScraper2, slugify
+from utils import ImageScraper2, slugify, imageutils
 import MyGlobals
 
 def landing(request):
@@ -61,6 +61,58 @@ def _getmall(mall_id):
         stores_dict[all_floors[-1]+1] = []
             
     return stores_dict
+
+def scrape_image(request):
+    domain = request.POST.get('domain')
+
+    imgHTML = ''
+    try:
+        filename = "%s-tmp.jpg" % request.user.id
+        #filename = "%s-%s.jpg" % (slugify.slugify(name), new_store.id)
+        filename = ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
+        if filename:
+            print "downloaded image: %s%s" % (MyGlobals.IMGROOT, filename)
+            imgHTML = '<img src="/ssmedia/images/usrimg/%s"></img>' % filename
+            #si = StoreImages(user=request.user, store=new_store, path=filename)
+            #si.save()
+        else:
+            print "no image to download"
+        status = 'ok'
+    except Exception, e:
+        filename = None
+        status = 'error'
+
+    response = {
+        'status':status,
+        'filename':filename,
+        'imgHTML':imgHTML
+        }
+    return HttpResponse(json.dumps(response), mimetype="application/json")
+
+def do_crop(request):
+    crop_x1 = int(float(request.POST.get('crop_x1')))
+    crop_y1 = int(float(request.POST.get('crop_y1')))
+    crop_x2 = int(float(request.POST.get('crop_x2')))
+    crop_y2 = int(float(request.POST.get('crop_y2')))
+    cropbox = [crop_x1, crop_y1, crop_x2, crop_y2]
+    imgpath = "%s%s-tmp.jpg" % (MyGlobals.IMGROOT, request.user.id)
+    
+    try:
+        filename = imageutils.crop_image(imgpath, cropbox)
+        imgHTML = '<img src="/ssmedia/images/usrimg/%s"></img>' % filename
+        status = 'ok'
+    except Exception, e:
+        print "unable to do crop: %s" % str(e)
+        status = 'error'
+        filename = ''
+        imgHTML = ''
+
+    response = {
+        'status':status,
+        'filename':filename,
+        'imgHTML':imgHTML
+        }
+    return HttpResponse(json.dumps(response), mimetype="application/json")
     
 def add_store(request):
     mallid = request.POST.get('mallid')
@@ -87,14 +139,26 @@ def add_store(request):
         print "unable to create store: %s" % str(e)
     else:
         try:
-            filename = "%s-%s.jpg" % (slugify.slugify(name), new_store.id)
-            filename = ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
-            if filename:
-                print "downloaded image: %s%s" % (MyGlobals.IMGROOT, filename)
-                si = StoreImages(user=request.user, store=new_store, path=filename)
-                si.save()
-            else:
-                print "no image to download"
+            oldfilename = "cropped_%s-tmp.jpg" % request.user.id
+            newfilename = "%s-%s.jpg" % (slugify.slugify(name), new_store.id)
+            imgpath = "%s" % (MyGlobals.IMGROOT)
+            print "*"*80
+            print oldfilename
+            print newfilename
+            print imgpath
+            print 'mv %s%s %s%s' % (imgpath,oldfilename,imgpath,newfilename)
+            output = subprocess.Popen(['mv %s%s %s%s' % (imgpath,oldfilename,imgpath,newfilename)], shell=True)
+            si = StoreImages(user=request.user, store=new_store, path=newfilename)
+            si.save()
+
+            # filename = "%s-%s.jpg" % (slugify.slugify(name), new_store.id)
+            # filename = ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
+            # if filename:
+            #     print "downloaded image: %s%s" % (MyGlobals.IMGROOT, filename)
+            #     si = StoreImages(user=request.user, store=new_store, path=filename)
+            #     si.save()
+            # else:
+            #     print "no image to download"
 
             stores_dict = _getmall(mallid)
             ctx = {

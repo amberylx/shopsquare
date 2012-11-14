@@ -7,6 +7,8 @@ div.mallname {
     padding: 10px 0px;
 }
 
+
+/* add store overlay */
 div.addstorecontainer {
     width: 20px;
     height: 20px;
@@ -22,9 +24,27 @@ div.addstoreoverlay {
     display: none;
     left: 25%;
 }
+div.addstoreoverlay .close {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+    background-color: white;
+    border: 1px dotted silver;
+}
 div.addstoreoverlay table {
-    width: 70%;
+    width: 100%;
     margin: 0 auto;
+}
+div.addstoreoverlay table td.addstorelabel {
+    text-align: right;
+    width: 35%;
+}
+div.addstoreoverlay table td.addstoreinput input {
+    margin-left: 10px;
 }
 div.addstoretitle {
     letter-spacing: .2em;
@@ -33,8 +53,21 @@ div.addstoretitle {
     position: relative;
     float: right;
     top: -17px;
-    right: 10px;
+    right: 25px;
 }
+div.addstoresubmit {
+    text-align: center;
+    padding: 20px 0px;
+}
+#id_domain {
+    width: 250px;
+}
+div.addstoreimage {
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+}
+
 
 div.floor {
     width: 97.5%;
@@ -63,7 +96,7 @@ div.floorlabel { /* remove? */
     font-size: 10px;
 }
 div.store {
-    width: 390px;
+    width: 200px;
     height: 300px;
     background-color: #FFF;
     margin: 10px;
@@ -96,7 +129,7 @@ div.storename {
     position: absolute;
     font-size: 20px;
     letter-spacing: .3em;
-    width: 390px;
+    width: 200px;
     border-top-left-radius: 5px;
 }
 
@@ -107,6 +140,6 @@ div.storeimgcontainer img {
     border-radius: 5px;
     max-width: 100%;
     max-height: 100%;
-    width: 390px;
+    width: 200px;
     height: 300px;
 }

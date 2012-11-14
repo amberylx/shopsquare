@@ -17,7 +17,15 @@ $(function() {
     });
     $(".addstorebutton").on("click", function() {
 	addStore();
-    })
+    });
+    $("#id_domain").on("change", function() {
+	domain = $(this).val();
+	// scrapeImage(domain);
+	scrapeImage2();
+    });
+    $(".cropbutton").on("click", function() {
+	doCrop();
+    });
  });
 
 function setSortable() {
@@ -63,6 +71,7 @@ function loadMall(mallHTML) {
     setSortable();
 }
 
+/* add store */
 function addStore() {
     data = $('#addstoreform').serialize();
     data += ("&mallid="+encodeURIComponent(mallid));
@@ -79,7 +88,58 @@ function addStore() {
 	      }
 	  });
 }
+function scrapeImage(domain) {
+    $.post(scrapeImageURL,
+	  { 'domain':domain },
+	  function(response) {
+	      if (response.status == 'ok') {
+		  $(".addstoreimage").html(response.imgHTML);
+		  $(".addstoreimage img").Jcrop({
+		      aspectRatio: 0.33333,
+		      maxSize: [ 130, 390 ],
+		      setSelect: [ 0, 390, 130, 390 ],
+		      addClass: 'jcrop-dark',
+		      onSelect: setCoords
+		  });
+	      } else {
+		  alert('error');
+	      }
+	  });
+}
+function scrapeImage2() {
+    $(".addstoreimage").html("<img src='/ssmedia/images/usrimg/1-tmp.jpg'>");
+    $(".addstoreimage img").Jcrop({
+	aspectRatio: 0.66666666,
+	maxSize: [ 200, 300 ],
+	setSelect: [ 0, 300, 200, 300 ],
+	addClass: 'jcrop-dark',
+	onSelect: setCoords
+    });
+}
+function doCrop() {
+    crop_x1 = $('#crop_x1').val();
+    crop_y1 = $('#crop_y1').val();
+    crop_x2 = $('#crop_x2').val();
+    crop_y2 = $('#crop_y2').val();
+    $.post(doCropURL,
+	  { 'crop_x1':crop_x1, 'crop_y1':crop_y1, 'crop_x2':crop_x2, 'crop_y2':crop_y2 },
+	  function(response) {
+	      if (response.status == 'ok') {
+		  $(".addstoreimage").html(response.imgHTML);
+	      } else {
+		  alert('error');
+	      }
+	  })
+}
+function setCoords(c) {
+    $('#crop_x1').val(c.x);
+    $('#crop_y1').val(c.y);
+    $('#crop_x2').val(c.x2);
+    $('#crop_y2').val(c.y2);
+}
 
+
+/* move store */
 function getFloororderFromFloorid(floorid) {
     return $('#floor_'+floorid).data("oldfloororder");
 }
