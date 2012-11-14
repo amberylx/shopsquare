@@ -1,15 +1,23 @@
 $(function() {
     setSortable();
-    $(".addstorecontainer").on("click", function() {
-	$(".addstoreformcontainer").slideDown(500);
-    });
-    $(".addstorebutton").on("click", function() {
-	addStore();
-    })
     $("#mall").on("click", ".storermv", function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
     });
+    $(".addstorecontainer").overlay({
+	effect: 'apple',
+	fixed: false,
+	top: '20%',
+	onBeforeLoad: function() {
+	    $("#shield").show();
+	},
+	onClose: function() {
+	    $("#shield").hide();
+	}
+    });
+    $(".addstorebutton").on("click", function() {
+	addStore();
+    })
  });
 
 function setSortable() {

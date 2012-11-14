@@ -100,3 +100,22 @@ form input[type="url"] {
     padding: 5px;
     margin: 0 auto;
 }
+
+.overlay {
+    display: none;
+    z-index: 100;
+    background-color: black;
+
+    -moz-box-shadow:0 0 90px 5px #000;
+    -webkit-box-shadow: 0 0 90px #000;
+}
+
+#shield {
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: 0.8;
+    position: fixed;
+    display: none;
+    z-index: 100;
+}

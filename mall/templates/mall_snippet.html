@@ -6,11 +6,16 @@
     {% for storetup in stores %}
       {% with store=storetup.0 %}
         {% with storeimg=storetup.1 %}
-        <div id="store_{{store.id}}" class="store thinborder"
-           {% if storeimg %}style="background-image:url('/ssmedia/images/usrimg/{{storeimg}}')"{% endif %}>
+        <div id="store_{{store.id}}" class="store thinborder">
+           <!--{% if storeimg %}style="background-image:url('/ssmedia/images/usrimg/{{storeimg}}')"{% endif %}-->
+	   <div class="storeimgcontainer">	   
+	     <a href="{{store.domain}}" target="_new">
+	       <img src="/ssmedia/images/usrimg/{{storeimg}}"></img>	     
+	     </a>
+	   </div>	   
            <div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
            <div class="storename">
-             <a href="{{store.domain}}" target="_new">{{store.name}}</a>
+	     {{store.name}}	     
            </div>
         </div>
         {% endwith %}
