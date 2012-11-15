@@ -7,7 +7,7 @@ $(function() {
     addformtrigger = $(".addstorecontainer").overlay({
 	effect: 'apple',
 	fixed: false,
-	top: '20%',
+	top: '10%',
 	onBeforeLoad: function() {
 	    $("#shield").show();
 	},
@@ -94,15 +94,15 @@ function scrapeImage(domain) {
 	  function(response) {
 	      if (response.status == 'ok') {
 		  $(".addstoreimage").html(response.imgHTML);
+		  $(".addstoreslidedown").slideDown(500);
+		  $(".addstoreimagepath").val(response.filename);
 		  $(".addstoreimage img").Jcrop({
 		      aspectRatio: 0.666666,
-//		      maxSize: [ 130, 390 ],
-		      minSize: [ 200, 300 ],
-		      setSelect: [ 0, 300, 200, 300 ],
+		      minSize: [ 80, 120 ],
+		      setSelect: [ 0, 0, 80, 120 ],
 		      addClass: 'jcrop-dark',
 		      onSelect: setCoords
 		  });
-		  $(".addstoreimagepath").val(response.filename);
 	      } else {
 		  alert('error');
 	      }
@@ -111,6 +111,7 @@ function scrapeImage(domain) {
 function resetAddStoreForm() {
     $("#addstoreform")[0].reset();
     $(".addstoreimage").html("");
+    $(".addstoreimagecontainer").html("").hide();
 }
 function doCrop() {
     crop_x1 = $('#crop_x1').val();
@@ -121,7 +122,7 @@ function doCrop() {
 	  { 'crop_x1':crop_x1, 'crop_y1':crop_y1, 'crop_x2':crop_x2, 'crop_y2':crop_y2 },
 	  function(response) {
 	      if (response.status == 'ok') {
-		  $(".addstoreimage").html(response.imgHTML);
+		  $(".addstoreimagecontainer").html(response.imgHTML);
 		  $(".addstoreimagepath").val(response.filename);
 	      } else {
 		  alert('error');

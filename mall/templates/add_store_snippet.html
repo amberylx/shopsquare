@@ -1,42 +1,46 @@
 <div class="addstoretitle">
   add a store
 </div>
-<form id="addstoreform">
-  <table>
-    <tr>
-      <td colspan="2">{% for error in form.domain.errors %}{{error}}{% endfor %}</td>
-    </tr>
-    <tr>
-      <td class="addstorelabel"><label for="id_domain"> Store URL </td>
-      <td class="addstoreinput"><input type="url" id="id_domain" name="domain" maxlength="200" placeholder="your store url"></td>
-    </tr>
-
-    <tr>
-      <td colspan="2">{% for error in form.name.errors %}{{error}}{% endfor %}</td>
-    </tr>
-    <tr>
-      <td class="addstorelabel"><label for="id_name"> Store Name </td>
-      <td class="addstoreinput">{{form.name}}</td>
-    </tr>
-
-    <tr>
-      <td colspan="2">{% for error in form.tags.errors %}{{error}}{% endfor %}</td>
-    </tr>
-    <tr>
-      <td class="addstorelabel"><label for="id_tags"> Tags </td>
-      <td class="addstoreinput">{{form.tags}}</td>
-    </tr>
-  </table>
-  <div class="addstoreimage thindotborder"></div>
-  <div>
-    <input type="hidden" id="crop_x1" name="crop_x1" />  
-    <input type="hidden" id="crop_y1" name="crop_y1" />  
-    <input type="hidden" id="crop_x2" name="crop_x2" />  
-    <input type="hidden" id="crop_y2" name="crop_y2" />
-    <input type="hidden" id="addstoreimagepath" name="addstoreimagepath" />
-    <input type="button" class="button tinybutton cropbutton" value="crop" />  
-  </div>
-  <div class="addstoresubmit">
-    <input type="button" class="button tinybutton addstorebutton" value="Add Store">
-  </div>
-</form>
+<div class="addstoreformcontainer">
+  <form id="addstoreform">
+    <table>
+      <tr>
+	<td colspan="2">{% for error in form.domain.errors %}{{error}}{% endfor %}</td>
+      </tr>
+      <tr>
+	<td class="addstorelabel"><label for="id_domain"> Store URL </td>
+	<td class="addstoreinput"><input type="url" id="id_domain" name="domain" maxlength="200" placeholder="your store url"></td>
+      </tr>
+      
+      <tr>
+	<td colspan="2">{% for error in form.name.errors %}{{error}}{% endfor %}</td>
+      </tr>
+      <tr>
+	<td class="addstorelabel"><label for="id_name"> Store Name </td>
+	<td class="addstoreinput">{{form.name}}</td>
+      </tr>
+      
+      <tr>
+	<td colspan="2">{% for error in form.tags.errors %}{{error}}{% endfor %}</td>
+      </tr>
+      <tr>
+	<td class="addstorelabel"><label for="id_tags"> Tags </td>
+	<td class="addstoreinput">{{form.tags}}</td>
+      </tr>
+    </table>
+    <div class="addstoreslidedown">
+      <div class="addstoreimagecontainer dotthinborder">
+	<div class="addstoreimage"></div>
+	<input type="hidden" id="crop_x1" name="crop_x1" />  
+	<input type="hidden" id="crop_y1" name="crop_y1" />  
+	<input type="hidden" id="crop_x2" name="crop_x2" />  
+	<input type="hidden" id="crop_y2" name="crop_y2" />
+	<input type="hidden" id="addstoreimagepath" name="addstoreimagepath" />
+	<input type="button" class="button tinybutton cropbutton" value="crop" />  
+      </div>
+    </div>      
+    <div class="addstoresubmit">
+      <input type="button" class="button tinybutton addstorebutton" value="Add Store">
+    </div>
+  </form>
+</div>

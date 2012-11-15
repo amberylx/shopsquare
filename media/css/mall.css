@@ -20,9 +20,14 @@ div.addstorecontainer {
     cursor: pointer;
 }
 div.addstoreoverlay {
-    width: 50%;
+    width: 60%;
     display: none;
-    left: 25%;
+    left: 20%;
+    padding: 10px;
+    min-width: 640px;
+}
+div.addstoreformcontainer {
+    margin: 0 auto;
 }
 div.addstoreoverlay .close {
     position: absolute;
@@ -52,7 +57,7 @@ div.addstoretitle {
     font-size: 15px;
     position: relative;
     float: right;
-    top: -17px;
+    top: -28px;
     right: 25px;
 }
 div.addstoresubmit {
@@ -62,10 +67,19 @@ div.addstoresubmit {
 #id_domain {
     width: 250px;
 }
+div.addstoreslidedown {
+    display: none;
+    text-align: center;
+}
+div.addstoreimagecontainer {
+    display: inline-block;
+    text-align: center;
+    margin: 10px auto;
+    padding: 10px;
+}
 div.addstoreimage {
     text-align: center;
-    padding: 10px;
-    margin: 10px;
+    padding-bottom: 10px;
 }
 
 
