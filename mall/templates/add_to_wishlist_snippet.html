@@ -1,25 +1,27 @@
-<form id="addwishlistform"> {% csrf_token %}
-  <table>
-    <tr>
-      <td colspan="2">{% for error in form.url.errors %}{{error}}{% endfor %}</td>
-    </tr>
-    <tr>
-      <td><label for="id_url"> Item URL </td>
-      <td><input type="url" id="id_url" name="url" maxlength="200" placeholder="your store url"></td>
-    </tr>
-
-    <tr>
-      <td colspan="2">{% for error in form.tags.errors %}{{error}}{% endfor %}</td>
-    </tr>
-    <tr>
-      <td><label for="id_tags"> Tags </td>
-      <td>{{form.tags}}</td>
-    </tr>
-
-    <tr>
-      <td colspan="2" style="text-align:center;">
-	<input id="addtowishlistbutton" type="button" class="button tinybutton" value="Add to Wishlist">
-      </td>
-    </tr>
-  </table>
-</form>
+<div class="addwishlisttitle overlaytitle">
+  add to wishlist  
+</div>
+<div class="addwishlistformcontainer overlayformcontainer">
+  <form id="addwishlistform"> {% csrf_token %}
+    <table>
+      <tr>
+	<td colspan="2">{% for error in form.url.errors %}{{error}}{% endfor %}</td>
+      </tr>
+      <tr>
+	<td class="overlaylabel"><label for="id_url"> Item URL </td>
+	<td class="overlayinput"><input type="url" id="id_url" name="url" maxlength="200" placeholder="your store url"></td>
+      </tr>
+      
+      <tr>
+	<td colspan="2">{% for error in form.tags.errors %}{{error}}{% endfor %}</td>
+      </tr>
+      <tr>
+	<td class="overlaylabel"><label for="id_tags"> Tags </td>
+	<td class="overlayinput">{{form.tags}}</td>
+      </tr>
+    </table>
+    <div class="addwishlistsubmit overlaysubmit">
+      <input id="addtowishlistbutton" type="button" class="button tinybutton" value="Add to Wishlist">
+    </div>  
+  </form>
+</div>
