@@ -69,22 +69,25 @@ def scrape_image(request):
     try:
         filename = "%s-tmp.jpg" % request.user.id
         #filename = "%s-%s.jpg" % (slugify.slugify(name), new_store.id)
-        filename = ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
+        (out_folder, filename) = ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
         if filename:
-            print "downloaded image: %s%s" % (MyGlobals.IMGROOT, filename)
-            imgHTML = '<img src="/ssmedia/images/usrimg/%s"></img>' % filename
-            #si = StoreImages(user=request.user, store=new_store, path=filename)
-            #si.save()
+            print "downloaded image: %s%s" % (out_folder, filename)
+            (out_folder, filename) = imageutils.resize_image(out_folder, filename)
+            imgpath = '/ssmedia/images/usrimg/%s' % filename
+            imgHTML = '<img src="%s"></img>' % imgpath
         else:
             print "no image to download"
         status = 'ok'
     except Exception, e:
+        print "unable to scrape image: %s" % str(e)
         filename = None
+        imgpath = None
         status = 'error'
 
     response = {
         'status':status,
         'filename':filename,
+        'imgpath':imgpath,
         'imgHTML':imgHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")

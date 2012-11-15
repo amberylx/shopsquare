@@ -49,7 +49,7 @@ def getImagesFromURL(url, out_folder="/Users/slee/shopsquare/media/images/usrimg
 
         try:
             (bytes, (w,h)) = getsizes(full_image_uri)
-            if w < 80 or h < 80:
+            if w < 200 or h < 300:
                 #print "skip image, (%s,%s) is too small" % (w,h)
                 continue
             if bytes < 5120:
@@ -64,7 +64,7 @@ def getImagesFromURL(url, out_folder="/Users/slee/shopsquare/media/images/usrimg
         didScrape = True
         break
 
-    return filename if didScrape else ''
+    return (out_folder, filename) if didScrape else ''
 
 def getsizes(uri):
     # get file size *and* image size (None if not known)

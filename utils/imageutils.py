@@ -10,6 +10,20 @@ def crop_image(imgpath, box):
     cropped_area.save(new_path, 'jpeg')
     return new_imgfile
 
+def resize_image(out_folder, filename):
+    imgpath = "%s%s" % (out_folder, filename)
+    max_width = 600
+    img = Image.open(imgpath)
+    (w,h) = img.size
+
+    if w > max_width:
+        new_height = int((float(max_width)*h)/w)
+        img = img.resize((max_width,new_height), Image.ANTIALIAS)
+        img.save("%s%s"%(out_folder,filename), 'jpeg')
+        print "cropped image to (%s, %s)" % (max_width, new_height)
+    return (out_folder, filename)
+    
+
 if __name__ == "__main__":
     path = '/Users/slee/shopsquare/media/images/usrimg/tmp.jpg'
     crop_image(path, (130,0,260,390))

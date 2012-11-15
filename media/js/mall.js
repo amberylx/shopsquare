@@ -20,8 +20,8 @@ $(function() {
     });
     $("#id_domain").on("change", function() {
 	domain = $(this).val();
-	// scrapeImage(domain);
-	scrapeImage2();
+	scrapeImage(domain);
+	// scrapeImage2();
     });
     $(".cropbutton").on("click", function() {
 	doCrop();
@@ -82,7 +82,7 @@ function addStore() {
 		  addformtrigger.overlay().close();
 		  showMessage($(".successMsg"), response.successMsg);
 		  loadMall(response.mallHTML);
-//		  $(".addstoreformcontainer").hide();
+		  resetAddStoreForm();
 	      } else {
 		  showMessage($(".errorMsg"), response.errorMsg);
 	      }
@@ -95,26 +95,22 @@ function scrapeImage(domain) {
 	      if (response.status == 'ok') {
 		  $(".addstoreimage").html(response.imgHTML);
 		  $(".addstoreimage img").Jcrop({
-		      aspectRatio: 0.33333,
-		      maxSize: [ 130, 390 ],
-		      setSelect: [ 0, 390, 130, 390 ],
+		      aspectRatio: 0.666666,
+//		      maxSize: [ 130, 390 ],
+		      minSize: [ 200, 300 ],
+		      setSelect: [ 0, 300, 200, 300 ],
 		      addClass: 'jcrop-dark',
 		      onSelect: setCoords
 		  });
+		  $(".addstoreimagepath").val(response.filename);
 	      } else {
 		  alert('error');
 	      }
 	  });
 }
-function scrapeImage2() {
-    $(".addstoreimage").html("<img src='/ssmedia/images/usrimg/1-tmp.jpg'>");
-    $(".addstoreimage img").Jcrop({
-	aspectRatio: 0.66666666,
-	maxSize: [ 200, 300 ],
-	setSelect: [ 0, 300, 200, 300 ],
-	addClass: 'jcrop-dark',
-	onSelect: setCoords
-    });
+function resetAddStoreForm() {
+    $("#addstoreform")[0].reset();
+    $(".addstoreimage").html("");
 }
 function doCrop() {
     crop_x1 = $('#crop_x1').val();
@@ -126,6 +122,7 @@ function doCrop() {
 	  function(response) {
 	      if (response.status == 'ok') {
 		  $(".addstoreimage").html(response.imgHTML);
+		  $(".addstoreimagepath").val(response.filename);
 	      } else {
 		  alert('error');
 	      }
