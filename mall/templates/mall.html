@@ -17,6 +17,7 @@ var mallid = '{{mall.id}}';
 var addformtrigger;
 //]]>
 </script>
+<script type="text/javascript" src="{{ssmedia}}/js/overlay.js"></script>
 <script type="text/javascript" src="{{ssmedia}}/js/mall.js"></script>
 <script type="text/javascript" src="{{ssmedia}}/js/jquery.Jcrop.min.js"></script>
 <script type="text/javascript" src="{{ssmedia}}/js/jquery.tools.min.js"></script>
@@ -27,10 +28,10 @@ var addformtrigger;
   {% include 'add_store_snippet.html' %}
 </div>
 <div id="workspace">  
-  <div class="mallname">{{mall.name}}</div>
+  <div class="mallname workspacetitle">{{mall.name}}</div>
   <div class="successMsg success"></div>
   <div class="errorMsg error"></div>  
-  <div class="addstorecontainer thinborder icontext" rel="#addstoreoverlay">+</div>
+  <div class="addstorecontainer thinborder icontext overlayicon" rel="#addstoreoverlay">+</div>
   <div id="mall">
     {% include 'mall_snippet.html' %}    
   </div>

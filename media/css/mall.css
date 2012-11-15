@@ -1,68 +1,9 @@
 
-div.mallname {
-    font-size: 20px;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: .3em;
-    padding: 10px 0px;
-}
-
-
 /* add store overlay */
-div.addstorecontainer {
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    background-color: #FFF;
-    font-size: 14px;
-    text-align: center;
-    line-height: 20px; /* vertically center text */
-    cursor: pointer;
-}
 div.addstoreoverlay {
     width: 60%;
-    display: none;
     left: 20%;
-    padding: 10px;
     min-width: 640px;
-}
-div.addstoreformcontainer {
-    margin: 0 auto;
-}
-div.addstoreoverlay .close {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    cursor: pointer;
-    height: 20px;
-    width: 20px;
-    border-radius: 10px;
-    background-color: white;
-    border: 1px dotted silver;
-}
-div.addstoreoverlay table {
-    width: 100%;
-    margin: 0 auto;
-}
-div.addstoreoverlay table td.addstorelabel {
-    text-align: right;
-    width: 35%;
-}
-div.addstoreoverlay table td.addstoreinput input {
-    margin-left: 10px;
-}
-div.addstoretitle {
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    font-size: 15px;
-    position: relative;
-    float: right;
-    top: -28px;
-    right: 25px;
-}
-div.addstoresubmit {
-    text-align: center;
-    padding: 20px 0px;
 }
 #id_domain {
     width: 250px;
@@ -83,9 +24,6 @@ div.addstoreimage {
 }
 
 
-.overlayOpen #workspace {
-    -webkit-filter: blur(5px);
-}
 div.floor {
     width: 97.5%;
     padding: 10px;

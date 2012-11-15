@@ -1,5 +1,6 @@
 $(function() {
     $("#addtowishlistbutton").on("click", addToWishlist);
+    addwishlisttrigger = initOverlay($(".addwishlisticon"));
 });
 
 function addToWishlist() {

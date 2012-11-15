@@ -2,20 +2,29 @@
 
 {% block title %}shop square - wishlist{% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ssmedia}}/css/wishlist.css" type="text/css"/>
+{% endblock %}
 {% block js %}
 <script type="text/javascript">
 //<![CDATA[
 var addToWishlistURL = "{% url add_to_wishlist %}";
 //]]>
 </script>
+<script type="text/javascript" src="{{ssmedia}}/js/overlay.js"></script>
 <script type="text/javascript" src="{{ssmedia}}/js/wishlist.js"></script>
+<script type="text/javascript" src="{{ssmedia}}/js/jquery.tools.min.js"></script>
 {% endblock %}
 
 {% block content %}
+<div id="addwishlistoverlay" class="addwishlistoverlay thinborder overlay">
+  {% include 'add_to_wishlist_snippet.html' %}
+</div>  
 <div id="workspace">
-  <div class="addwishlistformcontainer">
-    {% include 'add_to_wishlist_snippet.html' %}
-  </div>
+  <div class="workspacetitle">wishlist</div>  
+  <div class="successMsg success"></div>
+  <div class="errorMsg error"></div>
+  <div class="addwishlisticon thinborder icontext overlayicon" rel="#addwishlistoverlay">+</div>
   {% for wishlist,wishlistitems in all_wishlists.items %}  
     <div class="wishlist thinborder">
       <div>{{wishlist.name}}: {{wishlist.description}}</div>

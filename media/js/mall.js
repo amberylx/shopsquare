@@ -1,32 +1,15 @@
 $(function() {
     setSortable();
+    addformtrigger = initOverlay($(".addstorecontainer"));
+    $(".addstorebutton").on("click", addStore);
+    $(".cropbutton").on("click", doCrop);
     $("#mall").on("click", ".storermv", function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
     });
-    addformtrigger = $(".addstorecontainer").overlay({
-	effect: 'apple',
-	fixed: false,
-	top: '10%',
-	onBeforeLoad: function() {
-	    $("body").addClass("overlayOpen");
-//	    $("#shield").show();
-	},
-	onClose: function() {
-	    $("body").removeClass("overlayOpen");
-//	    $("#shield").hide();
-	}
-    });
-    $(".addstorebutton").on("click", function() {
-	addStore();
-    });
     $("#id_domain").on("change", function() {
 	domain = $(this).val();
 	scrapeImage(domain);
-	// scrapeImage2();
-    });
-    $(".cropbutton").on("click", function() {
-	doCrop();
     });
  });
 
