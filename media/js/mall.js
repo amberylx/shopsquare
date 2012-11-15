@@ -9,10 +9,12 @@ $(function() {
 	fixed: false,
 	top: '10%',
 	onBeforeLoad: function() {
-	    $("#shield").show();
+	    $("body").addClass("overlayOpen");
+//	    $("#shield").show();
 	},
 	onClose: function() {
-	    $("#shield").hide();
+	    $("body").removeClass("overlayOpen");
+//	    $("#shield").hide();
 	}
     });
     $(".addstorebutton").on("click", function() {
