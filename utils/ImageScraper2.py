@@ -14,6 +14,7 @@ def getImagesFromURL(url, out_folder="/Users/slee/shopsquare/media/images/usrimg
 
     didScrape = False
     for image in images:
+        if not image.has_key('src'): continue
         # get image uri
         base_split = parsed[:]
         img_split = urlparse.urlparse(image["src"])
@@ -49,8 +50,11 @@ def getImagesFromURL(url, out_folder="/Users/slee/shopsquare/media/images/usrimg
 
         try:
             (bytes, (w,h)) = getsizes(full_image_uri)
-            if w < 200 or h < 300:
-                #print "skip image, (%s,%s) is too small" % (w,h)
+            if w < 200:
+                print "skip image, (%s,%s) is too small" % (w,h)
+                continue
+            if h < 300:
+                print "skip image, (%s,%s) is too small" % (w,h)
                 continue
             if bytes < 5120:
                 #print "skip image, (%s) is too small" % bytes
