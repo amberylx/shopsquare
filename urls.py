@@ -20,6 +20,8 @@ urlpatterns = patterns('mall.views',
 )
 
 urlpatterns += patterns('',
+    (r'^ssmedia/store/(?P<path>.*)$', 'django.views.static.serve',
+        {'document_root':settings.STATIC_STORE_IMAGE_ROOT, 'show_indexes':True}),
     (r'^ssmedia/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root':settings.STATIC_MEDIA_ROOT, 'show_indexes':True}),
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
