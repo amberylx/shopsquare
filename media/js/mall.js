@@ -73,54 +73,11 @@ function addStore() {
 	      }
 	  });
 }
-function scrapeImage(domain) {
-    $.post(scrapeImageURL,
-	  { 'domain':domain },
-	  function(response) {
-	      if (response.status == 'ok') {
-		  $(".addstoreimage").html(response.imgHTML);
-		  $(".addstoreslidedown").slideDown(500);
-		  $(".addstoreimagepath").val(response.filename);
-		  $(".addstoreimage img").Jcrop({
-		      aspectRatio: 0.666666,
-		      minSize: [ 80, 120 ],
-		      setSelect: [ 0, 0, 80, 120 ],
-		      addClass: 'jcrop-dark',
-		      onSelect: setCoords
-		  });
-	      } else {
-		  alert('error');
-	      }
-	  });
-}
 function resetAddStoreForm() {
     $("#addstoreform")[0].reset();
-    $(".addstoreimage").html("");
-    $(".addstoreimagecontainer").html("").hide();
+    $(".overlayimage").html("");
+    $(".overlayimagecontainer").hide();
 }
-function doCrop() {
-    crop_x1 = $('#crop_x1').val();
-    crop_y1 = $('#crop_y1').val();
-    crop_x2 = $('#crop_x2').val();
-    crop_y2 = $('#crop_y2').val();
-    $.post(doCropURL,
-	  { 'crop_x1':crop_x1, 'crop_y1':crop_y1, 'crop_x2':crop_x2, 'crop_y2':crop_y2 },
-	  function(response) {
-	      if (response.status == 'ok') {
-		  $(".addstoreimagecontainer").html(response.imgHTML);
-		  $(".addstoreimagepath").val(response.filename);
-	      } else {
-		  alert('error');
-	      }
-	  })
-}
-function setCoords(c) {
-    $('#crop_x1').val(c.x);
-    $('#crop_y1').val(c.y);
-    $('#crop_x2').val(c.x2);
-    $('#crop_y2').val(c.y2);
-}
-
 
 /* move store */
 function getFloororderFromFloorid(floorid) {

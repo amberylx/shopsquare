@@ -77,6 +77,9 @@ form input[type="url"] {
     padding: 2px 4px;
     border: 2px solid silver;
 }
+form input[type="url"] {
+    width: 250px;
+}
 
 .success {
     color: goldenrod;
@@ -96,74 +99,9 @@ form input[type="url"] {
     width: 90%;
     border: 1px solid red;
     display: none;
-c    border-radius: 7px;
+    border-radius: 7px;
     padding: 5px;
     margin: 0 auto;
-}
-
-/* overlay styling */
-div.overlaytitle {
-    letter-spacing: .2em;
-    text-transform: uppercase;
-    font-size: 15px;
-    position: relative;
-    float: right;
-    top: -28px;
-    right: 25px;
-}
-div.overlayicon {
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    background-color: #FFF;
-    font-size: 14px;
-    text-align: center;
-    line-height: 20px; /* vertically center text */
-    cursor: pointer;
-}
-.overlay {
-    display: none;
-    z-index: 100;
-    background-color: black;
-
-    -moz-box-shadow:0 0 90px 5px #000;
-    -webkit-box-shadow: 0 0 90px #000;
-}
-div.overlay .close {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    cursor: pointer;
-    height: 20px;
-    width: 20px;
-    border-radius: 10px;
-    background-color: white;
-    border: 1px dotted silver;
-}
-div.overlay {
-    display: none;
-    padding: 10px;
-}
-div.overlayformcontainer {
-    margin: 0 auto;
-}
-div.overlay table {
-    width: 100%;
-    margin: 0 auto;
-}
-div.overlay td.overlaylabel {
-    text-align: right;
-    width: 35%;
-}
-div.overlay td.overlayinput input {
-    margin-left: 10px;
-}
-.overlayOpen #workspace {
-    -webkit-filter: blur(5px);
-}
-div.overlaysubmit {
-    text-align: center;
-    pading: 20px 0;
 }
 
 div.workspacetitle {

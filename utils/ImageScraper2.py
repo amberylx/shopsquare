@@ -6,7 +6,7 @@ import ImageFile
 import os
 import sys
 
-def getImagesFromURL(url, out_folder="/Users/slee/shopsquare/media/images/usrimg/", filename="image.jpg"):
+def getImagesFromURL(url, filedir="/Users/slee/shopsquare/media/images/usrimg/", filename="image.jpg"):
     """Downloads all the images at 'url' to /test/"""
     parsed = urlparse.urlparse(url)
     soup = bs(urlopen(url))
@@ -18,8 +18,6 @@ def getImagesFromURL(url, out_folder="/Users/slee/shopsquare/media/images/usrimg
         # get image uri
         base_split = parsed[:]
         img_split = urlparse.urlparse(image["src"])
-        print "*"*80
-        print "iterating over image: %s" % image
 
         full_image_uri = (
             img_split[0] if img_split[0] else base_split[0],
@@ -30,45 +28,25 @@ def getImagesFromURL(url, out_folder="/Users/slee/shopsquare/media/images/usrimg
             img_split[5]
             )
         
-        # if image["src"].startswith("http"):
-        #     full_image_uri = image["src"]
-        # elif image["src"].startswith('//'):
-        #     print image["src"][-4:]
-        #     if image["src"][-4:] in ['.jpg', '.png']:
-        #         parsed_base[1] = image["src"]
-        #         parsed_base[2:] = ''
-        #         print parsed_base
-        #     else:
-        #         parsed_base[1] = image["src"].lstrip('/')
-        # full_image_uri = urlparse.urlunparse(parsed_base).rstrip('/')
-        # else:
-        #     parsed_base[2] = image["src"]
-        #     full_image_uri = urlparse.urlunparse(parsed_base).rstrip('/')
         full_image_uri = urlparse.urlunparse(full_image_uri)
-        print "full image uri: %s" % full_image_uri
-
+        print "*"*80
+        print "image tag %s has uri --> %s" % (image, full_image_uri)
 
         try:
             (bytes, (w,h)) = getsizes(full_image_uri)
-            if w < 200:
-                print "skip image, (%s,%s) is too small" % (w,h)
-                continue
-            if h < 300:
-                print "skip image, (%s,%s) is too small" % (w,h)
-                continue
-            if bytes < 5120:
-                #print "skip image, (%s) is too small" % bytes
-                continue
+            if w < 200 or h < 300 or bytes < 5120:
+                raise Exception
         except Exception, e:
-            pass
+            print "skipping image with size (%s, %s), %s bytes" % (w,h,bytes)
+            continue
         
-        outpath = os.path.join(out_folder, filename)
-        print "scraping to file: %s" % outpath
-        urlretrieve(full_image_uri, outpath)
+        imgpath = os.path.join(filedir, filename)
+        urlretrieve(full_image_uri, imgpath)
         didScrape = True
+        print "scraped image to file: %s" % imgpath
         break
 
-    return (out_folder, filename) if didScrape else ''
+    return (filedir, filename) if didScrape else ''
 
 def getsizes(uri):
     # get file size *and* image size (None if not known)
@@ -92,11 +70,11 @@ def _usage():
     
 if __name__ == "__main__":
     url = sys.argv[-1]
-    out_folder = ''
+    filedir = ''
     if not url.lower().startswith("http"):
-        out_folder = sys.argv[-1]
+        filedir = sys.argv[-1]
         url = sys.argv[-2]
         if not url.lower().startswith("http"):
             _usage()
             sys.exit(-1)
-    getImagesFromURL(url, out_folder)
+    getImagesFromURL(url, filedir)

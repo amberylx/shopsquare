@@ -1,4 +1,4 @@
-import json, re, subprocess
+import json, re, subprocess, traceback
 
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -9,9 +9,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem
+from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem, WishlistImages
 from mall.forms import RegisterForm, AddStoreForm, WishlistItemForm
-from utils import ImageScraper2, slugify, imageutils
+from utils import ImageScraper2, slugify, imageutils, urlutils
 import MyGlobals
 
 def landing(request):
@@ -63,23 +63,26 @@ def _getmall(mall_id):
     return stores_dict
 
 def scrape_image(request):
-    domain = request.POST.get('domain')
+    url = request.POST.get('domain')
+    uid = request.user.id
 
     imgHTML = ''
     try:
-        filename = "%s-tmp.jpg" % request.user.id
-        #filename = "%s-%s.jpg" % (slugify.slugify(name), new_store.id)
-        (out_folder, filename) = ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
+        filedir = MyGlobals.STOREIMG_ROOT % { 'uid':uid }
+        filename = urlutils.getStoreScrapedImageFilename()
+        (filedir, filename) = ImageScraper2.getImagesFromURL(url, filedir=filedir, filename=filename)
         if filename:
-            print "downloaded image: %s%s" % (out_folder, filename)
-            (out_folder, filename) = imageutils.resize_image(out_folder, filename)
-            imgpath = '/ssmedia/images/usrimg/%s' % filename
-            imgHTML = '<img src="%s"></img>' % imgpath
+            try:
+                (filedir, filename) = imageutils.resize_image(filedir, filename)
+            except Exception, e:
+                print "unable to resize image: %s" % str(e)
+            imgpath = MyGlobals.STOREIMG_ROOT_SRV % { 'uid':uid }
+            imgHTML = '<img src="%s/%s"></img>' % (imgpath, filename)
         else:
-            print "no image to download"
+            raise Exception("no image to scrape")
         status = 'ok'
     except Exception, e:
-        print "unable to scrape image: %s" % str(e)
+        print "unable to scrape image: %s; %s" % (str(e), traceback.print_exc())
         filename = None
         imgpath = None
         status = 'error'
@@ -93,16 +96,19 @@ def scrape_image(request):
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
 def do_crop(request):
+    uid = request.user.id
+    filename = request.POST.get('filename')
     crop_x1 = int(float(request.POST.get('crop_x1')))
     crop_y1 = int(float(request.POST.get('crop_y1')))
     crop_x2 = int(float(request.POST.get('crop_x2')))
     crop_y2 = int(float(request.POST.get('crop_y2')))
     cropbox = [crop_x1, crop_y1, crop_x2, crop_y2]
-    imgpath = "%s%s-tmp.jpg" % (MyGlobals.IMGROOT, request.user.id)
+    filedir = MyGlobals.STOREIMG_ROOT % { 'uid':uid }
     
     try:
-        filename = imageutils.crop_image(imgpath, cropbox)
-        imgHTML = '<img src="/ssmedia/images/usrimg/%s"></img>' % filename
+        (filedir, filename) = imageutils.crop_image(filedir, filename, cropbox)
+        imgpath = MyGlobals.STOREIMG_ROOT_SRV % { 'uid':uid }
+        imgHTML = '<img src="%s/%s"></img>' % (imgpath, filename)
         status = 'ok'
     except Exception, e:
         print "unable to do crop: %s" % str(e)
@@ -118,10 +124,12 @@ def do_crop(request):
     return HttpResponse(json.dumps(response), mimetype="application/json")
     
 def add_store(request):
+    uid = request.user.id
     mallid = request.POST.get('mallid')
     name = request.POST.get('name')
     domain = request.POST.get('domain')
     tags = request.POST.get('tags')
+    filename = request.POST.get('overlayimagefile')
 
     mallHTML = ''
     success_msg = ''
@@ -142,32 +150,20 @@ def add_store(request):
         print "unable to create store: %s" % str(e)
     else:
         try:
-            oldfilename = "cropped_%s-tmp.jpg" % request.user.id
-            newfilename = "%s-%s.jpg" % (slugify.slugify(name), new_store.id)
-            imgpath = "%s" % (MyGlobals.IMGROOT)
+            newfilename = urlutils.getStoreImageFilename(name, new_store.id)
+            oldimgpath = "%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, filename)
+            newimgpath = "%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, newfilename)
             print "*"*80
-            print oldfilename
-            print newfilename
-            print imgpath
-            print 'mv %s%s %s%s' % (imgpath,oldfilename,imgpath,newfilename)
-            output = subprocess.Popen(['mv %s%s %s%s' % (imgpath,oldfilename,imgpath,newfilename)], shell=True)
+            print 'mv %s %s' % (oldimgpath, newimgpath)
+            output = subprocess.Popen(['mv %s %s' % (oldimgpath, newimgpath)], shell=True)
             si = StoreImages(user=request.user, store=new_store, path=newfilename)
             si.save()
-
-            # filename = "%s-%s.jpg" % (slugify.slugify(name), new_store.id)
-            # filename = ImageScraper2.getImagesFromURL(domain, out_folder=MyGlobals.IMGROOT, filename=filename)
-            # if filename:
-            #     print "downloaded image: %s%s" % (MyGlobals.IMGROOT, filename)
-            #     si = StoreImages(user=request.user, store=new_store, path=filename)
-            #     si.save()
-            # else:
-            #     print "no image to download"
 
             stores_dict = _getmall(mallid)
             ctx = {
                 'stores_dict':stores_dict
                 }
-            mallHTML = render_to_string("mall_snippet.html", ctx)
+            mallHTML = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
 
             status = 'ok'
             success_msg = 'Successfully added store.'
@@ -249,7 +245,7 @@ def move_store(request):
         ctx = {
             'stores_dict':stores_dict
             }
-        mallHTML = render_to_string("mall_snippet.html", ctx)
+        mallHTML = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
     except Exception, e:
         status = 'error'
         error_msg += 'Unable to retrieve mall information.'
@@ -263,6 +259,7 @@ def move_store(request):
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
 def remove_store(request):
+    uid = request.user.id
     mallid = request.POST.get("mallid")
     storeid = request.POST.get("storeid")
     success_msg = ''
@@ -272,7 +269,7 @@ def remove_store(request):
     # delete store image file
     try:
         si = StoreImages.objects.get(store__id=storeid)
-        imgpath = "%s%s" % (MyGlobals.IMGROOT, si.path)
+        imgpath = "%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, si.path)
         output = subprocess.Popen(['rm %s'%imgpath], shell=True)
     except Exception, e:
         print "unable to delete store image file: %s" % str(e)
@@ -287,7 +284,7 @@ def remove_store(request):
         ctx = {
             'stores_dict':stores_dict
             }
-        mallHTML = render_to_string("mall_snippet.html", ctx)
+        mallHTML = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
         
         status = 'ok'
         success_msg = "We've removed the store '%s' from your mall." % (store.name)
@@ -399,6 +396,11 @@ def add_to_wishlist(request):
         status = 'error'
         errorMsg = 'Unable to add %s to your wishlist.' % url
         print "Unable to add %s to wishlist: %s" % (url, str(e))
+        #    else:
+        #        try:
+        #    oldfilename = "cropped_%s-tmp.jpg" % request.user.id
+        #    newfilename = "%s-%s.jpg"
+            
         
     response = {
         'status':status,
@@ -406,9 +408,7 @@ def add_to_wishlist(request):
         'errorMsg':errorMsg
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
-    
-
-    
+        
 def about(request):
     ctx_dict = {
         }

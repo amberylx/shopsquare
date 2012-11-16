@@ -5,24 +5,6 @@ div.addstoreoverlay {
     left: 20%;
     min-width: 640px;
 }
-#id_domain {
-    width: 250px;
-}
-div.addstoreslidedown {
-    display: none;
-    text-align: center;
-}
-div.addstoreimagecontainer {
-    display: inline-block;
-    text-align: center;
-    margin: 10px auto;
-    padding: 10px;
-}
-div.addstoreimage {
-    text-align: center;
-    padding-bottom: 10px;
-}
-
 
 div.floor {
     width: 97.5%;

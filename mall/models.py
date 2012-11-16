@@ -50,7 +50,7 @@ class Wishlist(models.Model):
 
     def __unicode__(self):
         return self.name
-    
+
 class WishlistItem(models.Model):
     #    store = models.ForeignKey(Store)
     wishlist = models.ForeignKey(Wishlist)
@@ -60,3 +60,9 @@ class WishlistItem(models.Model):
 
     def __unicode__(self):
         return self.url
+
+class WishlistImages(models.Model):
+    user = models.ForeignKey(User)
+    wishlistitem = models.ForeignKey(WishlistItem)
+    path = models.CharField(max_length=1000)
+    date_added = models.DateTimeField(auto_now_add=True)
