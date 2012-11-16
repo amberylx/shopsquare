@@ -29,6 +29,7 @@ function scrapeImage(domain) {
                       addClass: 'jcrop-dark',
                       onSelect: setCoords
                   });
+		  $(".cropbutton").show();
               } else {
                   alert('error');
               }
@@ -46,6 +47,7 @@ function doCrop() {
               if (response.status == 'ok') {
                   $(".overlayimage").html(response.imgHTML);
                   $(".overlayimagepath").val(response.filename);
+		  $(".cropbutton").hide();
               } else {
                   alert('error');
               }
