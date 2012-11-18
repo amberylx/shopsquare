@@ -1,12 +1,5 @@
 {% for wishlist,wishlistitems in all_wishlists.items %}
   <div id="wishlist_{{wishlist}}" class="wishlist clearfix thinborder">
-    <!--div>{{wishlist.name}}: {{wishlist.description}}</div>
-    {% for wli in wishlistitems %}
-      <div class="wishlistitem">
-        {{wli.url}} [{{wli.tags}}]
-      </div>
-    {% endfor %}
-  </div-->
     <div class="wishlistlabel">{{wishlist.name}}</div>    
     <div class="wishlistlabel vert">{{wishlist.name}}</div>    
     {% for wlitup in wishlistitems %}
@@ -22,6 +15,7 @@
 	  </div>
 	{% endwith %}
       {% endwith %}	
-  {% endfor %}    
+    {% endfor %}    
+    <div>{{wishlist.description}}</div>    
   </div>    
 {% endfor %}

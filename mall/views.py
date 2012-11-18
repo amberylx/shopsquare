@@ -433,7 +433,7 @@ def add_to_wishlist(request):
 
             wishlist_dict = _getwishlist(request)
             ctx = {
-                'wishlist_dict':wishlist_dict
+                'all_wishlists':wishlist_dict
                 }
             wishlistHTML = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
 
@@ -452,7 +452,48 @@ def add_to_wishlist(request):
         'wishlistHTML':wishlistHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
+
+def remove_wishlistitem(request):
+    uid = request.user.id
+    wlitemid = request.POST.get("wlitemid")
+    success_msg = ''
+    error_msg = ''
+    wishlistHTML = ''
+
+    # delete wishlistitem image file
+    try:
+        wlimage = WishlistImages.objects.get(wishlistitem__id=wlitemid)
+        imgpath = "%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, wlimage.path)
+        output = subprocess.Popen(['rm %s'%imgpath], shell=True)
+    except Exception, e:
+        print "unable to delete wishlist image file: %s" % str(e)
+
+    try:
+        store = WishlistItem.objects.get(pk=wlitemid)
+        store.delete()
+
+        wishlist_dict = _getwishlist(request)
+        ctx = {
+            'all_wishlists':wishlist_dict
+            }
+        wishlistHTML = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
         
+        status = 'ok'
+        success_msg = "Item has been removed from your wishlist."
+    except Exception, e:
+        print "error removing item: %s" % str(e)
+        status = 'error'
+        error_msg = "We're sorry, we're unable to remove this item at this time."
+
+    response = {
+        'status':status,
+        'errorMsg':error_msg,
+        'successMsg':success_msg,
+        'wishlistHTML':wishlistHTML
+        }
+
+    return HttpResponse(json.dumps(response), mimetype="application/json")
+    
 def about(request):
     ctx_dict = {
         }
