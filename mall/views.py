@@ -9,9 +9,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem, WishlistImages
+from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem, WishlistImages, Domain
 from mall.forms import RegisterForm, AddStoreForm, WishlistItemForm
-from utils import ImageScraper2, slugify, imageutils, urlutils
+from utils import ImageScraper, slugify, imageutils, urlutils
 import MyGlobals
 
 def landing(request):
@@ -77,7 +77,7 @@ def scrape_image(request):
         imgpath = MyGlobals.WISHLISTIMG_ROOT_SRV % { 'uid':uid }
 
     try:
-        (filedir, filename) = ImageScraper2.getImagesFromURL(url, filedir=filedir, filename=filename)
+        (filedir, filename) = ImageScraper.getImagesFromURL(url, filedir=filedir, filename=filename)
         if filename:
             try:
                 (filedir, filename) = imageutils.resize_image(filedir, filename)
@@ -149,12 +149,15 @@ def add_store(request):
     try:
         floor = 0
         pos = len(Store.objects.filter(mall__id=mallid, floor=0).order_by('position'))
+        dom = urlutils.getDomainFromUrl(url)
+        (domain, created) = Domain.objects.get_or_create(domain=dom)
         new_store = Store.objects.create(mall=Mall.objects.get(pk=mallid),
                                          name=name,
                                          url=url,
                                          floor=floor,
                                          position=pos,
-                                         tags=tags)
+                                         tags=tags,
+                                         domain=domain)
         new_store.save()
     except Exception, e:
         status = 'error'
@@ -414,7 +417,9 @@ def add_to_wishlist(request):
             wl = Wishlist(user=request.user, name="default", description="default wishlist")
             wl.save()
 
-        wli = WishlistItem(wishlist=wl, url=url, tags=tags)
+        dom = urlutils.getDomainFromUrl(url)
+        (domain, created) = Domain.objects.get_or_create(domain=dom)
+        wli = WishlistItem(wishlist=wl, url=url, tags=tags, domain=domain)
         wli.save()
     except Exception, e:
         status = 'error'
