@@ -141,7 +141,7 @@ def add_store(request):
     name = request.POST.get('name')
     url = request.POST.get('url')
     tags = request.POST.get('tags')
-    is_private = request.POST.get('is_private')
+    is_private = request.POST.get('is_private', 'off')
     filename = request.POST.get('overlayimagefile')
 
     mallHTML = ''
@@ -406,7 +406,7 @@ def add_to_wishlist(request):
     uid = request.user.id
     url = request.POST.get('url')
     tags = request.POST.get('tags')
-    is_private = request.POST.get('is_private')
+    is_private = request.POST.get('is_private', 'off')
     filename = request.POST.get('overlayimagefile')
 
     wishlistHTML = ''
