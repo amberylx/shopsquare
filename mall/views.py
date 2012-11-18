@@ -141,6 +141,7 @@ def add_store(request):
     name = request.POST.get('name')
     url = request.POST.get('url')
     tags = request.POST.get('tags')
+    is_private = request.POST.get('is_private')
     filename = request.POST.get('overlayimagefile')
 
     mallHTML = ''
@@ -157,7 +158,8 @@ def add_store(request):
                                          floor=floor,
                                          position=pos,
                                          tags=tags,
-                                         domain=domain)
+                                         domain=domain,
+                                         is_private=is_private)
         new_store.save()
     except Exception, e:
         status = 'error'
@@ -404,6 +406,7 @@ def add_to_wishlist(request):
     uid = request.user.id
     url = request.POST.get('url')
     tags = request.POST.get('tags')
+    is_private = request.POST.get('is_private')
     filename = request.POST.get('overlayimagefile')
 
     wishlistHTML = ''
@@ -419,7 +422,7 @@ def add_to_wishlist(request):
 
         dom = urlutils.getDomainFromUrl(url)
         (domain, created) = Domain.objects.get_or_create(domain=dom)
-        wli = WishlistItem(wishlist=wl, url=url, tags=tags, domain=domain)
+        wli = WishlistItem(wishlist=wl, url=url, tags=tags, domain=domain, is_private=is_private)
         wli.save()
     except Exception, e:
         status = 'error'

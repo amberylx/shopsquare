@@ -80,6 +80,9 @@ form input[type="url"] {
 form input[type="url"] {
     width: 250px;
 }
+form input[type="checkbox"] {
+    font-size: 30px;
+}
 
 .success {
     color: goldenrod;

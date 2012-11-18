@@ -32,13 +32,9 @@ class AddStoreForm(forms.Form):
     name = forms.CharField(max_length=100)
     url = forms.CharField(max_length=200)
     tags = forms.CharField(max_length=1000, required=False)
-    #is_public = forms.
+    is_private = forms.BooleanField()
     
-class EditFloorplanForm(forms.Form):
-    store_id = forms.IntegerField()
-    new_floor = forms.IntegerField()
-    new_position = forms.IntegerField()
-
 class WishlistItemForm(forms.Form):
     url = forms.CharField(max_length=2000)
-    tags = forms.CharField(max_length=1000)
+    tags = forms.CharField(max_length=1000, required=False)
+    is_private = forms.BooleanField()
