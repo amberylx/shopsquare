@@ -22,8 +22,15 @@ class Mall(models.Model):
     def __unicode__(self):
     	return self.name
 
+class Domain(models.Model):
+    domain = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.domain
+
 class Store(models.Model):
     mall = models.ForeignKey(Mall)
+    domain = models.ForeignKey(Domain)
     name = models.CharField(max_length=100)
     url = models.URLField(max_length=200)
     floor = models.IntegerField()
@@ -53,8 +60,8 @@ class Wishlist(models.Model):
         return self.name
 
 class WishlistItem(models.Model):
-    #    store = models.ForeignKey(Store)
     wishlist = models.ForeignKey(Wishlist)
+    domain = models.ForeignKey(Domain)
     url = models.CharField(max_length=2000)
     tags = models.CharField(max_length=1000)
     date_added = models.DateTimeField(auto_now_add=True)
