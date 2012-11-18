@@ -6,77 +6,9 @@ div.addstoreoverlay {
     min-width: 640px;
 }
 
-div.floor {
-    width: 97.5%;
-    padding: 10px;
-    margin-bottom: 20px;
-    min-height: 40px;
-}
-div.floorlabel.vert {
-    writing-mode: tb-rl;
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-    right: -52px;
-    top: 20px;
-    letter-spacing: .2em;
-}
-div.floorlabel { /* remove? */
-    height: 0px;
-    float: right;
-    position: relative;
-    top: -23px;
-    text-transform: uppercase;
-    letter-spacing: .4em;
-    font-size: 10px;
-}
-div.store {
-    width: 200px;
-    height: 300px;
-    background-color: #FFF;
-    margin: 10px;
-    float: left;
-}
-div.store:hover {
-    cursor: pointer;
-}
-div.storermv {
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    border-radius: 10px;
-    background-color: #FFF;
-    float: right;
-    text-align: center;
-    margin-left: 5px;
-    cursor: pointer;
-    position: relative;
-    top: -12px;
-    right: -12px;
-    z-index: 10;
-}
-div.storename {
-    text-align: center;
-    background: rgb(0,0,0);
-    background: rgba(0,0,0,0.5);
-    color: white;
-    text-shadow: 1px 1px 1px #333;
-    position: absolute;
-    font-size: 20px;
-    letter-spacing: .3em;
-    width: 200px;
-    border-top-left-radius: 5px;
-}
-
-div.storeimgcontainer {
-    position: absolute;
-}
+/* mall styling */
+div.store,
 div.storeimgcontainer img {
-    border-radius: 5px;
-    max-width: 100%;
-    max-height: 100%;
     width: 200px;
     height: 300px;
 }

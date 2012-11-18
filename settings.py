@@ -105,3 +105,4 @@ AUTHENTICATION_BACKENDS = (
 
 STATIC_MEDIA_ROOT = '/Users/slee/shopsquare/media/'
 STATIC_STORE_IMAGE_ROOT = '/Users/slee/Pictures/shopsquare/store/'
+STATIC_WISHLIST_IMAGE_ROOT = '/Users/slee/Pictures/shopsquare/wishlist/'

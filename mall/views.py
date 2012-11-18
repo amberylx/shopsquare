@@ -64,19 +64,25 @@ def _getmall(mall_id):
 
 def scrape_image(request):
     url = request.POST.get('domain')
+    scrape_for = request.POST.get('type')
     uid = request.user.id
 
     imgHTML = ''
-    try:
+    filename = urlutils.getScrapedImageFilename()
+    if scrape_for == 'store':
         filedir = MyGlobals.STOREIMG_ROOT % { 'uid':uid }
-        filename = urlutils.getStoreScrapedImageFilename()
+        imgpath = MyGlobals.STOREIMG_ROOT_SRV % { 'uid':uid }
+    elif scrape_for == 'wishlist':
+        filedir = MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }
+        imgpath = MyGlobals.WISHLISTIMG_ROOT_SRV % { 'uid':uid }
+
+    try:
         (filedir, filename) = ImageScraper2.getImagesFromURL(url, filedir=filedir, filename=filename)
         if filename:
             try:
                 (filedir, filename) = imageutils.resize_image(filedir, filename)
             except Exception, e:
                 print "unable to resize image: %s" % str(e)
-            imgpath = MyGlobals.STOREIMG_ROOT_SRV % { 'uid':uid }
             imgHTML = '<img src="%s/%s"></img>' % (imgpath, filename)
         else:
             raise Exception("no image to scrape")
@@ -98,16 +104,22 @@ def scrape_image(request):
 def do_crop(request):
     uid = request.user.id
     filename = request.POST.get('filename')
+    crop_for = request.POST.get('type')
     crop_x1 = int(float(request.POST.get('crop_x1')))
     crop_y1 = int(float(request.POST.get('crop_y1')))
     crop_x2 = int(float(request.POST.get('crop_x2')))
     crop_y2 = int(float(request.POST.get('crop_y2')))
     cropbox = [crop_x1, crop_y1, crop_x2, crop_y2]
-    filedir = MyGlobals.STOREIMG_ROOT % { 'uid':uid }
+
+    if crop_for == 'store':
+        filedir = MyGlobals.STOREIMG_ROOT % { 'uid':uid }
+        imgpath = MyGlobals.STOREIMG_ROOT_SRV % { 'uid':uid }
+    elif crop_for == 'wishlist':
+        filedir = MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }
+        imgpath = MyGlobals.WISHLISTIMG_ROOT_SRV % { 'uid':uid }
     
     try:
         (filedir, filename) = imageutils.crop_image(filedir, filename, cropbox)
-        imgpath = MyGlobals.STOREIMG_ROOT_SRV % { 'uid':uid }
         imgHTML = '<img src="%s/%s"></img>' % (imgpath, filename)
         status = 'ok'
     except Exception, e:
@@ -361,25 +373,39 @@ def profile(request, userid):
 def wishlist(request, userid):
     form = WishlistItemForm()
 
+    wishlist_dict = _getwishlist(request)
+    
+    ctx_dict = {
+        'ssmedia':'/ssmedia',
+        'form':form,
+        'all_wishlists':wishlist_dict,
+    }
+    return render_to_response("wishlist.html", ctx_dict, context_instance=RequestContext(request))
+
+def _getwishlist(request):
     wishlist_dict = {}
     wishlists = Wishlist.objects.filter(user=request.user)
     for wishlist in wishlists:
         wishlistitems = WishlistItem.objects.filter(wishlist=wishlist)
-        wishlist_dict[wishlist] = wishlistitems
+        wishlistitems_list = []
+        for wli in wishlistitems:
+            try:
+                wlimage = WishlistImages.objects.get(wishlistitem=wli)
+            except:
+                wlimage = None
+            wishlistitems_list.append((wli, wlimage))
+        wishlist_dict[wishlist] = wishlistitems_list
+    return wishlist_dict
     
-    ctx_dict = {
-        'form':form,
-        'all_wishlists':wishlist_dict,
-        'ssmedia':'/ssmedia',
-    }
-    return render_to_response("wishlist.html", ctx_dict, context_instance=RequestContext(request))
-
 def add_to_wishlist(request):
+    uid = request.user.id
     url = request.POST.get('url')
     tags = request.POST.get('tags')
+    filename = request.POST.get('overlayimagefile')
+
+    wishlistHTML = ''
     successMsg = ''
     errorMsg = ''
-
     try:
         # add to default wishlist for now
         try:
@@ -390,22 +416,40 @@ def add_to_wishlist(request):
 
         wli = WishlistItem(wishlist=wl, url=url, tags=tags)
         wli.save()
-        status = 'ok'
-        successMsg = '%s has been added to your wishlist.' % url
     except Exception, e:
         status = 'error'
         errorMsg = 'Unable to add %s to your wishlist.' % url
         print "Unable to add %s to wishlist: %s" % (url, str(e))
-        #    else:
-        #        try:
-        #    oldfilename = "cropped_%s-tmp.jpg" % request.user.id
-        #    newfilename = "%s-%s.jpg"
+    else:
+        try:
+            newfilename = urlutils.getWishlistImageFilename(wli.id)
+            oldimgpath = "%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, filename)
+            newimgpath = "%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, newfilename)
+            print "*"*80
+            print 'mv %s %s' % (oldimgpath, newimgpath)
+            output = subprocess.Popen(['mv %s %s' % (oldimgpath, newimgpath)], shell=True)
+            wi = WishlistImages(user=request.user, wishlistitem=wli, path=newfilename)
+            wi.save()
+
+            wishlist_dict = _getwishlist(request)
+            ctx = {
+                'wishlist_dict':wishlist_dict
+                }
+            wishlistHTML = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
+
+            status = 'ok'
+            successMsg = '%s has been added to your wishlist.' % url
+        except Exception, e:
+            status = 'error'
+            error_msg = 'We\'re unable to add image for wishlist item at this time'
+            print "unable to save image: %s" % str(e)
             
         
     response = {
         'status':status,
         'successMsg':successMsg,
-        'errorMsg':errorMsg
+        'errorMsg':errorMsg,
+        'wishlistHTML':wishlistHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
         

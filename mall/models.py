@@ -38,6 +38,7 @@ class StoreImages(models.Model):
     user = models.ForeignKey(User)
     store = models.ForeignKey(Store)
     path = models.CharField(max_length=1000)
+    date_added = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return self.path

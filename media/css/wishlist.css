@@ -1,5 +1,14 @@
+
+/* add to wishlist overlay */
 div.addwishlistoverlay {
     width: 50%;
     left: 24%;
     min-width: 400px;
+}
+
+/* wishlist styling */
+div.wli,
+div.wlimgcontainer img {
+    width: 100px;
+    height: 200px;
 }

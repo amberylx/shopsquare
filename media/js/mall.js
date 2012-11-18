@@ -2,14 +2,14 @@ $(function() {
     setSortable();
     addformtrigger = initOverlay($(".addstorecontainer"));
     $(".addstorebutton").on("click", addStore);
-    $(".cropbutton").on("click", doCrop);
+    $(".cropbutton").on("click", function() { doCrop('store'); } );
     $("#mall").on("click", ".storermv", function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
     });
     $("#id_domain").on("change", function() {
 	domain = $(this).val();
-	scrapeImage(domain);
+	scrapeImage(domain, 'store');
     });
  });
 

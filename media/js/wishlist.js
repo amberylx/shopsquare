@@ -1,10 +1,10 @@
 $(function() {
     addwishlisttrigger = initOverlay($(".addwishlisticon"));
     $(".addtowishlistbutton").on("click", addToWishlist);
-    $(".cropbutton").on("click", doCrop);
+    $(".cropbutton").on("click", function() { doCrop('wishlist'); } );
     $("#id_url").on("change", function() {
         url = $(this).val();
-        scrapeImage(url);
+        scrapeImage(url, 'wishlist');
     });
 });
 
@@ -26,5 +26,5 @@ function addToWishlist() {
 function resetAddWishlistForm() {
     $("#addwishlistform")[0].reset();
     $(".overlayimage").html("");
-    $(".overlayimagecontainer").html("").hide();
+    $(".overlayimagecontainer").hide();
 }

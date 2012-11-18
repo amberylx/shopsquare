@@ -13,9 +13,9 @@ function initOverlay(trigger) {
     return t;
 }
 
-function scrapeImage(domain) {
+function scrapeImage(domain, type) {
     $.post(scrapeImageURL,
-          { 'domain':domain },
+          { 'domain':domain, 'type':type },
           function(response) {
               if (response.status == 'ok') {
                   $(".overlayimage").html(response.imgHTML);
@@ -35,14 +35,14 @@ function scrapeImage(domain) {
               }
           });
 }
-function doCrop() {
+function doCrop(type) {
     crop_x1 = $('#crop_x1').val();
     crop_y1 = $('#crop_y1').val();
     crop_x2 = $('#crop_x2').val();
     crop_y2 = $('#crop_y2').val();
     filename = $("#overlayimagefile").val();
     $.post(doCropURL,
-          { 'crop_x1':crop_x1, 'crop_y1':crop_y1, 'crop_x2':crop_x2, 'crop_y2':crop_y2, 'filename':filename },
+          { 'crop_x1':crop_x1, 'crop_y1':crop_y1, 'crop_x2':crop_x2, 'crop_y2':crop_y2, 'filename':filename, 'type':type },
           function(response) {
               if (response.status == 'ok') {
                   $(".overlayimage").html(response.imgHTML);
