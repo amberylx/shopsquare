@@ -63,7 +63,7 @@ def _getmall(mall_id):
     return stores_dict
 
 def scrape_image(request):
-    url = request.POST.get('domain')
+    url = request.POST.get('url')
     scrape_for = request.POST.get('type')
     uid = request.user.id
 
@@ -139,7 +139,7 @@ def add_store(request):
     uid = request.user.id
     mallid = request.POST.get('mallid')
     name = request.POST.get('name')
-    domain = request.POST.get('domain')
+    url = request.POST.get('url')
     tags = request.POST.get('tags')
     filename = request.POST.get('overlayimagefile')
 
@@ -151,7 +151,7 @@ def add_store(request):
         pos = len(Store.objects.filter(mall__id=mallid, floor=0).order_by('position'))
         new_store = Store.objects.create(mall=Mall.objects.get(pk=mallid),
                                          name=name,
-                                         domain=domain,
+                                         url=url,
                                          floor=floor,
                                          position=pos,
                                          tags=tags)

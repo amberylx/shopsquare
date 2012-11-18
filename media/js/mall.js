@@ -7,9 +7,9 @@ $(function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
     });
-    $("#id_domain").on("change", function() {
-	domain = $(this).val();
-	scrapeImage(domain, 'store');
+    $("#id_url").on("change", function() {
+	url = $(this).val();
+	scrapeImage(url, 'store');
     });
  });
 

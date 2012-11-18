@@ -12,3 +12,15 @@ div.storeimgcontainer img {
     width: 200px;
     height: 300px;
 }
+div.storename {
+    text-align: center;
+    background: rgb(0,0,0);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    text-shadow: 1px 1px 1px #333;
+    position: absolute;
+    font-size: 20px;
+    letter-spacing: .3em;
+    width: 200px;
+    border-top-left-radius: 5px;
+}

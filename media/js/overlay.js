@@ -13,9 +13,9 @@ function initOverlay(trigger) {
     return t;
 }
 
-function scrapeImage(domain, type) {
+function scrapeImage(url, type) {
     $.post(scrapeImageURL,
-          { 'domain':domain, 'type':type },
+          { 'url':url, 'type':type },
           function(response) {
               if (response.status == 'ok') {
                   $(".overlayimage").html(response.imgHTML);

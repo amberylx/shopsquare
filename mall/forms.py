@@ -30,7 +30,7 @@ class RegisterForm(forms.Form):
    
 class AddStoreForm(forms.Form):
     name = forms.CharField(max_length=100)
-    domain = forms.CharField(max_length=200)
+    url = forms.CharField(max_length=200)
     tags = forms.CharField(max_length=1000, required=False)
     #is_public = forms.
     

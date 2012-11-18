@@ -25,7 +25,7 @@ class Mall(models.Model):
 class Store(models.Model):
     mall = models.ForeignKey(Mall)
     name = models.CharField(max_length=100)
-    domain = models.URLField(max_length=200)
+    url = models.URLField(max_length=200)
     floor = models.IntegerField()
     position = models.IntegerField()
     date_added = models.DateTimeField(auto_now_add=True)

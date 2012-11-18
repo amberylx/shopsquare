@@ -12,3 +12,15 @@ div.wlimgcontainer img {
     width: 100px;
     height: 200px;
 }
+div.wishlistdescrip {
+    background: rgb(200,200,200);
+    background: rgba(200,200,200,0.5);
+    color: white;
+    font-size: 15px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    width: 100%;
+    float: left;
+    position: relative;
+    top: 10px;
+}
