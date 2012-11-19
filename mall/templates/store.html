@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}shop square - store{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ssmedia}}/css/store.css" type="text/css"/>
+<link rel="stylesheet" href="{{ssmedia}}/css/shared_mall_wishlist.css" type="text/css"/>
+<link rel="stylesheet" href="{{ssmedia}}/css/jquery.Jcrop.min.css" type="text/css"/>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+//<![CDATA[
+//]]>
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="workspace">
+  <div class="successMsg success"></div>
+  <div class="errorMsg error"></div>
+  <div id="store" class="thinborder clearfix">
+
+    <div id="leftcol">    
+      <div class="storeimage">
+	<div class="storename workspacetitle">{{store.name}}</div>
+	<img src="/ssmedia/store/{{request.user.id}}/{{storeimg}}"></img>      
+      </div>
+    </div>
+
+    <div id="rightcol">    
+      <div class="wishlistitemscontainer">
+	<div class="wishlisttitle">my {{store.name}} wishlist</div>	
+	{% for wlitup in wishlistitems %}
+	  {% with wli=wlitup.0 %}
+	    {% with wlimage=wlitup.1 %}	    
+	      <div class="wishlistitem thinborder">
+		<a href="{{wli.url}}">
+		  <img src="/ssmedia/wishlist/{{request.user.id}}/{{wlimage.path}}"></img>
+		</a>	      
+	      </div>
+	    {% endwith %}
+	  {% endwith %}	    
+	{% endfor %}	
+      </div>      
+    </div>
+
+  </div>    
+</div>
+{% endblock %}
+
+

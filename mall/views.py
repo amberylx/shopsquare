@@ -91,6 +91,21 @@ def floor(request, mall_id, floor_id):
         'MyGlobals':MyGlobals
     })
     return render_to_response("floor.html", ctx_dict, context_instance=RequestContext(request))
+
+def store(request, mall_id, store_id):
+    store = Store.objects.get(pk=store_id)
+    (store, storeimg) = _zipStoreImages([store])[store.floor][0]
+    wishlistitems = WishlistItem.objects.filter(wishlist__user=request.user, domain_id=store.domain.id)
+    wishlistitems = _zipWishlistImages(wishlistitems)
+    ctx_dict = {
+        'store':store,
+        'storeimg':storeimg,
+        'wishlistitems':wishlistitems,
+    	'request':request,
+    	'ssmedia':'/ssmedia',
+        'MyGlobals':MyGlobals
+    }
+    return render_to_response("store.html", ctx_dict, context_instance=RequestContext(request))
     
 def scrape_image(request):
     url = request.POST.get('url')
@@ -424,7 +439,6 @@ def profile(request, userid):
 
 def wishlist(request, userid):
     form = WishlistItemForm()
-
     wishlist_dict = _getwishlist(request)
     
     ctx_dict = {
@@ -434,18 +448,22 @@ def wishlist(request, userid):
     }
     return render_to_response("wishlist.html", ctx_dict, context_instance=RequestContext(request))
 
+def _zipWishlistImages(wishlistitems):
+    wishlistitems_list = []
+    for wli in wishlistitems:
+        try:
+            wlimage = WishlistImages.objects.get(wishlistitem=wli)
+        except:
+            wlimage = None
+        wishlistitems_list.append((wli, wlimage))
+    return wishlistitems_list
+    
 def _getwishlist(request):
     wishlist_dict = {}
     wishlists = Wishlist.objects.filter(user=request.user)
     for wishlist in wishlists:
         wishlistitems = WishlistItem.objects.filter(wishlist=wishlist)
-        wishlistitems_list = []
-        for wli in wishlistitems:
-            try:
-                wlimage = WishlistImages.objects.get(wishlistitem=wli)
-            except:
-                wlimage = None
-            wishlistitems_list.append((wli, wlimage))
+        wishlistitems_list = _zipWishlistImages(wishlistitems)
         wishlist_dict[wishlist] = wishlistitems_list
     return wishlist_dict
     

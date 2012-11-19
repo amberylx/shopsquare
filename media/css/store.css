@@ -1,0 +1,31 @@
+#leftcol {
+    float: left;
+}
+#rightcol {
+    float: right;
+}
+
+div.storeimage {
+    display: inline-block;
+    padding: 10px;
+    border-right: 1px dotted silver;
+}
+div.storeimage img {
+    border-radius: 10px;
+}
+
+div.wishlisttitle {
+    text-align: center;
+    padding: 5px 0;
+}
+div.wishlistitem {
+    width: 100px;
+    height: 150px;
+    display: inline-block;
+    margin: 10px;
+}
+div.wishlistitem img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 3px;
+}
