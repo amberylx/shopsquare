@@ -30,6 +30,7 @@ def mall(request, mall_id):
     ctx_dict = {
     	'form':form,
     	'mall':mall,
+        'mallid':mall.id,
     	'stores_dict':stores_dict,
     	'request':request,
     	'ssmedia':'/ssmedia',
@@ -40,18 +41,8 @@ def mall(request, mall_id):
 def _getmall(mall_id):
     mall = Mall.objects.get(pk=mall_id)
     all_stores = Store.objects.filter(mall__id=mall_id).order_by('floor', 'position')
-    stores_dict = {}
-    for store in all_stores:
-        try:
-            si = StoreImages.objects.get(store=store)
-        except:
-            si = None
-
-        try:
-            stores_dict[store.floor].append((store, si))
-        except:
-            stores_dict[store.floor] = [(store, si)]
-
+    stores_dict = _zipStoreImages(all_stores)
+    
     # add extra floor (next expansion)
     all_floors = stores_dict.keys()
     if not all_floors:
@@ -62,6 +53,38 @@ def _getmall(mall_id):
             
     return stores_dict
 
+def _zipStoreImages(stores):
+    stores_dict = {}
+    for store in stores:
+        try:
+            si = StoreImages.objects.get(store=store)
+        except:
+            si = None
+
+        try:
+            stores_dict[store.floor].append((store, si))
+        except:
+            stores_dict[store.floor] = [(store, si)]
+    return stores_dict
+    
+def floor(request, mall_id, floor_id):
+    mall = Mall.objects.get(pk=mall_id)
+    all_stores = Store.objects.filter(mall__id=mall_id, floor=floor_id).order_by('position')
+    try:
+        stores_list = _zipStoreImages(all_stores)[int(floor_id)]
+    except Exception, e:
+        stores_list = []
+
+    ctx_dict = {
+    	'mall':mall,
+        'floor_id':floor_id,
+    	'stores_list':stores_list,
+    	'request':request,
+    	'ssmedia':'/ssmedia',
+        'MyGlobals':MyGlobals
+    }
+    return render_to_response("floor.html", ctx_dict, context_instance=RequestContext(request))
+    
 def scrape_image(request):
     url = request.POST.get('url')
     scrape_for = request.POST.get('type')
@@ -178,6 +201,7 @@ def add_store(request):
 
             stores_dict = _getmall(mallid)
             ctx = {
+                'mallid':mallid,
                 'stores_dict':stores_dict
                 }
             mallHTML = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
@@ -260,6 +284,7 @@ def move_store(request):
     try:
         stores_dict = _getmall(mallid)
         ctx = {
+            'mallid':mallid,
             'stores_dict':stores_dict
             }
         mallHTML = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
@@ -299,6 +324,7 @@ def remove_store(request):
 
         stores_dict = _getmall(mallid)
         ctx = {
+            'mallid':mallid,
             'stores_dict':stores_dict
             }
         mallHTML = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))

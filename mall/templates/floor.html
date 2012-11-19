@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}shop square - mall - floor{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ssmedia}}/css/mall.css" type="text/css"/>
+<link rel="stylesheet" href="{{ssmedia}}/css/shared_mall_wishlist.css" type="text/css"/>
+<link rel="stylesheet" href="{{ssmedia}}/css/overlay.css" type="text/css"/>
+<link rel="stylesheet" href="{{ssmedia}}/css/jquery.Jcrop.min.css" type="text/css"/>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+//<![CDATA[
+var addStoreURL = "{% url add_store %}";
+var removeStoreURL = "{% url remove_store %}";
+var moveStoreURL = "{% url move_store %}";
+var scrapeImageURL = "{% url scrape_image %}";
+var doCropURL = "{% url do_crop %}";
+var mallid = '{{mall.id}}';
+var addformtrigger;
+//]]>
+</script>
+<script type="text/javascript" src="{{ssmedia}}/js/floor.js"></script>
+<script type="text/javascript" src="{{ssmedia}}/js/jquery.Jcrop.min.js"></script>
+<script type="text/javascript" src="{{ssmedia}}/js/jquery.tools.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="workspace">
+  <div class="floorname workspacetitle">floor {{floor_id}}</div>
+  <div class="successMsg success"></div>
+  <div class="errorMsg error"></div>
+  <div id="floor">
+    <div id="floor_{{floor_id}}" class="floor clearfix thinborder">
+      {% if stores_list %}
+	{% for storetup in stores_list %}
+	  {% with store=storetup.0 %}
+            {% with storeimg=storetup.1 %}
+	      <div id="store_{{store.id}}" class="store thinborder">
+		<div class="storeimgcontainer">	   
+		  <a href="{{store.url}}" target="_new">
+		    <img src="/ssmedia/store/{{request.user.id}}/{{storeimg}}"></img>    
+		  </a>
+		</div>	   
+		<div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
+		<div class="storename">
+		  {{store.name}}	     
+		</div>
+	      </div>
+            {% endwith %}
+	  {% endwith %}
+	{% endfor %}
+      {% else %}
+	<div>
+	  You don't have any stores on this floor yet.	
+	</div>      
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+

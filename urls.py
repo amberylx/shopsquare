@@ -4,6 +4,7 @@ from django.conf import settings
 admin.autodiscover()
 
 urlpatterns = patterns('mall.views',
+    url(r'^mall/(\d*)/floor/(\d*)/$', 'floor', {}, name="floor"),
     url(r'^mall/(\d*)/$', 'mall', {}, name="mall"),
     url(r'^add_to_wishlist/$', 'add_to_wishlist', {}, name='add_to_wishlist'),
     url(r'^add_store/$', 'add_store', {}, name="add_store"),
