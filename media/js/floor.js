@@ -1,16 +1,16 @@
 $(function() {
     setSortable();
-    addformtrigger = initOverlay($(".addstorecontainer"));
+/*    addformtrigger = initOverlay($(".addstorecontainer"));
     $(".addstorebutton").on("click", addStore);
-    $(".cropbutton").on("click", function() { doCrop('store'); } );
-    $("#mall").on("click", ".storermv", function() {
+    $(".cropbutton").on("click", function() { doCrop('store'); } );*/
+    $("#floor").on("click", ".storermv", function() {
 	storeid = $(this).attr('id').substring(4);
 	removeStore(storeid);
     });
-    $("#id_url").on("change", function() {
+/*    $("#id_url").on("change", function() {
 	url = $(this).val();
 	scrapeImage(url, 'store');
-    });
+    });*/
  });
 
 function setSortable() {
@@ -51,12 +51,12 @@ function setSortable() {
     });
 }
 
-function loadMall(mallHTML) {
-    $("#mall").html(mallHTML);
+function loadFloor(floorHTML) {
+    $("#floor").html(floorHTML);
     setSortable();
 }
 
-/* add store */
+/* add store
 function addStore() {
     data = $('#addstoreform').serialize();
     data += ("&mallid="+encodeURIComponent(mallid));
@@ -77,9 +77,9 @@ function resetAddStoreForm() {
     $("#addstoreform")[0].reset();
     $(".overlayimage").html("");
     $(".overlayimagecontainer").hide();
-}
+}*/
 
-/* move store */
+/* move store 
 function getFloororderFromFloorid(floorid) {
     return $('#floor_'+floorid).data("oldfloororder");
 }
@@ -112,14 +112,14 @@ function moveStore(storeid, movetype, oldfloorid, oldfloororder, newfloorid, new
 		   loadMall(response.mallHTML);
 	       }
 	   });
-}
+}*/
 
 function removeStore(storeid) {
     $.post(removeStoreURL,
-	  { 'mallid':mallid, 'storeid':storeid },
+	  { 'mallid':mallid, 'storeid':storeid, 'floorid':floorid },
 	  function(response) {
 	      if (response.status == "ok") {
-		  loadMall(response.mallHTML);
+		  loadFloor(response.html);
 		  showMessage($(".successMsg"), response.successMsg);
 	      } else {
 		  showMessage($(".errorMsg"), response.errorMsg);

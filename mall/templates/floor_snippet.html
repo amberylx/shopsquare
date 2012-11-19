@@ -1,23 +1,25 @@
-{% for floor,stores in stores_dict.items %}
-  <div id="floor_{{floor}}" class="floor clearfix thinborder">
-    <div class="floorlabel">floor {{floor}}</div>
-    <div class="floorlabel vert">floor {{floor}}</div>
-    {% for storetup in stores %}
-      {% with store=storetup.0 %}
-        {% with storeimg=storetup.1 %}
+<div id="floor_{{floor_id}}" class="floor clearfix thinborder">
+{% if stores_list %}
+  {% for storetup in stores_list %}
+    {% with store=storetup.0 %}
+      {% with storeimg=storetup.1 %}
         <div id="store_{{store.id}}" class="store thinborder">
-	   <div class="storeimgcontainer">	   
-	     <a href="{{store.url}}" target="_new">
-	       <img src="/ssmedia/store/{{request.user.id}}/{{storeimg}}"></img>    
-	     </a>
-	   </div>	   
-           <div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
-           <div class="storename">
-	     {{store.name}}	     
-           </div>
+          <div class="storeimgcontainer">
+            <a href="{{store.url}}" target="_new">
+              <img src="/ssmedia/store/{{request.user.id}}/{{storeimg}}"></img>
+            </a>
+          </div>
+          <div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
+          <div class="storename">
+            {{store.name}}
+          </div>
         </div>
-        {% endwith %}
       {% endwith %}
-    {% endfor %}
+    {% endwith %}
+  {% endfor %}
+{% else %}
+  <div>
+    You don't have any stores on this floor yet.
   </div>
-{% endfor %}
+{% endif %}
+</div>

@@ -66,8 +66,8 @@ def _zipStoreImages(stores):
         except:
             stores_dict[store.floor] = [(store, si)]
     return stores_dict
-    
-def floor(request, mall_id, floor_id):
+
+def _getfloor(mall_id, floor_id):
     mall = Mall.objects.get(pk=mall_id)
     all_stores = Store.objects.filter(mall__id=mall_id, floor=floor_id).order_by('position')
     try:
@@ -79,10 +79,17 @@ def floor(request, mall_id, floor_id):
     	'mall':mall,
         'floor_id':floor_id,
     	'stores_list':stores_list,
+        'viewmode':'floor'
+    }
+    return ctx_dict
+    
+def floor(request, mall_id, floor_id):
+    ctx_dict = _getfloor(mall_id, floor_id)
+    ctx_dict.update({
     	'request':request,
     	'ssmedia':'/ssmedia',
         'MyGlobals':MyGlobals
-    }
+    })
     return render_to_response("floor.html", ctx_dict, context_instance=RequestContext(request))
     
 def scrape_image(request):
@@ -300,13 +307,14 @@ def move_store(request):
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
-def remove_store(request):
+def remove_store(request, viewmode):
     uid = request.user.id
     mallid = request.POST.get("mallid")
     storeid = request.POST.get("storeid")
+    floorid = request.POST.get("floorid", '')
     success_msg = ''
     error_msg = ''
-    mallHTML = ''
+    html = ''
 
     # delete store image file
     try:
@@ -322,12 +330,16 @@ def remove_store(request):
         store = Store.objects.get(pk=storeid, mall__id=mallid)
         store.delete()
 
-        stores_dict = _getmall(mallid)
-        ctx = {
-            'mallid':mallid,
-            'stores_dict':stores_dict
+        if viewmode == 'mall':
+            stores_dict = _getmall(mallid)
+            ctx = {
+                'mallid':mallid,
+                'stores_dict':stores_dict
             }
-        mallHTML = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+            html = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+        elif viewmode == 'floor':
+            ctx = _getfloor(mallid, floorid)
+            html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))
         
         status = 'ok'
         success_msg = "We've removed the store '%s' from your mall." % (store.name)
@@ -340,7 +352,7 @@ def remove_store(request):
         'status':status,
         'errorMsg':error_msg,
         'successMsg':success_msg,
-        'mallHTML':mallHTML
+        'html':html
         }
 
     return HttpResponse(json.dumps(response), mimetype="application/json")

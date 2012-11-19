@@ -11,11 +11,12 @@
 <script type="text/javascript">
 //<![CDATA[
 var addStoreURL = "{% url add_store %}";
-var removeStoreURL = "{% url remove_store %}";
+var removeStoreURL = "{% url remove_store 'floor' %}";
 var moveStoreURL = "{% url move_store %}";
 var scrapeImageURL = "{% url scrape_image %}";
 var doCropURL = "{% url do_crop %}";
 var mallid = '{{mall.id}}';
+var floorid = '{{floor_id}}';
 var addformtrigger;
 //]]>
 </script>
@@ -30,31 +31,7 @@ var addformtrigger;
   <div class="successMsg success"></div>
   <div class="errorMsg error"></div>
   <div id="floor">
-    <div id="floor_{{floor_id}}" class="floor clearfix thinborder">
-      {% if stores_list %}
-	{% for storetup in stores_list %}
-	  {% with store=storetup.0 %}
-            {% with storeimg=storetup.1 %}
-	      <div id="store_{{store.id}}" class="store thinborder">
-		<div class="storeimgcontainer">	   
-		  <a href="{{store.url}}" target="_new">
-		    <img src="/ssmedia/store/{{request.user.id}}/{{storeimg}}"></img>    
-		  </a>
-		</div>	   
-		<div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
-		<div class="storename">
-		  {{store.name}}	     
-		</div>
-	      </div>
-            {% endwith %}
-	  {% endwith %}
-	{% endfor %}
-      {% else %}
-	<div>
-	  You don't have any stores on this floor yet.	
-	</div>      
-      {% endif %}
-    </div>
+    {% include "floor_snippet.html" %}      
   </div>
 </div>
 {% endblock %}

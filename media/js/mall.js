@@ -119,7 +119,7 @@ function removeStore(storeid) {
 	  { 'mallid':mallid, 'storeid':storeid },
 	  function(response) {
 	      if (response.status == "ok") {
-		  loadMall(response.mallHTML);
+		  loadMall(response.html);
 		  showMessage($(".successMsg"), response.successMsg);
 	      } else {
 		  showMessage($(".errorMsg"), response.errorMsg);
