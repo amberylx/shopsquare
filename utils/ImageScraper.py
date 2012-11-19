@@ -34,7 +34,9 @@ def getImagesFromURL(url, filedir="/Users/slee/shopsquare/media/images/usrimg/",
 
         try:
             (bytes, (w,h)) = getsizes(full_image_uri)
-            if w < 200 or h < 300 or bytes < 5120:
+            if w < 200 or h < 300:
+                raise Exception
+            if bytes and  bytes < 5120:
                 raise Exception
         except Exception, e:
             print "skipping image with size (%s, %s), %s bytes" % (w,h,bytes)
