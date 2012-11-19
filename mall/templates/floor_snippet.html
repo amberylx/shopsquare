@@ -11,7 +11,7 @@
           </div>
           <div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
           <div class="storename">
-            {{store.name}}
+	    <a href="{% url store mall.id store.id %}">{{store.name}}</a>
           </div>
         </div>
       {% endwith %}
