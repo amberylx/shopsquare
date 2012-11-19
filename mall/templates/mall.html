@@ -10,17 +10,18 @@
 {% block js %}
 <script type="text/javascript">
 //<![CDATA[
-var addStoreURL = "{% url add_store %}";
+var addStoreURL = "{% url add_store 'mall' %}";
 var removeStoreURL = "{% url remove_store 'mall' %}";
-var moveStoreURL = "{% url move_store %}";
+var moveStoreURL = "{% url move_store 'mall' %}";
 var scrapeImageURL = "{% url scrape_image %}";
 var doCropURL = "{% url do_crop %}";  
+var viewmode = "mall";
 var mallid = '{{mall.id}}';
 var addformtrigger;
 //]]>
 </script>
 <script type="text/javascript" src="{{ssmedia}}/js/overlay.js"></script>
-<script type="text/javascript" src="{{ssmedia}}/js/mall.js"></script>
+<script type="text/javascript" src="{{ssmedia}}/js/store.js"></script>
 <script type="text/javascript" src="{{ssmedia}}/js/jquery.Jcrop.min.js"></script>
 <script type="text/javascript" src="{{ssmedia}}/js/jquery.tools.min.js"></script>
 {% endblock %}

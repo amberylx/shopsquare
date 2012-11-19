@@ -165,7 +165,7 @@ def do_crop(request):
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
     
-def add_store(request):
+def add_store(request, viewmode):
     uid = request.user.id
     mallid = request.POST.get('mallid')
     name = request.POST.get('name')
@@ -206,12 +206,16 @@ def add_store(request):
             si = StoreImages(user=request.user, store=new_store, path=newfilename)
             si.save()
 
-            stores_dict = _getmall(mallid)
-            ctx = {
-                'mallid':mallid,
-                'stores_dict':stores_dict
-                }
-            mallHTML = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+            if viewmode == 'mall':
+                stores_dict = _getmall(mallid)
+                ctx = {
+                    'mallid':mallid,
+                    'stores_dict':stores_dict
+                    }
+                html = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+            elif viewmode == 'floor':
+                ctx = _getfloor(mallid, floorid)
+                html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))
 
             status = 'ok'
             success_msg = 'Successfully added store.'
@@ -224,11 +228,11 @@ def add_store(request):
         'status':status,
         'successMsg':success_msg,
         'errorMsg':error_msg,
-        'mallHTML':mallHTML
+        'html':html
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
-def move_store(request):
+def move_store(request, viewmode):
     mallid = request.POST.get("mallid")
     storeid = request.POST.get("storeid")
     movetype = request.POST.get("movetype")
@@ -289,12 +293,17 @@ def move_store(request):
         print "error when moving store: %s" % str(e)
 
     try:
-        stores_dict = _getmall(mallid)
-        ctx = {
-            'mallid':mallid,
-            'stores_dict':stores_dict
-            }
-        mallHTML = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+        if viewmode == 'mall':
+            stores_dict = _getmall(mallid)
+            ctx = {
+                'mallid':mallid,
+                'stores_dict':stores_dict
+                }
+            html = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+        elif viewmode == 'floor':
+            ctx = _getfloor(mallid, newfloorid)
+            html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))
+            
     except Exception, e:
         status = 'error'
         error_msg += 'Unable to retrieve mall information.'
@@ -303,7 +312,7 @@ def move_store(request):
     response = {
         'status':status,
         'errorMsg':error_msg,
-        'mallHTML':mallHTML
+        'html':html
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
