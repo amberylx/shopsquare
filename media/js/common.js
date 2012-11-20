@@ -23,12 +23,11 @@ function setSortable(container, item) {
 
     $(containerClass).each(function(index) {
         var oldcontainerid;
-        $(this).sortable({
-            cursor:'move',
-            cursorAt: {left:5},
+        $(this).sortable({ 
             connectWith: containerClass,
-            opacity:0.5,
-            revert:true,
+	    forcePlaceholderSize: true,
+	    placeholder: 'placeholder',
+	    revert: true,
             start: function(e, ui) {
                 // get store's current floor
                 oldcontainerid = getIdFromEl(ui.item.parent(), containerPrefix);

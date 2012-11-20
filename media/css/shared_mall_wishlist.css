@@ -11,6 +11,12 @@ ul.wishlist li {
     float: left;
 }
 
+.placeholder {
+    border: 1px solid white;
+    background-color: silver;
+    opacity: 0.2;
+    border-radius: 3px;
+}
 
 div.floorlabel.vert,
 div.wishlistlabel.vert {
