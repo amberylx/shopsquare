@@ -1,4 +1,5 @@
 $(function() {
+    setSortable();
     addwishlisttrigger = initOverlay($(".addwishlisticon"));
     $(".addtowishlistbutton").on("click", addToWishlist);
     $(".cropbutton").on("click", function() { doCrop('wishlist'); } );
@@ -12,8 +13,23 @@ $(function() {
     });
 });
 
+function setSortable() {
+    $(".wishlist").each(function() {
+	$(this).sortable({
+	    cursor:'move',
+            cursorAt: {left:5},
+            connectWith:'.wishlist',
+            opacity:0.5,
+            revert:true,
+	    update: function(e, ui) {
+	    }
+	}).disableSelection();
+    });
+}
+
 function loadWishlists(wishlistHTML) {
     $("#wishlist").html(wishlistHTML);
+    setSortable();
 }
 
 function addToWishlist() {

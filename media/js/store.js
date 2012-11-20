@@ -50,7 +50,7 @@ function setSortable() {
 			moveStore(storeid, 'difffloor', oldfloorid, oldfloororder, newfloorid, newfloororder);
 		    }
 		}
-	    },
+	    }
 	}).disableSelection();
     });
 }
