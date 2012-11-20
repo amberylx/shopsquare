@@ -3,15 +3,13 @@ import json, re, subprocess, traceback
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.contrib import auth
 from django.conf import settings
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from mall.models import Mall, SSUser, Wishlist, WishlistItem, WishlistImages, Domain
+from mall.models import Mall, Wishlist, WishlistItem, WishlistImages, Domain
 from mall.forms import WishlistItemForm
-from utils import urlutils
+from utils import urlutils, sysutils
 import MyGlobals    
 
 def wishlist(request, userid):
@@ -73,11 +71,8 @@ def add_to_wishlist(request):
     else:
         try:
             newfilename = urlutils.getWishlistImageFilename(wli.id)
-            oldimgpath = "%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, filename)
-            newimgpath = "%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, newfilename)
-            print "*"*80
-            print 'mv %s %s' % (oldimgpath, newimgpath)
-            output = subprocess.Popen(['mv %s %s' % (oldimgpath, newimgpath)], shell=True)
+            sysutils.move_file("%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, filename),
+                               "%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, newfilename))
             wi = WishlistImages(user=request.user, wishlistitem=wli, path=newfilename)
             wi.save()
 
@@ -113,8 +108,7 @@ def remove_wishlistitem(request):
     # delete wishlistitem image file
     try:
         wlimage = WishlistImages.objects.get(wishlistitem__id=wlitemid)
-        imgpath = "%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, wlimage.path)
-        output = subprocess.Popen(['rm %s'%imgpath], shell=True)
+        sysutils.delete_file("%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, wlimage.path))
     except Exception, e:
         print "unable to delete wishlist image file: %s" % str(e)
 

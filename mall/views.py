@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, Domain
 from mall.forms import RegisterForm, AddStoreForm, WishlistItemForm
-from utils import ImageScraper, imageutils, urlutils
+from utils import ImageScraper, imageutils, urlutils, sysutils
 import MyGlobals
 
 def landing(request):
@@ -213,11 +213,8 @@ def add_store(request, viewmode):
     else:
         try:
             newfilename = urlutils.getStoreImageFilename(name, new_store.id)
-            oldimgpath = "%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, filename)
-            newimgpath = "%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, newfilename)
-            print "*"*80
-            print 'mv %s %s' % (oldimgpath, newimgpath)
-            output = subprocess.Popen(['mv %s %s' % (oldimgpath, newimgpath)], shell=True)
+            sysutils.move_file("%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, filename),
+                               "%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, newfilename))
             si = StoreImages(user=request.user, store=new_store, path=newfilename)
             si.save()
 
@@ -343,8 +340,7 @@ def remove_store(request, viewmode):
     # delete store image file
     try:
         si = StoreImages.objects.get(store__id=storeid)
-        imgpath = "%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, si.path)
-        output = subprocess.Popen(['rm %s'%imgpath], shell=True)
+        sysutils.delete_file("%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, si.path))
     except Exception, e:
         print "unable to delete store image file: %s" % str(e)
 
