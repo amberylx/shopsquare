@@ -37,7 +37,7 @@ def _getwishlist(request):
     wishlist_dict = {}
     wishlists = Wishlist.objects.filter(user=request.user)
     for wishlist in wishlists:
-        wishlistitems = WishlistItem.objects.filter(wishlist=wishlist)
+        wishlistitems = WishlistItem.objects.filter(wishlist=wishlist).order_by("position")
         wishlistitems_list = _zipWishlistImages(wishlistitems)
         wishlist_dict[wishlist] = wishlistitems_list
     return wishlist_dict
@@ -97,7 +97,7 @@ def add_to_wishlist(request):
         'wishlistHTML':wishlistHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
-
+    
 def remove_wishlistitem(request):
     uid = request.user.id
     wlitemid = request.POST.get("wlitemid")
@@ -105,12 +105,8 @@ def remove_wishlistitem(request):
     error_msg = ''
     wishlistHTML = ''
 
-    # delete wishlistitem image file
-    try:
-        wlimage = WishlistImages.objects.get(wishlistitem__id=wlitemid)
-        sysutils.delete_file("%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, wlimage.path))
-    except Exception, e:
-        print "unable to delete wishlist image file: %s" % str(e)
+    wlimage = WishlistImages.objects.get(wishlistitem__id=wlitemid)
+    sysutils.delete_file("%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, wlimage.path))
 
     try:
         store = WishlistItem.objects.get(pk=wlitemid)
@@ -121,7 +117,6 @@ def remove_wishlistitem(request):
             'all_wishlists':wishlist_dict
             }
         wishlistHTML = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
-        
         status = 'ok'
         success_msg = "Item has been removed from your wishlist."
     except Exception, e:

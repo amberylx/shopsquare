@@ -66,6 +66,7 @@ class WishlistItem(models.Model):
     domain = models.ForeignKey(Domain)
     url = models.CharField(max_length=2000)
     tags = models.CharField(max_length=1000)
+    position = models.IntegerField()
     date_added = models.DateTimeField(auto_now_add=True)
     is_private = models.BooleanField(default=False)
 

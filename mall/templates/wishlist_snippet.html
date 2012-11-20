@@ -1,5 +1,5 @@
 {% for wishlist,wishlistitems in all_wishlists.items %}
-  <div id="wishlist_{{wishlist}}" class="wishlist clearfix thinborder">
+  <div id="wishlist_{{wishlist.id}}" class="wishlist clearfix thinborder">
     <div class="wishlistlabel">{{wishlist.name}}</div>    
     <div class="wishlistlabel vert">{{wishlist.name}}</div>    
     {% for wlitup in wishlistitems %}

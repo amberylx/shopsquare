@@ -50,24 +50,11 @@ function resetAddStoreForm() {
 }
 
 /* move store */
-function moveStore(storeid, movetype, oldfloorid, oldfloororder, newfloorid, newfloororder) {
-    data = {
-	'mallid':mallid,
-	'storeid':storeid,
-	'movetype':movetype,
-	'oldfloorid':oldfloorid,
-	'oldfloororder':oldfloororder,
-	'newfloorid':newfloorid,
-	'newfloororder':newfloororder
+function moveItemCallback(response) {
+    loadHTML(response.html);
+    if (response.status == 'error') {
+	showMessage($(".errorMsg"), response.errorMsg);
     }
-    $.post(moveStoreURL,
-	   data,
-	   function(response) {
-	       loadHTML(response.html);
-	       if (response.status == 'error') {
-		   showMessage($(".errorMsg"), response.errorMsg);
-	       }
-	   });
 }
 
 function removeStore(storeid) {

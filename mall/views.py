@@ -9,8 +9,9 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, Domain
-from mall.forms import RegisterForm, AddStoreForm, WishlistItemForm
+from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem, Domain
+from mall.forms import RegisterForm, AddStoreForm
+from mall.wishlist_views import _getwishlist
 from utils import ImageScraper, imageutils, urlutils, sysutils
 import MyGlobals
 
@@ -53,6 +54,15 @@ def _getmall(mall_id):
             
     return stores_dict
 
+def _getmallHTML(mall_id):
+    stores_dict = _getmall(mall_id)
+    ctx = {
+        'mallid':mall_id,
+        'stores_dict':stores_dict
+        }
+    html = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+    return html
+    
 def _zipStoreImages(stores):
     stores_dict = {}
     for store in stores:
@@ -74,14 +84,19 @@ def _getfloor(mall_id, floor_id):
         stores_list = _zipStoreImages(all_stores)[int(floor_id)]
     except Exception, e:
         stores_list = []
+    return stores_list
 
-    ctx_dict = {
-    	'mall':mall,
+def _getfloorHTML(mall_id, floor_id):
+    mall = Mall.objects.get(pk=mall_id)
+    stores_list = _getfloor(mall_id, floor_id)
+    ctx = {
+        'mall':mall,
         'floor_id':floor_id,
-    	'stores_list':stores_list,
+        'stores_list':stores_list,
         'viewmode':'floor'
-    }
-    return ctx_dict
+        }
+    html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))
+    return html
     
 def floor(request, mall_id, floor_id):
     ctx_dict = _getfloor(mall_id, floor_id)
@@ -219,15 +234,9 @@ def add_store(request, viewmode):
             si.save()
 
             if viewmode == 'mall':
-                stores_dict = _getmall(mallid)
-                ctx = {
-                    'mallid':mallid,
-                    'stores_dict':stores_dict
-                    }
-                html = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+                html = _getmallHTML(mallid)
             elif viewmode == 'floor':
-                ctx = _getfloor(mallid, floorid)
-                html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))
+                html = _getfloorHTML(mallid, floorid)
 
             status = 'ok'
             success_msg = 'Successfully added store.'
@@ -244,82 +253,104 @@ def add_store(request, viewmode):
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
-def move_store(request, viewmode):
+def move_item(request, itemtype, viewmode=''):
     mallid = request.POST.get("mallid")
-    storeid = request.POST.get("storeid")
+    itemid = request.POST.get("itemid")
     movetype = request.POST.get("movetype")
-    oldfloorid = request.POST.get("oldfloorid")
-    newfloorid = request.POST.get("newfloorid")
-    oldfloororder = [re.sub('store=', '', s) for s in request.POST.get("oldfloororder").split('&')]
-    newfloororder = [re.sub('store=', '', s) for s in request.POST.get("newfloororder").split('&')]
+    oldcontainerid = request.POST.get("oldcontainerid")
+    newcontainerid = request.POST.get("newcontainerid")
+    oldorder = [re.sub('%s='%itemtype, '', s) for s in request.POST.get("oldorder").split('&')]
+    neworder = [re.sub('%s='%itemtype, '', s) for s in request.POST.get("neworder").split('&')]
 
     error_msg = ''
     try:
-        mystore = Store.objects.get(pk=storeid)
-        print ".........moving store (storeid: %s, storename: %s, oldfloorid: %s, newfloorid: %s)..........." % (storeid, mystore.name, oldfloorid, newfloorid)
-        print ".........(oldfloororder: %s, newfloororder: %s)..........." % (oldfloororder, newfloororder)
-        if movetype == 'samefloor':
-            print "(samefloor)"
-            for x,store in enumerate(newfloororder):
+        if itemtype == 'store':
+            myitem = Store.objects.get(pk=itemid)
+        elif itemtype == 'wli':
+            myitem = WishlistItem.objects.get(pk=itemid)
+        
+        print ".........moving item (itemid: %s, oldcontainerid: %s, newcontainerid: %s)..........." % (itemid, oldcontainerid, newcontainerid)
+        print ".........(oldorder: %s, neworder: %s)..........." % (oldorder, neworder)
+        if movetype == 'same':
+            print "(samecontainer)"
+            for x,item in enumerate(neworder):
                 # iterate through new order. for every store that has changed, update to its new position
-                if oldfloororder[x] != store:
-                    s = Store.objects.get(pk=store, mall__id=mallid)
-                    s.position = x
-                    s.save()
-                    print "  (samefloor) moving store (#%s) %s to position %s" % (s.id, s.name, s.position)
-        elif movetype == 'difffloor':
-            print "(difffloor)"
+                if oldorder[x] != item:
+                    if itemtype == 'store':
+                        i = Store.objects.get(pk=item, mall__id=mallid)
+                    elif itemtype == 'wli':
+                        i = WishlistItem.objects.get(pk=item)
+                    i.position = x
+                    i.save()
+                    #                    print "  (samecontainer) moving item (#%s) to position %s" % (i.id, i.position)
+        elif movetype == 'diff':
+            print "(diffcontainer)"
             do_shift = False
-            for x,store in enumerate(oldfloororder):
+            for x,item in enumerate(oldorder):
                 # iterate over old floor, shift all stores following moved store
-                print "(iterate over old floor, shift all stores following moved store)"
+                print "(iterate over old container, shift all items following moved item)"
                 if do_shift:
-                    s = Store.objects.get(pk=store, mall__id=mallid)
-                    s.position = s.position - 1
-                    s.save()
-                    print "  (difffloor oldfloor) moving store (#%s) %s to position %s" % (s.id, s.name, s.position)
-                if int(oldfloororder[x]) == mystore.id:
+                    if itemtype == 'store':
+                        i = Store.objects.get(pk=item, mall__id=mallid)
+                    elif itemtype == 'wli':
+                        i = WishlistItem.objects.get(pk=item)
+                    i.position = i.position - 1
+                    i.save()
+                    #                    print "  (diffcontainer oldcontainer) moving item (#%s) to position %s" % (i.id, i.position)
+                if int(oldorder[x]) == myitem.id:
                     do_shift = True
                     continue
 
             do_shift = False
-            for x,store in enumerate(newfloororder):
-                print "(iterate over new floor, shift all stores following moved store)"
+            for x,item in enumerate(neworder):
+                print "(iterate over new container, shift all items following moved item)"
                 # iterate over new floor, shift all stores following moved store
                 if do_shift:
-                    s = Store.objects.get(pk=store, mall__id=mallid)
-                    s.position = x
-                    s.save()
-                    print "  (difffloor newfloor) moving store (#%s) %s to position %s" % (s.id, s.name, s.position)
-                if int(newfloororder[x]) == mystore.id:
+                    if itemtype == 'store':
+                        i = Store.objects.get(pk=item, mall__id=mallid)
+                    elif itemtype == 'wli':
+                        i = WishlistItem.objects.get(pk=item)
+                    i.position = x
+                    i.save()
+                    #                    print "  (diffcontainer newcontainer) moving item (#%s) to position %s" % (i.id, i.position)
+                if int(neworder[x]) == myitem.id:
                     do_shift = True
-                    s = mystore
-                    s.floor = newfloorid
-                    s.position = x
-                    s.save()
-                    print "  (difffloor newfloor) moving store (#%s) %s to floor %s, position %s" % (s.id, s.name, s.floor, s.position)
+                    i = myitem
+                    if itemtype == 'store':
+                        i.floor = newcontainerid
+                    elif itemtype == 'wli':
+                        i.wishlist = Wishlist.objects.get(pk=newcontainerid)
+                    i.position = x
+                    i.save()
+                    #                    print "  (diffcontainer newcontainer) moving item (#%s) to new container, position %s" % (i.id, i.position)
         status = 'ok'
     except Exception, e:
         status = 'error'
-        error_msg = "There was an error moving '%s', please try again later. " % mystore.name
-        print "error when moving store: %s" % str(e)
+        error_msg = "There was an error moving this item, please try again later. "
+        print "error when moving item: %s" % str(e)
 
-    try:
-        if viewmode == 'mall':
-            stores_dict = _getmall(mallid)
-            ctx = {
-                'mallid':mallid,
-                'stores_dict':stores_dict
-                }
-            html = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
-        elif viewmode == 'floor':
-            ctx = _getfloor(mallid, newfloorid)
-            html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))
+    if itemtype == 'store':
+        try:
+            if viewmode == 'mall':
+                html = _getmallHTML(mallid)
+            elif viewmode == 'floor':
+                html = _getfloorHTML(mallid, newcontainerid)
             
-    except Exception, e:
-        status = 'error'
-        error_msg += 'Unable to retrieve mall information.'
-        print "unable to generate mall after moving store: %s" % str(e)
+        except Exception, e:
+            status = 'error'
+            error_msg += 'Unable to retrieve mall information.'
+            print "unable to generate mall after moving store: %s" % str(e)
+    elif itemtype == 'wli':
+        try:
+            wishlist_dict = _getwishlist(request)
+            ctx = {
+                'all_wishlists':wishlist_dict
+                }
+            html = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
+        except Exception, e:
+            status = 'error'
+            error_msg += 'Unable to retrive wishlist information.'
+            print "unable to generate wishlists after moving wishlistitem: %s" % str(e)
         
     response = {
         'status':status,
@@ -337,12 +368,8 @@ def remove_store(request, viewmode):
     error_msg = ''
     html = ''
 
-    # delete store image file
-    try:
-        si = StoreImages.objects.get(store__id=storeid)
-        sysutils.delete_file("%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, si.path))
-    except Exception, e:
-        print "unable to delete store image file: %s" % str(e)
+    si = StoreImages.objects.get(store__id=storeid)
+    sysutils.delete_file("%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, si.path))
 
     try:
         if not (mallid and storeid):
@@ -351,12 +378,7 @@ def remove_store(request, viewmode):
         store.delete()
 
         if viewmode == 'mall':
-            stores_dict = _getmall(mallid)
-            ctx = {
-                'mallid':mallid,
-                'stores_dict':stores_dict
-            }
-            html = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+            html = _getmallHTML(mallid)
         elif viewmode == 'floor':
             ctx = _getfloor(mallid, floorid)
             html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))

@@ -42,7 +42,7 @@ function setSortable(container, item) {
                     // if store's new floor is same as old floor, moved store within same floor
                     oldorder = getNewOrder($(containerIdPrefix+oldcontainerid), "oldorder");
                     neworder = getCurrOrder($(containerIdPrefix+newcontainerid), item);
-                    moveStore(itemid, 'same', oldcontainerid, oldorder, newcontainerid, neworder);
+                    moveItem(itemid, 'same', oldcontainerid, oldorder, newcontainerid, neworder);
                 } else {
                     // moved store from another floor
                     thiscontainerid = getIdFromEl(this, containerPrefix);
@@ -50,10 +50,32 @@ function setSortable(container, item) {
                         // only trigger move store for update event for new floor
                         oldorder = getNewOrder($(containerIdPrefix+oldcontainerid), "oldorder");
                         neworder = getCurrOrder($(containerIdPrefix+newcontainerid), item);
-                        moveStore(itemid, 'diff', oldcontainerid, oldorder, newcontainerid, neworder);
+                        moveItem(itemid, 'diff', oldcontainerid, oldorder, newcontainerid, neworder);
                     }
                 }
             }
         }).disableSelection();
     });
+}
+
+function moveItem(itemid, movetype, oldcontainerid, oldorder, newcontainerid, neworder) {
+    data = {
+        'mallid':(typeof(mallid) == 'undefined' ? '' : mallid),
+        'itemid':itemid,
+        'movetype':movetype,
+        'oldcontainerid':oldcontainerid,
+        'oldorder':oldorder,
+        'newcontainerid':newcontainerid,
+        'neworder':neworder
+    }
+    $.post(moveItemURL,
+           data,
+           function(response) {
+	       moveItemCallback(response);
+           });
+}
+
+function loadHTML(el, html, loadHTMLcallback) {
+    $(el).html(html);
+    loadHTMLcallback();
 }
