@@ -54,7 +54,7 @@ def _getmall(mall_id):
             
     return stores_dict
 
-def _getmallHTML(mall_id):
+def _getmallHTML(request, mall_id):
     stores_dict = _getmall(mall_id)
     ctx = {
         'mallid':mall_id,
@@ -77,7 +77,7 @@ def _zipStoreImages(stores):
             stores_dict[store.floor] = [(store, si)]
     return stores_dict
 
-def _getfloor(mall_id, floor_id):
+def _getfloor(request, mall_id, floor_id):
     mall = Mall.objects.get(pk=mall_id)
     all_stores = Store.objects.filter(mall__id=mall_id, floor=floor_id).order_by('position')
     try:
@@ -332,9 +332,9 @@ def move_item(request, itemtype, viewmode=''):
     if itemtype == 'store':
         try:
             if viewmode == 'mall':
-                html = _getmallHTML(mallid)
+                html = _getmallHTML(request, mallid)
             elif viewmode == 'floor':
-                html = _getfloorHTML(mallid, newcontainerid)
+                html = _getfloorHTML(request, mallid, newcontainerid)
             
         except Exception, e:
             status = 'error'
