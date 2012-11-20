@@ -41,6 +41,14 @@ def _getwishlist(request):
         wishlistitems_list = _zipWishlistImages(wishlistitems)
         wishlist_dict[wishlist] = wishlistitems_list
     return wishlist_dict
+
+def _getwishlistHTML(request):
+    wishlist_dict = _getwishlist(request)
+    ctx = {
+        'all_wishlists':wishlist_dict
+        }
+    wishlistHTML = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
+    return wishlistHTML
     
 def add_to_wishlist(request):
     uid = request.user.id
@@ -76,12 +84,7 @@ def add_to_wishlist(request):
             wi = WishlistImages(user=request.user, wishlistitem=wli, path=newfilename)
             wi.save()
 
-            wishlist_dict = _getwishlist(request)
-            ctx = {
-                'all_wishlists':wishlist_dict
-                }
-            wishlistHTML = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
-
+            wishlistHTML = _getwishlistHTML(request)
             status = 'ok'
             successMsg = '%s has been added to your wishlist.' % url
         except Exception, e:
@@ -112,11 +115,7 @@ def remove_wishlistitem(request):
         store = WishlistItem.objects.get(pk=wlitemid)
         store.delete()
 
-        wishlist_dict = _getwishlist(request)
-        ctx = {
-            'all_wishlists':wishlist_dict
-            }
-        wishlistHTML = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
+        wishlistHTML = _getwishlistHTML(request)
         status = 'ok'
         success_msg = "Item has been removed from your wishlist."
     except Exception, e:

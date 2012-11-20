@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem, Domain
 from mall.forms import RegisterForm, AddStoreForm
-from mall.wishlist_views import _getwishlist
+from mall.wishlist_views import _getwishlistHTML
 from utils import ImageScraper, imageutils, urlutils, sysutils
 import MyGlobals
 
@@ -342,11 +342,7 @@ def move_item(request, itemtype, viewmode=''):
             print "unable to generate mall after moving store: %s" % str(e)
     elif itemtype == 'wli':
         try:
-            wishlist_dict = _getwishlist(request)
-            ctx = {
-                'all_wishlists':wishlist_dict
-                }
-            html = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
+            html = _getwishlistHTML(request)
         except Exception, e:
             status = 'error'
             error_msg += 'Unable to retrive wishlist information.'
