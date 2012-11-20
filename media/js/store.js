@@ -1,5 +1,5 @@
 $(function() {
-    setSortable();
+    setSortable('floor', 'store');
     addformtrigger = initOverlay($(".addstorecontainer"));
     $(".addstorebutton").on("click", addStore);
     $(".cropbutton").on("click", function() { doCrop('store'); } );
@@ -17,51 +17,13 @@ $(function() {
     });
 });
 
-function setSortable() {
-    $(".floor").each(function(index) {
-	var oldfloorid;
-	$(this).sortable({
-	    cursor:'move',
-	    cursorAt: {left:5},
-	    connectWith:'.floor',
-	    opacity:0.5,
-	    revert:true,
-	    start: function(e, ui) {
-		// get store's current floor
-		oldfloorid = getFlooridFromEl(ui.item.parent());
-		// get floor's current order
-		$(this).data("oldfloororder", getFloorOrder(oldfloorid));
-	    },
-	    update: function(e, ui) {
-		storeid = getStoreidFromEl(ui.item);
-		newfloorid = getFlooridFromEl(ui.item.parent());
-		if (oldfloorid == newfloorid) {
-		    // if store's new floor is same as old floor, moved store within same floor
-		    oldfloororder = getFloororderFromFloorid(oldfloorid);
-		    newfloororder = getFloorOrder(newfloorid);
-		    moveStore(storeid, 'samefloor', oldfloorid, oldfloororder, newfloorid, newfloororder);		    
-		} else {
-		    // moved store from another floor
-		    thisfloorid = getFlooridFromEl(this);
-		    if (newfloorid != thisfloorid) {
-			// only trigger move store for update event for new floor
-			oldfloororder = getFloororderFromFloorid(oldfloorid);
-			newfloororder = getFloorOrder(newfloorid);
-			moveStore(storeid, 'difffloor', oldfloorid, oldfloororder, newfloorid, newfloororder);
-		    }
-		}
-	    }
-	}).disableSelection();
-    });
-}
-
 function loadHTML(html) {
     if (viewmode == 'mall') {
 	$("#mall").html(html);
     } else if (viewmode == 'floor') {
 	$("#floor").html(html);
     }
-    setSortable();
+    setSortable('floor', 'store');
 }
 
 /* add store */
@@ -88,18 +50,6 @@ function resetAddStoreForm() {
 }
 
 /* move store */
-function getFloororderFromFloorid(floorid) {
-    return $('#floor_'+floorid).data("oldfloororder");
-}
-function getFlooridFromEl(el) {
-    return $(el).attr('id').substring(6);
-}
-function getStoreidFromEl(el) {
-    return $(el).attr('id').substring(6);
-}
-function getFloorOrder(floorid) {
-    return $("#floor_"+floorid).sortable("serialize", { key:'store' });
-}
 function moveStore(storeid, movetype, oldfloorid, oldfloororder, newfloorid, newfloororder) {
     data = {
 	'mallid':mallid,
