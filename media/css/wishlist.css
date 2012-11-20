@@ -7,10 +7,16 @@ div.addwishlistoverlay {
 }
 
 /* wishlist styling */
+ul.wishlist li {
+    height: 150px;
+}
 div.wli,
 div.wlimgcontainer img {
     width: 100px;
     height: 150px;
+}
+div.wlirmv {
+    top: -167px;
 }
 div.wishlistdescrip {
     background: rgb(200,200,200);
@@ -21,9 +27,8 @@ div.wishlistdescrip {
     border-bottom-right-radius: 5px;
     width: 100%;
     float: left;
-    position: relative;
-    top: 10px;
 }
-div.newwishlist {
+ul.wishlist.newwishlist {
+    height: 50px;
     font-style: italic;
 }

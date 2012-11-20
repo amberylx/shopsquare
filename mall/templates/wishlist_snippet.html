@@ -1,24 +1,24 @@
 {% for wishlist,wishlistitems in all_wishlists.items %}
-  <div id="wishlist_{{wishlist.id}}" class="wishlist clearfix thinborder">
+  <ul id="wishlist_{{wishlist.id}}" class="wishlist clearfix thinborder">
     <div class="wishlistlabel">{{wishlist.name}}</div>    
-    <div class="wishlistlabel vert">{{wishlist.name}}</div>    
+    <div class="wishlistlabel vert">{{wishlist.name}}</div>
     {% for wlitup in wishlistitems %}
       {% with wli=wlitup.0 %}
-	{% with wlimage=wlitup.1 %}	
-	  <div id="wli_{{wli.id}}" class="wli thinborder">
+	{% with wlimage=wlitup.1 %}
+	  <li id="wli_{{wli.id}}" class="wli thinborder">
 	    <div class="wlimgcontainer">
 	      <a href="{{wli.url}}" target="_new">
 		<img src="/ssmedia/wishlist/{{request.user.id}}/{{wlimage.path}}"></img>
 	      </a>	  
 	    </div>	
 	    <div id="rmv_{{wli.id}}" class="wlirmv dotthinborder icontext">x</div>
-	  </div>
+	  </li>
 	{% endwith %}
       {% endwith %}	
     {% endfor %}    
-    <div class="wishlistdescrip">{{wishlist.description}}</div>
-  </div>    
+    <!--div class="wishlistdescrip">{{wishlist.description}}</div-->
+  </ul>
 {% endfor %}
-<div class="wishlist newwishlist dotthinborder">
+<ul class="wishlist newwishlist dotthinborder">
   <p>drop item here to create new wishlist</p>
-</div>
+</ul>

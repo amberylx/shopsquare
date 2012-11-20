@@ -1,11 +1,17 @@
 
-div.floor,
-div.wishlist {
-    width: 97.5%;
-    padding: 10px;
-    margin-bottom: 20px;
-    min-height: 40px;
+ul.floor,
+ul.wishlist {
+    list-style-type: none;
+    margin: 0 0 20px;
+    width: 100%;
 }
+ul.floor li,
+ul.wishlist li {
+    margin: 15px 10px;
+    float: left;
+}
+
+
 div.floorlabel.vert,
 div.wishlistlabel.vert {
     writing-mode: tb-rl;
@@ -14,8 +20,8 @@ div.wishlistlabel.vert {
     -ms-transform: rotate(90deg);
     -o-transform: rotate(90deg);
     transform: rotate(90deg);
-    right: -52px;
-    top: 20px;
+    right: -41px;
+    top: 37px;
     letter-spacing: .2em;
 }
 div.floorlabel,
@@ -23,7 +29,7 @@ div.wishlistlabel {
     height: 0px;
     float: right;
     position: relative;
-    top: -23px;
+    top: -12px;
     text-transform: uppercase;
     letter-spacing: .4em;
     font-size: 10px;
@@ -32,7 +38,7 @@ div.store,
 div.wli {
     background-color: #FFF;
     margin: 10px;
-    float: left;
+    display: inline-block;
 }
 div.store:hover,
 div.wli:hover {
@@ -50,17 +56,15 @@ div.wlirmv {
     margin-left: 5px;
     cursor: pointer;
     position: relative;
-    top: -12px;
-    right: -12px;
+    right: -11px;
     z-index: 10;
 }
 div.storeimgcontainer,
 div.wlimgcontainer {
-    position: absolute;
 }
 div.storeimgcontainer img,
 div.wlimgcontainer img {
-    border-radius: 5px;
+    border-radius: 3px;
     max-width: 100%;
     max-height: 100%;
 }

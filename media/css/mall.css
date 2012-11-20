@@ -7,6 +7,12 @@ div.addstoreoverlay {
 }
 
 /* mall styling */
+ul.floor li {
+    height: 300px;
+}
+ul.floor.newfloor {
+    height: 100px;
+}
 div.store,
 div.storeimgcontainer img {
     width: 200px;
@@ -18,9 +24,13 @@ div.storename {
     background: rgba(0,0,0,0.5);
     color: white;
     text-shadow: 1px 1px 1px #333;
-    position: absolute;
+    position: relative;
+    top: -305px;
     font-size: 20px;
     letter-spacing: .3em;
     width: 200px;
     border-top-left-radius: 5px;
+}
+div.storermv {
+    top: -317px;
 }

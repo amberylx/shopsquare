@@ -1,12 +1,12 @@
 {% for floor,stores in stores_dict.items %}
   {% if stores %}    
-  <div id="floor_{{floor}}" class="floor clearfix thinborder">
+  <ul id="floor_{{floor}}" class="floor clearfix thinborder">
     <div class="floorlabel"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
     <div class="floorlabel vert"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
     {% for storetup in stores %}
       {% with store=storetup.0 %}
         {% with storeimg=storetup.1 %}
-        <div id="store_{{store.id}}" class="store thinborder">
+        <li id="store_{{store.id}}" class="store thinborder">
 	   <div class="storeimgcontainer">	   
 	     <a href="{{store.url}}" target="_new">
 	       <img src="/ssmedia/store/{{request.user.id}}/{{storeimg}}"></img>    
@@ -16,15 +16,15 @@
            <div class="storename">
 	     <a href="{% url store mall.id store.id %}">{{store.name}}</a>	     
            </div>
-        </div>
+        </li>
         {% endwith %}
       {% endwith %}
     {% endfor %}
-  </div>
+  </ul>
   {% else %}
-  <div id="floor_{{floor}}" class="floor dotthinborder clearfix">
+  <ul id="floor_{{floor}}" class="floor newfloor dotthinborder clearfix">
     <div class="floorlabel"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
     <div class="floorlabel vert"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
-  </div>    
+  </ul>
   {% endif %}    
 {% endfor %}
