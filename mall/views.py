@@ -234,9 +234,9 @@ def add_store(request, viewmode):
             si.save()
 
             if viewmode == 'mall':
-                html = _getmallHTML(mallid)
+                html = _getmallHTML(request, mallid)
             elif viewmode == 'floor':
-                html = _getfloorHTML(mallid, floorid)
+                html = _getfloorHTML(requestmallid, floorid)
 
             status = 'ok'
             success_msg = 'Successfully added store.'
@@ -374,9 +374,9 @@ def remove_store(request, viewmode):
         store.delete()
 
         if viewmode == 'mall':
-            html = _getmallHTML(mallid)
+            html = _getmallHTML(request, mallid)
         elif viewmode == 'floor':
-            ctx = _getfloor(mallid, floorid)
+            ctx = _getfloor(request, mallid, floorid)
             html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))
         
         status = 'ok'
