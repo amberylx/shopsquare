@@ -26,9 +26,15 @@ div.wishlistlabel.vert {
     -ms-transform: rotate(90deg);
     -o-transform: rotate(90deg);
     transform: rotate(90deg);
-    right: -41px;
-    top: 37px;
+    -webkit-transform-origin: 0;
+    -moz-transform-origin: 0;
+    -ms-transform-origin: 0;
+    -o-transform-origin: 0;
+    transform-origin: 0;
+    right: -112px;
+    top: 10px;
     letter-spacing: .2em;
+    text-align: left;
 }
 div.floorlabel,
 div.wishlistlabel {
@@ -39,6 +45,8 @@ div.wishlistlabel {
     text-transform: uppercase;
     letter-spacing: .4em;
     font-size: 10px;
+    width: 100px;
+    text-align: right;
 }
 div.store,
 div.wli {
