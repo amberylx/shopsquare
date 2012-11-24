@@ -1,0 +1,32 @@
+<div class="addwishlisttitle overlaytitle">
+  add wishlist  
+</div>
+<div class="addwishlistformcontainer overlayformcontainer">
+  <form id="addwishlistform"> {% csrf_token %}
+    <table>
+      <tr>
+	<td colspan="2">{% for error in add_wl_form.name.errors %}{{error}}{% endfor %}</td>
+      </tr>
+      <tr>
+	<td class="overlaylabel"><label for="id_name"> Wishlist name: </td>
+	<td class="overlayinput"><input id="id_name" type="text" name="name" maxlength="200" placeholder="your wishlist name"></td>
+      </tr>
+      
+      <tr>
+	<td colspan="2">{% for error in add_wl_form.description.errors %}{{error}}{% endfor %}</td>
+      </tr>
+      <tr>
+	<td class="overlaylabel"><label for="id_tags"> Wishlist Description </td>
+	<td class="overlayinput">{{add_wl_form.description}}</td>
+      </tr>
+
+      <tr>
+	<td class="overlaylabel"><label for="id_is_private"> Keep wishlist private? </td>
+	<td class="overlayinput">{{add_wl_form.is_private}}</td>
+      </tr>
+    </table>
+    <div class="addwishlistsubmit overlaysubmit">
+      <input id="addwishlistbutton" type="button" class="button tinybutton addwishlistbutton" value="Add Wishlist">
+    </div>  
+  </form>
+</div>

@@ -1,12 +1,16 @@
 
 /* add to wishlist overlay */
-div.addwishlistoverlay {
+div.addwishlistoverlay,
+div.addtowishlistoverlay {
     width: 50%;
     left: 24%;
     min-width: 400px;
 }
 
 /* wishlist styling */
+ul.wishlist {
+    min-height: 182px;
+}
 ul.wishlist li {
     height: 150px;
 }
@@ -28,7 +32,8 @@ div.wishlistdescrip {
     width: 100%;
     float: left;
 }
+/*
 ul.wishlist.newwishlist {
     height: 50px;
     font-style: italic;
-}
+}*/

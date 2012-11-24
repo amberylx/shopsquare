@@ -21,6 +21,7 @@ urlpatterns = patterns('mall.views',
 )
 
 urlpatterns += patterns('mall.wishlist_views',
+    url(r'^add_wishlist/$', 'add_wishlist', {}, name='add_wishlist'),
     url(r'^add_to_wishlist/$', 'add_to_wishlist', {}, name='add_to_wishlist'),
     url(r'^remove_wishlistitem/$', 'remove_wishlistitem', {}, name="remove_wishlistitem"),
     url(r'^profile/(\d*)/wishlist/$', 'wishlist', {}, name="wishlist"),

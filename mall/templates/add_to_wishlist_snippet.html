@@ -1,11 +1,11 @@
-<div class="addwishlisttitle overlaytitle">
+<div class="addtowishlisttitle overlaytitle">
   add to wishlist  
 </div>
-<div class="addwishlistformcontainer overlayformcontainer">
-  <form id="addwishlistform"> {% csrf_token %}
+<div class="addtowishlistformcontainer overlayformcontainer">
+  <form id="addtowishlistform"> {% csrf_token %}
     <table>
       <tr>
-	<td colspan="2">{% for error in form.url.errors %}{{error}}{% endfor %}</td>
+	<td colspan="2">{% for error in add_wli_form.url.errors %}{{error}}{% endfor %}</td>
       </tr>
       <tr>
 	<td class="overlaylabel"><label for="id_url"> Item URL </td>
@@ -13,21 +13,21 @@
       </tr>
       
       <tr>
-	<td colspan="2">{% for error in form.tags.errors %}{{error}}{% endfor %}</td>
+	<td colspan="2">{% for error in add_wli_form.tags.errors %}{{error}}{% endfor %}</td>
       </tr>
       <tr>
 	<td class="overlaylabel"><label for="id_tags"> Tags </td>
-	<td class="overlayinput">{{form.tags}}</td>
+	<td class="overlayinput">{{add_wli_form.tags}}</td>
       </tr>
 
       <tr>
 	<td class="overlaylabel"><label for="id_is_private"> Keep item private? </td>
-	<td class="overlayinput">{{form.is_private}}</td>
+	<td class="overlayinput">{{add_wli_form.is_private}}</td>
       </tr>
     </table>
-    <div class="addwishlistslidedown overlayslidedown">
-      <div class="addwishlistimagecontainer overlayimagecontainer dotthinborder">
-        <div class="addwishlistimage overlayimage"></div>
+    <div class="addtowishlistslidedown overlayslidedown">
+      <div class="addtowishlistimagecontainer overlayimagecontainer dotthinborder">
+        <div class="addtowishlistimage overlayimage"></div>
         <input type="hidden" id="crop_x1" name="crop_x1" />
         <input type="hidden" id="crop_y1" name="crop_y1" />
         <input type="hidden" id="crop_x2" name="crop_x2" />
@@ -36,7 +36,7 @@
         <input type="button" class="button tinybutton cropbutton" value="crop" />
       </div>
     </div>
-    <div class="addwishlistsubmit overlaysubmit">
+    <div class="addtowishlistsubmit overlaysubmit">
       <input id="addtowishlistbutton" type="button" class="button tinybutton addtowishlistbutton" value="Add to Wishlist">
     </div>  
   </form>

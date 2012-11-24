@@ -11,6 +11,7 @@
 <script type="text/javascript">
 //<![CDATA[
 var addToWishlistURL = "{% url add_to_wishlist %}";
+var addWishlistURL = "{% url add_wishlist %}";
 var moveItemURL = "{% url move_wishlistitem 'wli' %}";
 var scrapeImageURL = "{% url scrape_image %}";
 var doCropURL = "{% url do_crop %}";
@@ -24,16 +25,20 @@ var removeWishlistitemURL = "{% url remove_wishlistitem %}";
 {% endblock %}
 
 {% block content %}
-<div id="addwishlistoverlay" class="addwishlistoverlay thinborder overlay">
+<div id="addtowishlistoverlay" class="addtowishlistoverlay thinborder overlay">
   {% include 'add_to_wishlist_snippet.html' %}
+</div>  
+<div id="addwishlistoverlay" class="addwishlistoverlay thinborder overlay">
+  {% include 'add_wishlist_snippet.html' %}
 </div>  
 <div id="workspace">
   <div class="workspacetitle">wishlist</div>  
   <div class="successMsg success"></div>
   <div class="errorMsg error"></div>
-  <div class="addwishlisticon thinborder icontext overlayicon" rel="#addwishlistoverlay">+</div>
+  <div class="addtowishlisticon thinborder icontext overlayicon" rel="#addtowishlistoverlay">+</div>
   <div id="wishlist">  
     {% include 'wishlist_snippet.html' %}  
   </div>    
+  <div class="addwishlisticon thinborder icontext overlayicon" rel="#addwishlistoverlay">+</div>
 </div>
 {% endblock %}

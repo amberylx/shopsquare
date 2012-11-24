@@ -1,7 +1,9 @@
 $(function() {
     setSortable('wishlist', 'wli');
-    addwishlisttrigger = initOverlay($(".addwishlisticon"));
+    addtowishlisttrigger = initOverlay($(".addtowishlisticon"));
     $(".addtowishlistbutton").on("click", addToWishlist);
+    addwishlisttrigger = initOverlay($(".addwishlisticon"));
+    $(".addwishlistbutton").on("click", addWishlist);
     $(".cropbutton").on("click", function() { doCrop('wishlist'); } );
     $("#wishlist").on("click", ".wlirmv", function() {
 	wlitemid = $(this).attr('id').substring(4);
@@ -18,23 +20,41 @@ function loadWishlists(wishlistHTML) {
     setSortable('wishlist', 'wli');
 }
 
-function addToWishlist() {
+function addWishlist() {
     data = $("#addwishlistform").serialize();
+    $.post(addWishlistURL,
+	   data,
+	   function(response) {
+	       if (response.status == 'ok') {
+		  addwishlisttrigger.overlay().close();
+		  showMessage($(".successMsg"), response.successMsg);
+		  loadWishlists(response.wishlistHTML);
+		  resetAddwishlistForm();
+	       } else {
+		  showMessage($(".errorMsg"), response.errorMsg);
+	       }
+	   });
+}
+function resetAddwishlistForm() {
+    $("#addwishlistform")[0].reset();
+}
+function addToWishlist() {
+    data = $("#addtowishlistform").serialize();
     $.post(addToWishlistURL,
           data,
           function(response) {
 	      if (response.status == 'ok') {
-		  addwishlisttrigger.overlay().close();
+		  addtowishlisttrigger.overlay().close();
 		  showMessage($(".successMsg"), response.successMsg);
 		  loadWishlists(response.wishlistHTML);
-		  resetAddWishlistForm();
+		  resetAddtowishlistForm();
 	      } else {
 		  showMessage($(".errorMsg"), response.errorMsg);
 	      }
           });
 }
-function resetAddWishlistForm() {
-    $("#addwishlistform")[0].reset();
+function resetAddtowishlistForm() {
+    $("#addtowishlistform")[0].reset();
     $(".overlayimage").html("");
     $(".overlayimagecontainer").hide();
 }

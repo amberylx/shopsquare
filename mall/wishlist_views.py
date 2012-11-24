@@ -8,17 +8,19 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from mall.models import Mall, Wishlist, WishlistItem, WishlistImages, Domain
-from mall.forms import WishlistItemForm
+from mall.forms import WishlistItemForm, AddWishlistForm
 from utils import urlutils, sysutils
 import MyGlobals    
 
 def wishlist(request, userid):
-    form = WishlistItemForm()
+    add_wl_form = AddWishlistForm()
+    add_wli_form = WishlistItemForm()
     wishlist_dict = _getwishlist(request)
     
     ctx_dict = {
         'ssmedia':'/ssmedia',
-        'form':form,
+        'add_wli_form':add_wli_form,
+        'add_wl_form':add_wl_form,
         'all_wishlists':wishlist_dict,
     }
     return render_to_response("wishlist.html", ctx_dict, context_instance=RequestContext(request))
@@ -50,8 +52,34 @@ def _getwishlistHTML(request):
     wishlistHTML = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
     return wishlistHTML
     
+def add_wishlist(request):
+    name = request.POST.get('name')
+    description = request.POST.get('description')
+
+    wishlistHTML = ''
+    successMsg = ''
+    errorMsg = ''
+    try:
+        wl = Wishlist(user=request.user, name=name, description=description)
+        wl.save()
+        wishlistHTML = _getwishlistHTML(request)
+        status = 'ok'
+    except Exception, e:
+        status = 'error'
+        errorMsg = 'Unable to create wishlist.'
+        print "Unable to create wishlist: %s" % (str(e))
+    
+    response = {
+        'status':status,
+        'successMsg':successMsg,
+        'errorMsg':errorMsg,
+        'wishlistHTML':wishlistHTML
+        }
+    return HttpResponse(json.dumps(response), mimetype="application/json")
+
 def add_to_wishlist(request):
     uid = request.user.id
+    name = "default"
     url = request.POST.get('url')
     tags = request.POST.get('tags')
     is_private = request.POST.get('is_private', 'off')
@@ -61,16 +89,12 @@ def add_to_wishlist(request):
     successMsg = ''
     errorMsg = ''
     try:
-        # add to default wishlist for now
-        try:
-            wl = Wishlist.objects.get(user=request.user)
-        except ObjectDoesNotExist:
-            wl = Wishlist(user=request.user, name="default", description="default wishlist")
-            wl.save()
+        wl = Wishlist.objects.get(user=request.user, name=name)
 
         dom = urlutils.getDomainFromUrl(url)
         (domain, created) = Domain.objects.get_or_create(domain=dom)
-        wli = WishlistItem(wishlist=wl, url=url, tags=tags, domain=domain, is_private=is_private)
+        position = len(WishlistItem.objects.filter(wishlist=wl))
+        wli = WishlistItem(wishlist=wl, url=url, tags=tags, domain=domain, is_private=is_private, position=position)
         wli.save()
     except Exception, e:
         status = 'error'

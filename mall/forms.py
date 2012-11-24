@@ -33,6 +33,11 @@ class AddStoreForm(forms.Form):
     url = forms.CharField(max_length=200)
     tags = forms.CharField(max_length=1000, required=False)
     is_private = forms.BooleanField()
+
+class AddWishlistForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    is_private = forms.BooleanField()
+    description = forms.CharField(max_length=1000, required=False)
     
 class WishlistItemForm(forms.Form):
     url = forms.CharField(max_length=2000)
