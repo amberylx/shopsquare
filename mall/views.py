@@ -22,60 +22,79 @@ def landing(request):
     }
     return render_to_response('landing.html', ctx_dict, context_instance=RequestContext(request))
 
-@login_required
 def mall(request, mall_id):
     form = AddStoreForm()
-    stores_dict = _getmall(mall_id)
     mall = Mall.objects.get(pk=mall_id)
-    
+    is_owner = (request.user == mall.user)
+    mall_dict = _getmall(mall_id, as_owner=is_owner)
+
     ctx_dict = {
+        'is_owner':is_owner,
     	'form':form,
     	'mall':mall,
         'mallid':mall.id,
-    	'stores_dict':stores_dict,
+    	'mall_dict':mall_dict,
     	'request':request,
     	'ssmedia':'/ssmedia',
         'MyGlobals':MyGlobals
     }
     return render_to_response("mall.html", ctx_dict, context_instance=RequestContext(request))
 
-def _getmall(mall_id):
+def _getmall(mall_id, as_owner):
     mall = Mall.objects.get(pk=mall_id)
-    all_stores = Store.objects.filter(mall__id=mall_id).order_by('floor', 'position')
-    stores_dict = _zipStoreImages(all_stores)
-    
-    # add extra floor (next expansion)
-    all_floors = stores_dict.keys()
-    if not all_floors:
-        stores_dict[0] = []
+    if as_owner:
+        stores_list = Store.objects.filter(mall__id=mall_id).order_by('floor', 'position')
     else:
-        all_floors.sort()
-        stores_dict[all_floors[-1]+1] = []
+        stores_list = Store.objects.filter(mall__id=mall_id, is_private=False).order_by('floor', 'position')        
+    mall_dict = _zipStoreInfo(stores_list)
+    if as_owner:
+        mall_dict = _zipFloorInfo(mall_dict)
             
-    return stores_dict
+    return mall_dict
 
 def _getmallHTML(request, mall_id):
-    stores_dict = _getmall(mall_id)
+    mall = Mall.objects.get(pk=mall_id)
+    is_owner = (request.user == mall.user)
+    mall_dict = _getmall(mall_id)
+    
     ctx = {
+        'is_owner':is_owner,
         'mallid':mall_id,
-        'stores_dict':stores_dict
+        'mall_dict':mall_dict
         }
     html = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
     return html
+
+def _zipFloorInfo(mall_dict):
+    # add extra floor (next expansion)
+    all_floors = mall_dict.keys()
+    if not all_floors:
+        mall_dict[0] = {}
+    else:
+        all_floors.sort()
+        mall_dict[all_floors[-1]+1] = {}
+    return mall_dict    
     
-def _zipStoreImages(stores):
-    stores_dict = {}
-    for store in stores:
+def _zipStoreInfo(stores_list):
+    mall_dict = {}
+    for store in stores_list:
         try:
             si = StoreImages.objects.get(store=store)
         except:
             si = None
 
         try:
-            stores_dict[store.floor].append((store, si))
+            floor_dict = mall_dict[store.floor]
         except:
-            stores_dict[store.floor] = [(store, si)]
-    return stores_dict
+            floor_dict = {}
+            mall_dict[store.floor] = floor_dict
+
+        try:
+            floor_dict['stores_list'].append((store, si))
+        except:
+            floor_dict['stores_list'] = [(store, si)]
+
+    return mall_dict
 
 def _getfloor(request, mall_id, floor_id):
     mall = Mall.objects.get(pk=mall_id)

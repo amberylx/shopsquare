@@ -33,8 +33,10 @@ var addformtrigger;
 <div id="workspace">  
   <div class="mallname workspacetitle">{{mall.name}}</div>
   <div class="successMsg success"></div>
-  <div class="errorMsg error"></div>  
+  <div class="errorMsg error"></div>
+  {% if is_owner %}  
   <div class="addstorecontainer thinborder icontext overlayicon" rel="#addstoreoverlay">+</div>
+  {% endif %}  
   <div id="mall">
     {% include 'mall_snippet.html' %}    
   </div>

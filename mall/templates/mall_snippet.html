@@ -1,30 +1,32 @@
-{% for floor,stores in stores_dict.items %}
-  {% if stores %}    
-  <ul id="floor_{{floor}}" class="floor clearfix thinborder">
-    <div class="floorlabel"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
-    <div class="floorlabel vert"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
-    {% for storetup in stores %}
-      {% with store=storetup.0 %}
-        {% with storeimg=storetup.1 %}
-        <li id="store_{{store.id}}" class="store thinborder">
-	   <div class="storeimgcontainer">	   
-	     <a href="{{store.url}}" target="_new">
-	       <img src="/ssmedia/store/{{request.user.id}}/{{storeimg}}"></img>    
-	     </a>
-	   </div>	   
-           <div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
-           <div class="storename">
-	     <a href="{% url store mall.id store.id %}">{{store.name}}</a>	     
-           </div>
-        </li>
-        {% endwith %}
-      {% endwith %}
-    {% endfor %}
-  </ul>
-  {% else %}
-  <ul id="floor_{{floor}}" class="floor newfloor dotthinborder clearfix">
-    <div class="floorlabel"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
-    <div class="floorlabel vert"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
-  </ul>
-  {% endif %}    
+{% for floor,floor_dict in mall_dict.items %}
+  {% with stores_list=floor_dict.stores_list %}    
+    {% if stores_list %}
+      <ul id="floor_{{floor}}" class="floor clearfix thinborder">
+	<div class="floorlabel"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
+	<div class="floorlabel vert"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
+	{% for storetup in stores_list %}
+	  {% with store=storetup.0 %}
+            {% with storeimg=storetup.1 %}
+	      <li id="store_{{store.id}}" class="store thinborder">
+		<div class="storeimgcontainer">	   
+		  <a href="{{store.url}}" target="_new">
+		    <img src="/ssmedia/store/{{store.mall.user.id}}/{{storeimg}}"></img>    
+		  </a>
+		</div>	   
+		<div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
+		<div class="storename">
+		  <a href="{% url store mall.id store.id %}">{{store.name}}</a>	     
+		</div>
+	      </li>
+            {% endwith %}
+	  {% endwith %}
+	{% endfor %}
+      </ul>
+    {% else %}
+      <ul id="floor_{{floor}}" class="floor newfloor dotthinborder clearfix">
+	<div class="floorlabel"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
+	<div class="floorlabel vert"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
+      </ul>
+    {% endif %}
+  {% endwith %}    
 {% endfor %}
