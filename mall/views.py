@@ -24,45 +24,38 @@ def landing(request):
 
 def mall(request, mall_id):
     form = AddStoreForm()
-    mall = Mall.objects.get(pk=mall_id)
-    is_owner = (request.user == mall.user)
-    mall_dict = _getmall(mall_id, as_owner=is_owner)
-
-    ctx_dict = {
-        'is_owner':is_owner,
+    ctx_dict = _getmall(request, mall_id)
+    ctx_dict.update({
     	'form':form,
-    	'mall':mall,
-        'mallid':mall.id,
-    	'mall_dict':mall_dict,
     	'request':request,
     	'ssmedia':'/ssmedia',
         'MyGlobals':MyGlobals
-    }
+    })
     return render_to_response("mall.html", ctx_dict, context_instance=RequestContext(request))
 
-def _getmall(mall_id, as_owner):
+def _getmall(request, mall_id):
     mall = Mall.objects.get(pk=mall_id)
-    if as_owner:
+    is_owner = (request.user == mall.user)
+    if is_owner:
         stores_list = Store.objects.filter(mall__id=mall_id).order_by('floor', 'position')
     else:
         stores_list = Store.objects.filter(mall__id=mall_id, is_private=False).order_by('floor', 'position')        
     mall_dict = _zipStoreInfo(stores_list)
-    if as_owner:
+    if is_owner:
         mall_dict = _zipFloorInfo(mall_dict)
-            
-    return mall_dict
+
+    ctx_dict = {
+        'is_owner':is_owner,
+        'mall_dict':mall_dict,
+        'mall_id':mall_id,
+        'mall':mall
+        }
+    return ctx_dict
 
 def _getmallHTML(request, mall_id):
     mall = Mall.objects.get(pk=mall_id)
-    is_owner = (request.user == mall.user)
-    mall_dict = _getmall(mall_id)
-    
-    ctx = {
-        'is_owner':is_owner,
-        'mallid':mall_id,
-        'mall_dict':mall_dict
-        }
-    html = render_to_string("mall_snippet.html", ctx, context_instance=RequestContext(request))
+    ctx_dict = _getmall(request, mall_id)
+    html = render_to_string("mall_snippet.html", ctx_dict, context_instance=RequestContext(request))
     return html
 
 def _zipFloorInfo(mall_dict):
@@ -79,7 +72,6 @@ def _zipStoreInfo(stores_list):
     mall_dict = {}
     stores_list = _zipStoreImages(stores_list)
     for storetup in stores_list:
-        print storetup
         try:
             floor_dict = mall_dict[storetup[0].floor]
         except:
