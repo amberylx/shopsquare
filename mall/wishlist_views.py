@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from mall.models import Mall, Wishlist, WishlistItem, WishlistImages, Domain
 from mall.forms import WishlistItemForm, AddWishlistForm
@@ -15,7 +16,7 @@ import MyGlobals
 def wishlist(request, userid):
     add_wl_form = AddWishlistForm()
     add_wli_form = WishlistItemForm()
-    ctx_dict = _getwishlist(request)
+    ctx_dict = _getwishlist(request, userid)
     ctx_dict.update({
         'ssmedia':'/ssmedia',
         'add_wli_form':add_wli_form,
@@ -33,16 +34,24 @@ def _zipWishlistImages(wishlistitems):
         wishlistitems_list.append((wli, wlimage))
     return wishlistitems_list
     
-def _getwishlist(request):
+def _getwishlist(request, userid):
+    wishlist_owner = User.objects.get(pk=userid)
+    is_owner = (request.user == wishlist_owner)
+
     wishlist_dict = {}
-    wishlists = Wishlist.objects.filter(user=request.user)
+    wishlists = Wishlist.objects.filter(user=wishlist_owner)
     for wishlist in wishlists:
-        wishlistitems = WishlistItem.objects.filter(wishlist=wishlist).order_by("position")
+        if is_owner:
+            wishlistitems = WishlistItem.objects.filter(wishlist=wishlist).order_by("position")
+        else:
+            wishlistitems = WishlistItem.objects.filter(wishlist=wishlist, is_private=False).order_by("position")
         wishlistitems_list = _zipWishlistImages(wishlistitems)
         wishlist_dict[wishlist] = wishlistitems_list
 
     ctx_dict = {
-        'wishlist_dict':wishlist_dict
+        'wishlist_dict':wishlist_dict,
+        'wlowner':wishlist_owner,
+        'is_owner':is_owner
         }
     return ctx_dict
 

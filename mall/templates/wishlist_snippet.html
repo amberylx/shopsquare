@@ -1,4 +1,5 @@
 {% for wishlist,wishlistitems in wishlist_dict.items %}
+  {% if is_owner or wishlistitems %}  
   <ul id="wishlist_{{wishlist.id}}" class="wishlist clearfix thinborder">
     <div class="wishlistlabel">{{wishlist.name}}</div>    
     <div class="wishlistlabel vert">{{wishlist.name}}</div>
@@ -8,7 +9,7 @@
 	  <li id="wli_{{wli.id}}" class="wli thinborder">
 	    <div class="wlimgcontainer">
 	      <a href="{{wli.url}}" target="_new">
-		<img src="/ssmedia/wishlist/{{request.user.id}}/{{wlimage.path}}"></img>
+		<img src="/ssmedia/wishlist/{{wlowner.id}}/{{wlimage.path}}"></img>
 	      </a>	  
 	    </div>	
 	    <div id="rmv_{{wli.id}}" class="wlirmv dotthinborder icontext">x</div>
@@ -18,6 +19,7 @@
     {% endfor %}    
     <!--div class="wishlistdescrip">{{wishlist.description}}</div-->
   </ul>
+  {% endif %}  
 {% endfor %}
 <!--ul class="wishlist newwishlist dotthinborder">
   <p>drop item here to create new wishlist</p>

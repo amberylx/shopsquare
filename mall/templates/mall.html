@@ -27,18 +27,20 @@ var addformtrigger;
 {% endblock %}
 
 {% block content %}
-<div id="addstoreoverlay" class="addstoreoverlay thinborder overlay">
-  {% include 'add_store_snippet.html' %}
-</div>
-<div id="workspace">  
-  <div class="mallname workspacetitle">{{mall.name}}</div>
-  <div class="successMsg success"></div>
-  <div class="errorMsg error"></div>
-  {% if is_owner %}  
-  <div class="addstorecontainer thinborder icontext overlayicon" rel="#addstoreoverlay">+</div>
-  {% endif %}  
-  <div id="mall">
-    {% include 'mall_snippet.html' %}    
-  </div>
-</div>  
+  {% if is_owner %}
+    <div id="addstoreoverlay" class="addstoreoverlay thinborder overlay">
+      {% include 'add_store_snippet.html' %}
+    </div>
+  {% endif %}
+  <div id="workspace">  
+    <div class="mallname workspacetitle">{{mall.name}}</div>
+    <div class="successMsg success"></div>
+    <div class="errorMsg error"></div>
+    {% if is_owner %}  
+      <div class="addstorecontainer thinborder icontext overlayicon" rel="#addstoreoverlay">+</div>
+    {% endif %}  
+    <div id="mall">
+      {% include 'mall_snippet.html' %}    
+    </div>
+  </div>  
 {% endblock %}

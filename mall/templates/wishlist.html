@@ -25,20 +25,26 @@ var removeWishlistitemURL = "{% url remove_wishlistitem %}";
 {% endblock %}
 
 {% block content %}
-<div id="addtowishlistoverlay" class="addtowishlistoverlay thinborder overlay">
-  {% include 'add_to_wishlist_snippet.html' %}
-</div>  
-<div id="addwishlistoverlay" class="addwishlistoverlay thinborder overlay">
-  {% include 'add_wishlist_snippet.html' %}
-</div>  
-<div id="workspace">
-  <div class="workspacetitle">wishlist</div>  
-  <div class="successMsg success"></div>
-  <div class="errorMsg error"></div>
-  <div class="addtowishlisticon thinborder icontext overlayicon" rel="#addtowishlistoverlay">+</div>
-  <div id="wishlist">  
-    {% include 'wishlist_snippet.html' %}  
-  </div>    
-  <div class="addwishlisticon thinborder icontext overlayicon" rel="#addwishlistoverlay">+</div>
-</div>
+  {% if is_owner %}  
+    <div id="addtowishlistoverlay" class="addtowishlistoverlay thinborder overlay">
+      {% include 'add_to_wishlist_snippet.html' %}
+    </div>  
+    <div id="addwishlistoverlay" class="addwishlistoverlay thinborder overlay">
+      {% include 'add_wishlist_snippet.html' %}
+    </div>
+  {% endif %}
+  <div id="workspace">
+    <div class="workspacetitle">wishlist</div>  
+    <div class="successMsg success"></div>
+    <div class="errorMsg error"></div>
+    {% if is_owner %}  
+      <div class="addtowishlisticon thinborder icontext overlayicon" rel="#addtowishlistoverlay">+</div>
+    {% endif %}  
+    <div id="wishlist">  
+      {% include 'wishlist_snippet.html' %}  
+    </div> 
+    {% if is_owner %}  
+      <div class="addwishlisticon thinborder icontext overlayicon" rel="#addwishlistoverlay">+</div>
+    {% endif %}    
+  </div>
 {% endblock %}
