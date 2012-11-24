@@ -17,6 +17,11 @@
 <div id="workspace">
   <div class="successMsg success"></div>
   <div class="errorMsg error"></div>
+  <div id="breadcrumbs" class="breadcrumbs">
+    <a href="{% url mall store.mall.id %}">mall</a> &gt;
+    <a href="{% url floor store.mall.id store.floor %}">floor {{store.floor}}</a> &gt;
+    <span>{{store.name}}</span>    
+  </div>
   <div id="store" class="thinborder clearfix">
 
     <div id="leftcol">    
