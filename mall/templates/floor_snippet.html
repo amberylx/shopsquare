@@ -1,19 +1,19 @@
-<div id="floor_{{floor_id}}" class="floor clearfix thinborder">
+<ul id="floor_{{floor_id}}" class="floor clearfix thinborder">
 {% if stores_list %}
   {% for storetup in stores_list %}
     {% with store=storetup.0 %}
       {% with storeimg=storetup.1 %}
-        <div id="store_{{store.id}}" class="store thinborder">
+        <li id="store_{{store.id}}" class="store thinborder">
           <div class="storeimgcontainer">
             <a href="{{store.url}}" target="_new">
-              <img src="/ssmedia/store/{{request.user.id}}/{{storeimg}}"></img>
+              <img src="/ssmedia/store/{{store.mall.user.id}}/{{storeimg}}"></img>
             </a>
           </div>
           <div id="rmv_{{store.id}}" class="storermv dotthinborder icontext">x</div>
           <div class="storename">
-	    <a href="{% url store mall.id store.id %}">{{store.name}}</a>
+	    <a href="{% url store store.mall.id store.id %}">{{store.name}}</a>
           </div>
-        </div>
+        </li>
       {% endwith %}
     {% endwith %}
   {% endfor %}
@@ -22,4 +22,4 @@
     You don't have any stores on this floor yet.
   </div>
 {% endif %}
-</div>
+</ul>

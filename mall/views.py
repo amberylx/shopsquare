@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from mall.models import Store, StoreImages, Mall, SSUser, Wishlist, WishlistItem, Domain
 from mall.forms import RegisterForm, AddStoreForm
-from mall.wishlist_views import _getwishlistHTML
+from mall.wishlist_views import _getwishlistHTML, _zipWishlistImages
 from utils import ImageScraper, imageutils, urlutils, sysutils
 import MyGlobals
 
@@ -77,30 +77,57 @@ def _zipFloorInfo(mall_dict):
     
 def _zipStoreInfo(stores_list):
     mall_dict = {}
-    for store in stores_list:
+    stores_list = _zipStoreImages(stores_list)
+    for storetup in stores_list:
+        print storetup
+        try:
+            floor_dict = mall_dict[storetup[0].floor]
+        except:
+            floor_dict = {}
+            mall_dict[storetup[0].floor] = floor_dict
+
+        try:
+            floor_dict['stores_list'].append(storetup)
+        except:
+            floor_dict['stores_list'] = [storetup]
+
+    return mall_dict
+
+def _zipStoreImages(stores):
+    stores_list = []
+    for store in stores:
         try:
             si = StoreImages.objects.get(store=store)
         except:
             si = None
 
         try:
-            floor_dict = mall_dict[store.floor]
+            stores_list.append((store, si))
         except:
-            floor_dict = {}
-            mall_dict[store.floor] = floor_dict
+            stores_list = [(store, si)]
 
-        try:
-            floor_dict['stores_list'].append((store, si))
-        except:
-            floor_dict['stores_list'] = [(store, si)]
-
-    return mall_dict
+    return stores_list
+    
+def floor(request, mall_id, floor_id):
+    stores_list = _getfloor(request, mall_id, floor_id)
+    ctx_dict = {
+        'stores_list':stores_list,
+    	'request':request,
+    	'ssmedia':'/ssmedia',
+        'MyGlobals':MyGlobals
+    }
+    return render_to_response("floor.html", ctx_dict, context_instance=RequestContext(request))
 
 def _getfloor(request, mall_id, floor_id):
     mall = Mall.objects.get(pk=mall_id)
-    all_stores = Store.objects.filter(mall__id=mall_id, floor=floor_id).order_by('position')
+    is_owner = (request.user == mall.user)
+    if is_owner:
+        all_stores = Store.objects.filter(mall__id=mall_id, floor=floor_id).order_by('position')
+    else:
+        all_stores = Store.objects.filter(mall__id=mall_id, floor=floor_id, is_private=False).order_by('position')
+        
     try:
-        stores_list = _zipStoreImages(all_stores)[int(floor_id)]
+        stores_list = _zipStoreInfo(all_stores)[int(floor_id)]['stores_list']
     except Exception, e:
         stores_list = []
     return stores_list
@@ -117,21 +144,17 @@ def _getfloorHTML(mall_id, floor_id):
     html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))
     return html
     
-def floor(request, mall_id, floor_id):
-    ctx_dict = _getfloor(mall_id, floor_id)
-    ctx_dict.update({
-    	'request':request,
-    	'ssmedia':'/ssmedia',
-        'MyGlobals':MyGlobals
-    })
-    return render_to_response("floor.html", ctx_dict, context_instance=RequestContext(request))
-
 def store(request, mall_id, store_id):
     store = Store.objects.get(pk=store_id)
-    (store, storeimg) = _zipStoreImages([store])[store.floor][0]
-    wishlistitems = WishlistItem.objects.filter(wishlist__user=request.user, domain_id=store.domain.id)
-    wishlistitems = _zipWishlistImages(wishlistitems)
+    is_owner = (request.user == store.mall.user)
+    (store, storeimg) = _zipStoreImages([store])[0]
+    if is_owner:
+        wishlistitems = WishlistItem.objects.filter(wishlist__user=request.user, domain_id=store.domain.id)
+        wishlistitems = _zipWishlistImages(wishlistitems)
+    else:
+        wishlistitems = {}
     ctx_dict = {
+        'is_owner':is_owner,
         'store':store,
         'storeimg':storeimg,
         'wishlistitems':wishlistitems,
