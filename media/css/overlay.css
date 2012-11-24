@@ -54,6 +54,9 @@ div.overlay td.overlaylabel {
 div.overlay td.overlayinput input {
     margin-left: 10px;
 }
+div.overlaystep2 {
+    display: none;
+}
 div.overlayslidedown {
     display: none;
     text-align: center;

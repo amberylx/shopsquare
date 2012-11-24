@@ -4,6 +4,15 @@ div.breadcrumbs {
     text-transform: uppercase;
     letter-spacing: 0.4em;
 }
+div.breadcrumbs.addstorebreadcrumbs {
+    text-align: center;
+}
+div.breadcrumbs.addstorebreadcrumbs span {
+    padding: 0 10px;
+}
+div.breadcrumbs.addstorebreadcrumbs span.currstep {
+    background-color: #555;
+}
 
 /* add store overlay */
 div.overlayicon.addstoreicon {

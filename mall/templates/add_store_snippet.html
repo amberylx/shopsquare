@@ -2,53 +2,71 @@
   add a store
 </div>
 <div class="addstoreformcontainer overlayformcontainer">
-  <form id="addstoreform">
-    <table>
-      <tr>
-	<td colspan="2">{% for error in form.url.errors %}{{error}}{% endfor %}</td>
-      </tr>
-      <tr>
-	<td class="addstorelabel overlaylabel"><label for="id_url"> Store URL </td>
-	<td class="addstoreinput overlayinput">
-	  <input type="url" id="id_url" name="url" maxlength="200" placeholder="your store url" />
-	  <span class="statusicon">ok</span>	  
-	</td>
-      </tr>
-      
-      <tr>
-	<td colspan="2">{% for error in form.name.errors %}{{error}}{% endfor %}</td>
-      </tr>
-      <tr>
-	<td class="addstorelabel overlaylabel"><label for="id_name"> Store Name </td>
-	<td class="addstoreinput overlayinput">{{form.name}}</td>
-      </tr>
-      
-      <tr>
-	<td colspan="2">{% for error in form.tags.errors %}{{error}}{% endfor %}</td>
-      </tr>
-      <tr>
-	<td class="addstorelabel overlaylabel"><label for="id_tags"> Tags </td>
-	<td class="addstoreinput overlayinput">{{form.tags}}</td>
-      </tr>
+  <div class="addstorebreadcrumbs breadcrumbs">
+    <span class="breadcrumb1 currstep">1. add store info</span>
+    <span class="breadcrumb2">2. select store image</span>    
+  </div>
+  <form id="addstoreform">    
+    <div class="addstorestep1 overlaystep1">
+      <table>
+	<tr>
+	  <td colspan="2">{% for error in form.url.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>
+	  <td class="addstorelabel overlaylabel"><label for="id_url"> Store URL </td>
+	  <td class="addstoreinput overlayinput">
+	    <input type="url" id="id_url" name="url" maxlength="200" placeholder="your store url" />
+	    <span class="statusicon">ok</span>	  
+	  </td>
+	</tr>
+	
+	<tr>
+	  <td colspan="2">{% for error in form.name.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>
+	  <td class="addstorelabel overlaylabel"><label for="id_name"> Store Name </td>
+	  <td class="addstoreinput overlayinput">
+	    <input type="text" id="id_name" name="name" maxlength="100" placeholder="name of the store" />	  
+	  </td>
+	</tr>
+	
+	<tr>
+	  <td colspan="2">{% for error in form.tags.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>
+	  <td class="addstorelabel overlaylabel"><label for="id_tags"> Tags </td>
+	  <td class="addstoreinput overlayinput">
+	    <input type="text" id="id_tags" name="tags" maxlength="1000" placeholder="categories for this store" />	  
+	  </td>
+	</tr>
+	
+	<tr>
+	  <td class="addstorelabel overlaylabel"><label for="id_is_private"> Keep store private? </td>
+	  <td class="addstoreinput overlayinput">{{form.is_private}}</td>
+	</tr>
 
-      <tr>
-	<td class="addstorelabel overlaylabel"><label for="id_is_private"> Keep store private? </td>
-	<td class="addstoreinput overlayinput">{{form.is_private}}</td>
-      </tr>
-    </table>
-    <div class="addstoreslidedown overlayslidedown">
-      <div class="addstoreimagecontainer overlayimagecontainer dotthinborder">
-	<div class="addstoreimage overlayimage"></div>
-	<input type="hidden" id="crop_x1" name="crop_x1" />  
-	<input type="hidden" id="crop_y1" name="crop_y1" />  
-	<input type="hidden" id="crop_x2" name="crop_x2" />  
-	<input type="hidden" id="crop_y2" name="crop_y2" />
-	<input type="hidden" id="overlayimagefile" name="overlayimagefile" />
-	<input type="button" class="button tinybutton cropbutton" value="crop" />  
+	<tr>
+	  <td colspan="2" style="text-align:center">
+	    <input type="button" class="button tinybutton steponebutton" value="Continue"/>
+	  </td>
+	</tr>
+      </table>      
+    </div>
+    <div class="addstorestep2 overlaystep2">
+      <div class="addstoreslidedown overlayslidedown">
+	<div class="addstoreimagecontainer overlayimagecontainer dotthinborder">
+	  <div class="addstoreimage overlayimage"></div>
+	  <input type="hidden" id="crop_x1" name="crop_x1" />  
+	  <input type="hidden" id="crop_y1" name="crop_y1" />  
+	  <input type="hidden" id="crop_x2" name="crop_x2" />  
+	  <input type="hidden" id="crop_y2" name="crop_y2" />
+	  <input type="hidden" id="overlayimagefile" name="overlayimagefile" />
+	  <input type="button" class="button tinybutton cropbutton" value="crop" />  
+	</div>
+      </div>  
+      <div class="addstoresubmit overlaysubmit">
+	<input type="button" class="button tinybutton addstorebutton" value="Add Store">
       </div>
     </div>      
-    <div class="addstoresubmit overlaysubmit">
-      <input type="button" class="button tinybutton addstorebutton" value="Add Store">
-    </div>
   </form>
 </div>

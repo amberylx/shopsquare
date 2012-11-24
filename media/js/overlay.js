@@ -1,8 +1,17 @@
+$(function() {
+    $(".overlaystep1 .steponebutton").on("click", function() {
+	$(".overlaystep1").hide();
+	$(".overlaystep2").show();
+	$(".breadcrumb1").removeClass("currstep");
+	$(".breadcrumb2").addClass("currstep");
+    });
+});
+
 function initOverlay(trigger) {
     t = trigger.overlay({
         effect: 'apple',
         fixed: false,
-        top: '10%',
+        top: '15%',
         onBeforeLoad: function() {
             $("body").addClass("overlayOpen");
         },
