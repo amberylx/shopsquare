@@ -2,8 +2,8 @@
   {% with stores_list=floor_dict.stores_list %}    
     {% if stores_list %}
       <ul id="floor_{{floor}}" class="floor clearfix thinborder">
-	<div class="floorlabel"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
-	<div class="floorlabel vert"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
+	<div class="floorlabel"><a href="{% url floor mall_id floor %}">floor {{floor}}</a></div>
+	<div class="floorlabel vert"><a href="{% url floor mall_id floor %}">floor {{floor}}</a></div>
 	{% for storetup in stores_list %}
 	  {% with store=storetup.0 %}
             {% with storeimg=storetup.1 %}
@@ -24,8 +24,8 @@
       </ul>
     {% else %}
       <ul id="floor_{{floor}}" class="floor newfloor dotthinborder clearfix">
-	<div class="floorlabel"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
-	<div class="floorlabel vert"><a href="{% url floor mallid floor %}">floor {{floor}}</a></div>
+	<div class="floorlabel"><a href="{% url floor mall_id floor %}">floor {{floor}}</a></div>
+	<div class="floorlabel vert"><a href="{% url floor mall_id floor %}">floor {{floor}}</a></div>
       </ul>
     {% endif %}
   {% endwith %}    

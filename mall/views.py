@@ -101,13 +101,14 @@ def _zipStoreImages(stores):
     return stores_list
     
 def floor(request, mall_id, floor_id):
-    stores_list = _getfloor(request, mall_id, floor_id)
-    ctx_dict = {
-        'stores_list':stores_list,
+    form = AddStoreForm()
+    ctx_dict = _getfloor(request, mall_id, floor_id)
+    ctx_dict.update({
+        'form':form,
     	'request':request,
     	'ssmedia':'/ssmedia',
         'MyGlobals':MyGlobals
-    }
+    })
     return render_to_response("floor.html", ctx_dict, context_instance=RequestContext(request))
 
 def _getfloor(request, mall_id, floor_id):
@@ -122,18 +123,18 @@ def _getfloor(request, mall_id, floor_id):
         stores_list = _zipStoreInfo(all_stores)[int(floor_id)]['stores_list']
     except Exception, e:
         stores_list = []
-    return stores_list
 
-def _getfloorHTML(mall_id, floor_id):
-    mall = Mall.objects.get(pk=mall_id)
-    stores_list = _getfloor(mall_id, floor_id)
-    ctx = {
+    ctx_dict = {
         'mall':mall,
-        'floor_id':floor_id,
         'stores_list':stores_list,
+        'floor_id':floor_id,
         'viewmode':'floor'
         }
-    html = render_to_string("floor_snippet.html", ctx, context_instance=RequestContext(request))
+    return ctx_dict
+
+def _getfloorHTML(mall_id, floor_id):
+    ctx_dict = _getfloor(mall_id, floor_id)
+    html = render_to_string("floor_snippet.html", ctx_dict, context_instance=RequestContext(request))
     return html
     
 def store(request, mall_id, store_id):
