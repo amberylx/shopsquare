@@ -15,14 +15,12 @@ import MyGlobals
 def wishlist(request, userid):
     add_wl_form = AddWishlistForm()
     add_wli_form = WishlistItemForm()
-    wishlist_dict = _getwishlist(request)
-    
-    ctx_dict = {
+    ctx_dict = _getwishlist(request)
+    ctx_dict.update({
         'ssmedia':'/ssmedia',
         'add_wli_form':add_wli_form,
         'add_wl_form':add_wl_form,
-        'all_wishlists':wishlist_dict,
-    }
+    })
     return render_to_response("wishlist.html", ctx_dict, context_instance=RequestContext(request))
 
 def _zipWishlistImages(wishlistitems):
@@ -42,15 +40,16 @@ def _getwishlist(request):
         wishlistitems = WishlistItem.objects.filter(wishlist=wishlist).order_by("position")
         wishlistitems_list = _zipWishlistImages(wishlistitems)
         wishlist_dict[wishlist] = wishlistitems_list
-    return wishlist_dict
+
+    ctx_dict = {
+        'wishlist_dict':wishlist_dict
+        }
+    return ctx_dict
 
 def _getwishlistHTML(request):
-    wishlist_dict = _getwishlist(request)
-    ctx = {
-        'all_wishlists':wishlist_dict
-        }
-    wishlistHTML = render_to_string("wishlist_snippet.html", ctx, context_instance=RequestContext(request))
-    return wishlistHTML
+    ctx_dict = _getwishlist(request)
+    html = render_to_string("wishlist_snippet.html", ctx_dict, context_instance=RequestContext(request))
+    return html
     
 def add_wishlist(request):
     name = request.POST.get('name')
