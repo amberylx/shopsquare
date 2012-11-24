@@ -8,14 +8,14 @@ div.overlaytitle {
     right: 25px;
 }
 div.overlayicon {
-    width: 20px;
     height: 20px;
     border-radius: 10px;
     background-color: #FFF;
-    font-size: 14px;
+    font-size: 10px;
     text-align: center;
     line-height: 20px; /* vertically center text */
     cursor: pointer;
+    margin-bottom: 10px;
 }
 .overlay {
     display: none;

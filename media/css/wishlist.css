@@ -1,5 +1,11 @@
 
 /* add to wishlist overlay */
+div.overlayicon.addwishlisticon {
+    width: 60px;
+}
+div.overlayicon.addtowishlisticon {
+    width: 80px;
+}
 div.addwishlistoverlay,
 div.addtowishlistoverlay {
     width: 50%;

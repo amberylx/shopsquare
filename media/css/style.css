@@ -106,6 +106,9 @@ form input[type="checkbox"] {
     padding: 5px;
     margin: 0 auto;
 }
+.statusicon {
+    display: none;
+}
 
 div.workspacetitle {
     font-size: 20px;

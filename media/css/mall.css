@@ -1,5 +1,8 @@
 
 /* add store overlay */
+div.overlayicon.addstoreicon {
+    width: 50px;
+}
 div.addstoreoverlay {
     width: 60%;
     left: 20%;

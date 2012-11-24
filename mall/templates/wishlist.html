@@ -38,13 +38,13 @@ var removeWishlistitemURL = "{% url remove_wishlistitem %}";
     <div class="successMsg success"></div>
     <div class="errorMsg error"></div>
     {% if is_owner %}  
-      <div class="addtowishlisticon thinborder icontext overlayicon" rel="#addtowishlistoverlay">+</div>
+      <div class="addtowishlisticon thinborder icontext overlayicon" rel="#addtowishlistoverlay">+ wishlist item</div>
     {% endif %}  
     <div id="wishlist">  
       {% include 'wishlist_snippet.html' %}  
     </div> 
     {% if is_owner %}  
-      <div class="addwishlisticon thinborder icontext overlayicon" rel="#addwishlistoverlay">+</div>
+      <div class="addwishlisticon thinborder icontext overlayicon" rel="#addwishlistoverlay">+ wishlist</div>
     {% endif %}    
   </div>
 {% endblock %}
