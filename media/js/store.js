@@ -1,6 +1,6 @@
 $(function() {
     setSortable('floor', 'store');
-    addformtrigger = initOverlay($(".addstorecontainer"));
+    addformtrigger = initOverlay($(".addstoreicon"));
     $(".addstorebutton").on("click", addStore);
     $(".cropbutton").on("click", function() { doCrop('store'); } );
     $("#mall").on("click", ".storermv", function() {
@@ -13,7 +13,16 @@ $(function() {
     });
     $("#id_url").on("change", function() {
         url = $(this).val();
-        scrapeImage(url, 'store');
+	if (isValidURL(url)) {
+            scrapeImage(url, 'store');
+	}
+    });
+    $("input").on("change", function() {
+	if (isNotBlank(this)) {
+	    $(this).next("span.statusicon").show();
+	} else {
+	    $(this).next("span.statusicon").hide();
+	}
     });
 });
 
