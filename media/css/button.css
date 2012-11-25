@@ -1,11 +1,14 @@
+.buttontext {
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    font-size: 10px;
+}
+
 .button {
     border: 1px solid #D1D102;
     border-radius: 5px;
     background-color: #FCFC6A;
     cursor: pointer;
-    letter-spacing: .1em;
-    text-transform: uppercase;
-    font-size: 10px;
 }
 
 .tinybutton {

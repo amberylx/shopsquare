@@ -57,6 +57,14 @@ div.overlay td.overlayinput input {
 div.overlaystep2 {
     display: none;
 }
+div.backbutton {
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 10px;
+}
+div.backbutton:hover {
+    text-decoration: underline;OB
+}
 div.overlayslidedown {
     display: none;
     text-align: center;

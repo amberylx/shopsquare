@@ -1,11 +1,24 @@
 $(function() {
-    $(".overlaystep1 .steponebutton").on("click", function() {
-	$(".overlaystep1").hide();
-	$(".overlaystep2").show();
-	$(".breadcrumb1").removeClass("currstep");
-	$(".breadcrumb2").addClass("currstep");
+    $(".step1button").on("click", function() {
+	transitionToStep(1, 2);
     });
+    $(".back2button").on("click", function() {
+	transitionToStep(2, 1);
+    })
 });
+
+function transitionToStep(oldstep, newstep) {
+    oldstepButton = ".step"+oldstep+"button";
+    overlayOldStepClass = ".overlaystep"+oldstep;
+    overlayNewStepClass = ".overlaystep"+newstep;
+    overlayOldBreadcrumbClass = ".breadcrumb"+oldstep;
+    overlayNewBreadcrumbClass = ".breadcrumb"+newstep;
+
+    $(overlayOldStepClass).hide();
+    $(overlayNewStepClass).show();
+    $(overlayOldBreadcrumbClass).removeClass("currstep");
+    $(overlayNewBreadcrumbClass).addClass("currstep");
+}
 
 function initOverlay(trigger) {
     t = trigger.overlay({
