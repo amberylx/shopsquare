@@ -38,7 +38,7 @@ div.overlay .close {
 }
 div.overlay {
     display: none;
-    padding: 10px;
+    padding: 10px 0;
 }
 div.overlayformcontainer {
     margin: 0 auto;
