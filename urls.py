@@ -13,11 +13,6 @@ urlpatterns = patterns('mall.views',
     url(r'^remove_store/(?P<viewmode>\w*)/$', 'remove_store', {}, name="remove_store"),
     url(r'^move/(?P<itemtype>\w*)/$', 'move_item', {}, name="move_wishlistitem"),
     url(r'^move/(?P<itemtype>\w*)/(?P<viewmode>\w*)$', 'move_item', {}, name="move_store"),
-    url(r'^register/$', 'register', {}, name="register"),
-    url(r'^profile/(\d*)/$', 'profile', {}, name="profile"),
-    url(r'^about/$', 'about', {}, name="about"),
-    url(r'^login/$', 'login', name="login"),
-    url(r'^logout/$', 'logout', name="logout"),
 )
 
 urlpatterns += patterns('mall.wishlist_views',
@@ -27,6 +22,13 @@ urlpatterns += patterns('mall.wishlist_views',
     url(r'^profile/(\d*)/wishlist/$', 'wishlist', {}, name="wishlist"),
     )
 
+urlpatterns += patterns('mall.general_views',
+    url(r'^register/$', 'register', {}, name="register"),
+    url(r'^profile/(\d*)/$', 'profile', {}, name="profile"),
+    url(r'^about/$', 'about', {}, name="about"),
+    url(r'^login/$', 'login', name="login"),
+    url(r'^logout/$', 'logout', name="logout"),
+    )
 urlpatterns += patterns('',
     (r'^ssmedia/store/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root':settings.STATIC_STORE_IMAGE_ROOT, 'show_indexes':True}),
