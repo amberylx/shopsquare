@@ -1,38 +1,70 @@
 {% extends "base.html" %}
 
-{% block css %}{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ssmedia}}/css/register.css" type="text/css"/>
+{% endblock %}
 {% block js %}{% endblock %}
 
 {% block title %}shop square - register{% endblock %}
 
 
 {% block content %}
-  <form action="." method="POST"> {% csrf_token %}
-	{% if form.first_name.errors %}
-	  {{ form.first_name.errors }}
-	{% endif %}
-	<label for="id_first_name">First Name:</label> {{ form.first_name }}<br>
+<div id="workspace">  
+  <div class="workspacetitle">register</div>
 
-	{% if form.last_name.errors %}
-	  {{ form.last_name.errors }}
-	{% endif %}
-	<label for="id_last_name">Last Name: {{ form.last_name }}<br>
+  <div class="registerformcontainer thinborder">
+    <form id="registerform" action="." method="POST"> {% csrf_token %}
+      <table>
+	<tr>
+	  <td></td>	  
+	  <td class="error">{% for error in form.first_name.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>      
+	  <td class="reglabel"><label for="id_first_name">First Name</label></td>
+	  <td class="reginput">{{ form.first_name }}</td>
+	</tr>	
+	
+	<tr>
+	  <td></td>	  
+	  <td class="error">{% for error in form.last_name.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>
+	  <td class="reglabel"><label for="id_last_name">Last Name</label></td>
+	  <td class="reginput">{{ form.last_name }}</td>
+	</tr>
+	
+	<tr>
+	  <td></td>
+	  <td class="error">{% for error in form.email.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>
+	  <td class="reglabel"><label for="id_email">Email</label></td>
+	  <td class="reginput">{{ form.email }}</td>
+	</tr>	
+	
+	<tr>
+	  <td></td>
+	  <td class="error">{% for error in form.password.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>
+	  <td class="reglabel"><label for="id_password">Password</label></td>
+	  <td class="reginput">{{ form.password }}</td>
+	</tr>	
+	
+	<tr>
+	  <td></td>	  
+	  <td class="error">{% for error in form.mall_name.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>
+	  <td class="reglabel"><label for="id_mall_name">Mall name</label></td>
+	  <td class="reginput">{{ form.mall_name }}</td>
+	</tr>		
+      </table>	
 
-	{% if form.email.errors %}
-	  {{ form.email.errors }}
-	{% endif %}
-	<label for="id_email">Email: {{ form.email }}<br>
-
-	{% if form.password.errors %}
-	  {{ form.password.errors }}
-	{% endif %}
-	<label for="id_password">Password: {{ form.password }}<br>
-
-	{% if form.mall_name.errors %}
-	  {{ form.mall_name.errors }}
-	{% endif %}
-	<label for="id_mall_name">Mall name: {{ form.mall_name }}<br>
-
-	<input type="submit" value="Register" />
-  </label>
+      <div class="regsubmitcontainer">
+	<input class="button tinybutton" type="submit" value="Register" />
+      </div>    
+    </form>
+  </div>
+</div>  
 {% endblock %}

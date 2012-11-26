@@ -1,0 +1,27 @@
+.loginformcontainer {
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+}
+.loginformcontainer table {
+    width: 100%;
+}
+
+
+.loginformcontainer .error {
+    padding-left: 10px;
+}
+.loginlabel {
+    text-align: right;
+    width: 35%;
+}
+.logininput {
+    width: 50%;
+}
+.logininput input {
+    margin-left: 10px;
+}
+.loginsubmitcontainer {
+    margin-top: 10px;
+    text-align: center;
+}

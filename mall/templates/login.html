@@ -1,26 +1,43 @@
 {% extends "base.html" %}
 
-{% block css %}{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{{ssmedia}}/css/login.css" type="text/css"/>
+{% endblock %}
 {% block js %}{% endblock %}
 
 {% block title %}shop square - login{% endblock %}
 
 
 {% block content %}
-	<form action="/login/" method="POST"> {% csrf_token %}
-		{% if form.email.errors %}
-		  {{ form.email.errors }}
-		{% endif %}
-		<label for="id_email">Email
-		<input type="text" name="email" value="" id="email" size="30"><br>
+<div id="workspace">
+  <div class="workspacetitle">log in</div>
 
-		{% if form.password.errors %}
-		  {{ form.password.errors }}
-		{% endif %}
-		<label for="id_password">Password {{ form.password }}
-		<input type="password" name="password" value="" id="password" size="30"><br>
+  <div class="loginformcontainer thinborder">  
+    <form id="loginform" action="/login/" method="POST">{% csrf_token %}
+      <table>
+	<tr>
+	  <td></td>	  
+	  <td class="error">{% if form.email.errors %}{{ form.email.errors }}{% endif %}</td>
+	</tr>
+	<tr>
+	  <td class="loginlabel"><label for="id_email">Email</label></td>
+	  <td class="logininput"><input type="text" name="email" value="" id="email" size="30"></td>
+	</tr>	  
 
-		<input type="submit" value="Log In" />
-	</form>
-  </label>
+	<tr>
+	  <td></td>
+	  <td class="erro">{% if form.password.errors %}{{ form.password.errors }}{% endif %}</td>
+	</tr>
+	<tr>
+	  <td class="loginlabel"><label for="id_password">Password</label></td>
+	  <td class="logininput"><input type="password" name="password" value="" id="password" size="30"></td>
+	</tr>
+      </table>
+
+      <div class="loginsubmitcontainer">
+	<input type="submit" class="button tinybutton" value="Log In" />
+      </div>	  
+    </form>
+  </div>
+</div>    
 {% endblock %}

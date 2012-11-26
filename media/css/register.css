@@ -1,0 +1,27 @@
+.registerformcontainer {
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+}
+.registerformcontainer table {
+    width: 100%;
+}
+
+
+.registerformcontainer .error {
+    padding-left: 10px;
+}
+.reglabel {
+    text-align: right;
+    width: 35%;
+}
+.reginput {
+    width: 50%;
+}
+.reginput input {
+    margin-left: 10px;
+}
+.regsubmitcontainer {
+    margin-top: 10px;
+    text-align: center;
+}
