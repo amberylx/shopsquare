@@ -6,14 +6,16 @@ import ImageFile
 import os
 import sys
 
-def getImagesFromURL(url, filedir="/Users/slee/shopsquare/media/images/usrimg/", filename="image.jpg"):
+def getImagesFromURL(url, filedir="/Users/slee/shopsquare/media/images/usrimg/", filename="image.jpg", start_index=0):
     """Downloads all the images at 'url' to /test/"""
     parsed = urlparse.urlparse(url)
     soup = bs(urlopen(url))
     images = soup.findAll("img")
 
     didScrape = False
-    for image in images:
+    imgindex = 0
+    for x,image in enumerate(images):
+        if x < start_index: continue
         if not image.has_key('src'): continue
         # get image uri
         base_split = parsed[:]
@@ -45,10 +47,11 @@ def getImagesFromURL(url, filedir="/Users/slee/shopsquare/media/images/usrimg/",
         imgpath = os.path.join(filedir, filename)
         urlretrieve(full_image_uri, imgpath)
         didScrape = True
-        print "scraped image to file: %s" % imgpath
+        imgindex = x+1
+        print "scraped image index %s to file: %s" % (imgindex, imgpath)
         break
 
-    return (filedir, filename) if didScrape else ''
+    return (filedir, filename, imgindex) if didScrape else ('', '', -1)
 
 def getsizes(uri):
     # get file size *and* image size (None if not known)

@@ -4,7 +4,16 @@ $(function() {
     });
     $(".back2button").on("click", function() {
 	transitionToStep(2, 1);
-    })
+    });
+    $(".nextimage").on("click", function() {
+	currImgEl = $("#visibleimage");
+	killJcrop(currImgEl);
+	currImgEl.removeClass("visibleimage").addClass("hiddenimage").removeAttr('id');
+
+	nextImgEl = currImgEl.next();
+	nextImgEl.removeClass("hiddenImage").addClass("visibleimage").attr('id', 'visibleimage');
+	initJcrop(nextImgEl);
+    });
 });
 
 function transitionToStep(oldstep, newstep) {
@@ -34,28 +43,57 @@ function initOverlay(trigger) {
     });
     return t;
 }
+function initJcrop(imgEl) {
+    imgEl.Jcrop({
+        aspectRatio: 0.666666,
+        minSize: [ 80, 120 ],
+        setSelect: [ 0, 0, 80, 120 ],
+        addClass: 'jcrop-dark',
+        onSelect: setCoords
+    }, function () {
+	imgEl.data("jcrop", this);
+    });
+}
+function killJcrop(imgEl) {
+    jcropapi = imgEl.data("jcrop");
+    jcropapi.destroy();
+    imgEl.attr('style', '');
+}
 
-function scrapeImage(url, type) {
+var imageScrapeCount = 0;
+function scrapeImage(url, type, start_index) {
+    var imgindex;
     $(".loadingicon").show();
     $.ajax({
 	type: 'POST',
 	url: scrapeImageURL,
-        data: { 'url':url, 'type':type },
+        data: { 'url':url, 'type':type, 'start_index':start_index },
 	success: function(response) {
+	    imgindex = response.imgindex;
             if (response.status == 'ok') {
-                $(".overlayimage").html(response.imgHTML);
-		$(".overlayimagecontainer").show();
-                $(".overlayslidedown").slideDown(500);
-                $("#overlayimagefile").val(response.filename);
-                $(".overlayimage img").Jcrop({
-                    aspectRatio: 0.666666,
-                    minSize: [ 80, 120 ],
-                    setSelect: [ 0, 0, 80, 120 ],
-                    addClass: 'jcrop-dark',
-                    onSelect: setCoords
-                });
-		$(".cropbutton").show();
-            } else {
+		imgContainer = $(".overlayimage");
+                imgContainer.append(response.imgHTML);
+
+		// first image scraped
+		var imgEl = imgContainer.children().last();
+		imgEl.data("filename", response.filename);
+		if (imgContainer.hasClass("noimages")) {
+		    imgContainer.removeClass("noimages");
+		    $(".overlayimagecontainer").show();
+		    $(".cropbutton").show();
+                    $(".overlayslidedown").slideDown(500);
+		    imgEl.removeClass("hiddenimage").addClass("visibleimage").attr('id', 'visibleimage');
+		    initJcrop(imgEl);
+		}
+
+		// keep scraping
+		imageScrapeCount += 1;
+		if (imageScrapeCount < 2) {
+		    scrapeImage(url, type, response.imgindex);
+		}
+            } else if (response.status == 'complete') {
+		alert('complete');
+	    } else {
                 alert('error');
             }
         }
@@ -68,13 +106,13 @@ function doCrop(type) {
     crop_y1 = $('#crop_y1').val();
     crop_x2 = $('#crop_x2').val();
     crop_y2 = $('#crop_y2').val();
-    filename = $("#overlayimagefile").val();
+    filename = $("#visibleimage").data("filename");
     $.post(doCropURL,
           { 'crop_x1':crop_x1, 'crop_y1':crop_y1, 'crop_x2':crop_x2, 'crop_y2':crop_y2, 'filename':filename, 'type':type },
           function(response) {
               if (response.status == 'ok') {
                   $(".overlayimage").html(response.imgHTML);
-                  $(".overlayimagepath").val(response.filename);
+                  $("#overlayimagefile").val(response.filename);
 		  $(".cropbutton").hide();
               } else {
                   alert('error');

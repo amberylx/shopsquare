@@ -85,6 +85,12 @@ div.overlayimagecontainer {
 div.overlayimage {
     text-align: center;
 }
+div.overlayimage .hiddenimage {
+    display: none;
+}
+div.overlayimage .visibleimage {
+    display: inline-block;
+}
 .cropbutton {
     margin-top: 10px;
 }

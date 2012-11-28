@@ -14,7 +14,7 @@ $(function() {
     $("#id_url").on("change", function() {
         url = $(this).val();
 	if (isValidURL(url)) {
-            scrapeImage(url, 'store');
+            scrapeImage(url, 'store', 0);
 	}
     });
     $("input").on("change", function() {

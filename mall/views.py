@@ -160,6 +160,7 @@ def store(request, mall_id, store_id):
 def scrape_image(request):
     url = request.POST.get('url')
     scrape_for = request.POST.get('type')
+    start_index = int(request.POST.get('start_index', 0))
     uid = request.user.id
 
     imgHTML = ''
@@ -172,13 +173,16 @@ def scrape_image(request):
         imgpath = MyGlobals.WISHLISTIMG_ROOT_SRV % { 'uid':uid }
 
     try:
-        (filedir, filename) = ImageScraper.getImagesFromURL(url, filedir=filedir, filename=filename)
+        (filedir, filename, imgindex) = ImageScraper.getImagesFromURL(url,
+                                                                      filedir=filedir,
+                                                                      filename=filename,
+                                                                      start_index=start_index)
         if filename:
             try:
                 (filedir, filename) = imageutils.resize_image(filedir, filename)
             except Exception, e:
                 print "unable to resize image: %s" % str(e)
-            imgHTML = '<img src="%s/%s"></img>' % (imgpath, filename)
+            imgHTML = '<img class="hiddenimage" src="%s/%s"></img>' % (imgpath, filename)
         else:
             raise Exception("no image to scrape")
         status = 'ok'
@@ -186,12 +190,15 @@ def scrape_image(request):
         print "unable to scrape image: %s; %s" % (str(e), traceback.print_exc())
         filename = None
         imgpath = None
-        status = 'error'
+        # if there's an issue, move scrape to next image to prevent cycle
+        imgindex = -1 if (e == "no image to scrape")  else start_index+1
+        status = 'complete' if (e == "no image to scrape") else 'error'
 
     response = {
         'status':status,
         'filename':filename,
         'imgpath':imgpath,
+        'imgindex':imgindex,
         'imgHTML':imgHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
