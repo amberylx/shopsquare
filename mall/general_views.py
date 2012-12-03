@@ -8,6 +8,7 @@ from django.conf import settings
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from mall.models import Mall
 from mall.forms import RegisterForm
 import MyGlobals
 
