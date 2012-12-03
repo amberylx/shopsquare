@@ -25,6 +25,7 @@ div.overlayicon {
     -moz-box-shadow:0 0 90px 5px #000;
     -webkit-box-shadow: 0 0 90px #000;
 }
+/*
 div.overlay .close {
     position: absolute;
     top: -10px;
@@ -35,7 +36,7 @@ div.overlay .close {
     border-radius: 10px;
     background-color: white;
     border: 1px dotted silver;
-}
+}*/
 div.overlay {
     display: none;
     padding: 10px 0;

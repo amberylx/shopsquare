@@ -41,6 +41,7 @@ function transitionToStep(oldstep, newstep) {
 
 function initOverlay(trigger) {
     t = trigger.overlay({
+	closeOnClick: false,
         effect: 'apple',
         fixed: false,
         top: '15%',
