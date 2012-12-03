@@ -54,7 +54,8 @@ div.overlay td.overlaylabel {
 div.overlay td.overlayinput input {
     margin-left: 10px;
 }
-div.overlaystep2 {
+div.overlaystep2,
+div.overlaystep3 {
     display: none;
 }
 div.backbutton {
@@ -74,27 +75,38 @@ div.loadingicon {
 }
 div.overlayslidedown {
     display: none;
+}
+div.overlayimages {
+    text-align: center;
+    margin: 0 10px;
+}
+div.overlayimages img {
+    width: 100px;
+    border: 1px solid silver;
+    margin: 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+div.overlayimages img.selectimage {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 1);
+    -webkit-box-shadow: 0 0 15px rgba(255, 255, 255, 1); 
+    -moz-box-shadow: 0 0 15px rgba(255, 255, 255, 1);
+    border-radius: 10px;
+}
+.cropbutton,
+.selectbutton {
+    margin-top: 10px;
+}
+div.overlaystep3 {
     text-align: center;
 }
-div.overlayimagecontainer {
+div.overlaycropcontainer {
     display: inline-block;
     text-align: center;
     margin: 10px auto;
     padding: 10px;
 }
-div.overlayimage {
-    text-align: center;
-}
-div.overlayimage .hiddenimage {
-    display: none;
-}
-div.overlayimage .visibleimage {
-    display: inline-block;
-}
-.cropbutton {
-    margin-top: 10px;
-}
-div.overlaysubmit {
+div.submitcontainer {
     text-align: center;
     pading: 20px 0;
 }

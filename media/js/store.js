@@ -1,8 +1,6 @@
 $(function() {
     setSortable('floor', 'store');
     addformtrigger = initOverlay($(".addstoreicon"));
-    $(".addstorebutton").on("click", addStore);
-    $(".cropbutton").on("click", function() { doCrop('store'); } );
     $("#mall").on("click", ".storermv", function() {
         storeid = $(this).attr('id').substring(4);
         removeStore(storeid);
@@ -11,19 +9,22 @@ $(function() {
         storeid = $(this).attr('id').substring(4);
         removeStore(storeid);
     });
-    $("#id_url").on("change", function() {
+    $(".overlay").on("change", "#id_url", function() {
         url = $(this).val();
 	if (isValidURL(url)) {
+	    imageScrapeCount = 0;
             scrapeImage(url, 'store', 0);
 	}
     });
-    $("input").on("change", function() {
+    $(".overlay").on("click", ".cropbutton", function() { doCrop('store'); } );
+    $(".overlay").on("click", ".addstorebutton", addStore);
+/*    $("input").on("change", function() {
 	if (isNotBlank(this)) {
 	    $(this).next("span.statusicon").show();
 	} else {
 	    $(this).next("span.statusicon").hide();
 	}
-    });
+    });*/
 });
 
 function loadHTML(html) {
@@ -46,16 +47,11 @@ function addStore() {
 		  addformtrigger.overlay().close();
 		  showMessage($(".successMsg"), response.successMsg);
 		  loadHTML(response.html);
-		  resetAddStoreForm();
+		  $("#addstoreoverlay").html(response.addStoreFormHTML);
 	      } else {
 		  showMessage($(".errorMsg"), response.errorMsg);
 	      }
 	  });
-}
-function resetAddStoreForm() {
-    $("#addstoreform")[0].reset();
-    $(".overlayimage").html("");
-    $(".overlayimagecontainer").hide();
 }
 
 /* move store */

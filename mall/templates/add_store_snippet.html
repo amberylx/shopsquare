@@ -5,6 +5,7 @@
   <div class="addstorebreadcrumbs breadcrumbs">
     <div class="breadcrumb1 currstep">1. add store info</div>
     <div class="breadcrumb2">2. select store image</div>    
+    <div class="breadcrumb3">3. crop store image</div>    
   </div>
   <form id="addstoreform">    
     <div class="addstorestep1 overlaystep1">
@@ -44,13 +45,10 @@
 	  <td class="addstorelabel overlaylabel"><label for="id_is_private"> Keep store private? </td>
 	  <td class="addstoreinput overlayinput">{{form.is_private}}</td>
 	</tr>
-
-	<tr>
-	  <td colspan="2" style="text-align:center">
-	    <input type="button" class="button tinybutton step1button" value="Continue"/>
-	  </td>
-	</tr>
-      </table>      
+      </table>
+      <div class="submitcontainer">
+	<input type="button" class="button tinybutton step1button" value="Continue"/>
+      </div>      
     </div>
     <div class="addstorestep2 overlaystep2">
       <div class="loadingicon">
@@ -58,24 +56,31 @@
 	<img src="/ssmedia/images/loading_big.gif"></img>
       </div>
       <div class="addstoreslidedown overlayslidedown" style="display:block;">
-	<div class="addstoreimagecontainer overlayimagecontainer dotthinborder">
-	  <div class="addstoreimage overlayimage noimages">
-	    <!--img class="visibleimage" src="/ssmedia/store/1/1354086809.jpg" id="visibleimage">
-	    <img class="hiddenimage" src="/ssmedia/store/1/1354086812.jpg"-->
-	  </div>
-	  <div class="nextimage">&gt;</div>	  
+	<div class="addstoreimages overlayimages">
+	  <!--img class="visibleimage" src="/ssmedia/store/1/1354086809.jpg" id="visibleimage">
+	      <img class="hiddenimage" src="/ssmedia/store/1/1354086812.jpg"-->
+	</div>
+	<div class="submitcontainer">	
+	  <div class="buttontext backbutton back2button">back</div>
+	  <input type="button" class="button tinybutton step2button selectbutton" value="select" />
+	</div>	  
+      </div>
+    </div>      
+    <div class="addstorestep3 overlaystep3">
+      <div class="addstorecropcontainer overlaycropcontainer dotthinborder">
+	<div class="overlaycropimg">	
 	  <input type="hidden" id="crop_x1" name="crop_x1" />  
 	  <input type="hidden" id="crop_y1" name="crop_y1" />  
 	  <input type="hidden" id="crop_x2" name="crop_x2" />  
 	  <input type="hidden" id="crop_y2" name="crop_y2" />
 	  <input type="hidden" id="overlayimagefile" name="overlayimagefile" />
-	  <input type="button" class="button tinybutton cropbutton" value="crop" />  
-	</div>
-      </div>  
-      <div class="addstoresubmit overlaysubmit">
-	<div class="buttontext backbutton back2button">back</div>
+	</div>	  
+	<input type="button" class="button tinybutton cropbutton" value="crop" />
+      </div>
+      <div class="submitcontainer">
+	<div class="buttontext backbutton back3button">back</div>
 	<input type="button" class="button tinybutton addstorebutton" value="Add Store">
       </div>
-    </div>      
+    </div>
   </form>
 </div>

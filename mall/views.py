@@ -182,7 +182,7 @@ def scrape_image(request):
                 (filedir, filename) = imageutils.resize_image(filedir, filename)
             except Exception, e:
                 print "unable to resize image: %s" % str(e)
-            imgHTML = '<img class="hiddenimage" src="%s/%s"></img>' % (imgpath, filename)
+            imgHTML = '<img src="%s/%s"></img>' % (imgpath, filename)
         else:
             raise Exception("no image to scrape")
         status = 'ok'
@@ -246,6 +246,7 @@ def add_store(request, viewmode):
     is_private = request.POST.get('is_private', 'off')
     filename = request.POST.get('overlayimagefile')
 
+    addStoreFormHTML = ''
     mallHTML = ''
     success_msg = ''
     error_msg = ''
@@ -275,6 +276,9 @@ def add_store(request, viewmode):
             si = StoreImages(user=request.user, store=new_store, path=newfilename)
             si.save()
 
+            addStoreFormHTML = render_to_string("add_store_snippet.html",
+                                                { "form":AddStoreForm() },
+                                                context_instance=RequestContext(request))            
             if viewmode == 'mall':
                 html = _getmallHTML(request, mallid)
             elif viewmode == 'floor':
@@ -291,7 +295,8 @@ def add_store(request, viewmode):
         'status':status,
         'successMsg':success_msg,
         'errorMsg':error_msg,
-        'html':html
+        'html':html,
+        'addStoreFormHTML':addStoreFormHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
 
