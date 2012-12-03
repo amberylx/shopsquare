@@ -1,18 +1,21 @@
 $(function() {
     setSortable('wishlist', 'wli');
     addtowishlisttrigger = initOverlay($(".addtowishlisticon"));
-    $(".addtowishlistbutton").on("click", addToWishlist);
     addwishlisttrigger = initOverlay($(".addwishlisticon"));
-    $(".addwishlistbutton").on("click", addWishlist);
-    $(".cropbutton").on("click", function() { doCrop('wishlist'); } );
     $("#wishlist").on("click", ".wlirmv", function() {
 	wlitemid = $(this).attr('id').substring(4);
 	removeWishlistitem(wlitemid);
     });
-    $("#id_url").on("change", function() {
+    $(".overlay").on("change", "#id_url", function() {
         url = $(this).val();
-        scrapeImage(url, 'wishlist');
+	if (isValidURL(url)) {
+	    imageScrapeCount = 0;
+            scrapeImage(url, 'wishlist');
+	}
     });
+    $(".overlay").on("click", ".cropbutton", function() { doCrop('wishlist'); } );
+    $(".overlay").on("click", ".addwishlistbutton", addWishlist);
+    $(".overlay").on("click", ".addtowishlistbutton", addToWishlist);
 });
 
 function loadWishlists(wishlistHTML) {
@@ -39,7 +42,11 @@ function resetAddwishlistForm() {
     $("#addwishlistform")[0].reset();
 }
 function addToWishlist() {
+    imgEl = $(".finalimg");
     data = $("#addtowishlistform").serialize();
+    data += ("&width="+encodeURIComponent(imgEl.data("width")));
+    data += ("&height="+encodeURIComponent(imgEl.data("height")));
+    data += ("&filename="+encodeURIComponent(imgEl.data("filename")));
     $.post(addToWishlistURL,
           data,
           function(response) {
@@ -47,7 +54,7 @@ function addToWishlist() {
 		  addtowishlisttrigger.overlay().close();
 		  showMessage($(".successMsg"), response.successMsg);
 		  loadWishlists(response.wishlistHTML);
-		  resetAddtowishlistForm();
+		  resetAddtowishlistForm(); //
 	      } else {
 		  showMessage($(".errorMsg"), response.errorMsg);
 	      }

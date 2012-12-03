@@ -38,8 +38,12 @@ function loadHTML(html) {
 
 /* add store */
 function addStore() {
+    imgEl = $(".finalimg");
     data = $('#addstoreform').serialize();
     data += ("&mallid="+encodeURIComponent(mallid));
+    data += ("&width="+encodeURIComponent(imgEl.data("width")));
+    data += ("&height="+encodeURIComponent(imgEl.data("height")));
+    data += ("&filename="+encodeURIComponent(imgEl.data("filename")));
     $.post(addStoreURL,
 	  data,
 	  function(response) {

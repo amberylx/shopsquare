@@ -1,3 +1,28 @@
+/* breadcrumbs */
+div.breadcrumbs {
+    margin: 10px 0;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+}
+div.breadcrumbs.overlaybreadcrumbs {
+    margin: 20px 0;
+    text-align: center;
+    background-color: #CCC;
+    opacity: 0.5;
+}
+div.breadcrumbs.overlaybreadcrumbs div {
+    color: black;
+    display: inline-block;
+    padding: 2px 10px;
+    opacity: 1.0;
+}
+div.breadcrumbs.overlaybreadcrumbs div.currstep {
+    background-color: #888;
+    color: black;
+}
+/* endbreadcrumbs */
+
 div.overlaytitle {
     letter-spacing: .2em;
     text-transform: uppercase;

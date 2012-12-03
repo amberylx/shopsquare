@@ -2,42 +2,68 @@
   add to wishlist  
 </div>
 <div class="addtowishlistformcontainer overlayformcontainer">
-  <form id="addtowishlistform"> {% csrf_token %}
-    <table>
-      <tr>
-	<td colspan="2">{% for error in add_wli_form.url.errors %}{{error}}{% endfor %}</td>
-      </tr>
-      <tr>
-	<td class="overlaylabel"><label for="id_url"> Item URL </td>
-	<td class="overlayinput"><input type="url" id="id_url" name="url" maxlength="200" placeholder="your store url"></td>
-      </tr>
-      
-      <tr>
-	<td colspan="2">{% for error in add_wli_form.tags.errors %}{{error}}{% endfor %}</td>
-      </tr>
-      <tr>
-	<td class="overlaylabel"><label for="id_tags"> Tags </td>
-	<td class="overlayinput">{{add_wli_form.tags}}</td>
-      </tr>
-
-      <tr>
-	<td class="overlaylabel"><label for="id_is_private"> Keep item private? </td>
-	<td class="overlayinput">{{add_wli_form.is_private}}</td>
-      </tr>
-    </table>
-    <div class="addtowishlistslidedown overlayslidedown">
-      <div class="addtowishlistimagecontainer overlayimagecontainer dotthinborder">
-        <div class="addtowishlistimage overlayimage"></div>
-        <input type="hidden" id="crop_x1" name="crop_x1" />
-        <input type="hidden" id="crop_y1" name="crop_y1" />
-        <input type="hidden" id="crop_x2" name="crop_x2" />
-        <input type="hidden" id="crop_y2" name="crop_y2" />
-        <input type="hidden" id="overlayimagefile" name="overlayimagefile" />
-        <input type="button" class="button tinybutton cropbutton" value="crop" />
+  <div class="addtowishlistbreadcrumbs overlaybreadcrumbs breadcrumbs">
+    <div class="breadcrumb1 currstep">1. add item info</div>
+    <div class="breadcrumb2">2. select item image</div>
+    <div class="breadcrumb3">3. crop item image</div>
+  </div>
+  <form id="addtowishlistform">
+    <div class="overlaystep1">    
+      <table>
+	<tr>
+	  <td colspan="2">{% for error in add_wli_form.url.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>
+	  <td class="overlaylabel"><label for="id_url"> Item URL </td>
+	  <td class="overlayinput"><input type="url" id="id_url" name="url" maxlength="200" placeholder="your store url"></td>
+	</tr>
+	
+	<tr>
+	  <td colspan="2">{% for error in add_wli_form.tags.errors %}{{error}}{% endfor %}</td>
+	</tr>
+	<tr>
+	  <td class="overlaylabel"><label for="id_tags"> Tags </td>
+	  <td class="overlayinput">{{add_wli_form.tags}}</td>
+	</tr>
+	
+	<tr>
+	  <td class="overlaylabel"><label for="id_is_private"> Keep item private? </td>
+	  <td class="overlayinput">{{add_wli_form.is_private}}</td>
+	</tr>
+      </table>
+      <div class="submitcontainer">
+        <div class="buttontext backbutton close">cancel</div>
+        <input type="button" class="button tinybutton step1button" value="Continue"/>
       </div>
     </div>
-    <div class="addtowishlistsubmit overlaysubmit">
-      <input id="addtowishlistbutton" type="button" class="button tinybutton addtowishlistbutton" value="Add to Wishlist">
-    </div>  
+    <div class="overlaystep2">
+      <div class="loadingicon">
+        <span style="line-height:60px;">loading ...</span>
+        <img src="/ssmedia/images/loading_big.gif"></img>
+      </div>      
+      <div class="overlayslidedown">
+        <div class="overlayimages noimages">
+	</div>
+        <div class="submitcontainer">
+          <div class="buttontext backbutton back2button">back</div>
+          <input type="button" class="button tinybutton step2button selectbutton" value="select" />
+        </div>
+      </div>
+    </div>      
+    <div class="overlaystep3">
+      <div class="overlaycropcontainer dotthinborder">
+        <div class="overlaycropimg">      
+          <input type="hidden" id="crop_x1" name="crop_x1" />
+          <input type="hidden" id="crop_y1" name="crop_y1" />
+          <input type="hidden" id="crop_x2" name="crop_x2" />
+          <input type="hidden" id="crop_y2" name="crop_y2" />
+	</div>	    
+        <input type="button" class="button tinybutton cropbutton" value="crop" />
+      </div>
+      <div class="submitcontainer">
+        <div class="buttontext backbutton back3button">back</div>
+        <input type="button" class="button tinybutton addtowishlistbutton" value="Add to Wishlist">
+      </div>
+    </div>	
   </form>
 </div>

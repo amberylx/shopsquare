@@ -173,10 +173,10 @@ def scrape_image(request):
         imgpath = MyGlobals.WISHLISTIMG_ROOT_SRV % { 'uid':uid }
 
     try:
-        (filedir, filename, imgindex) = ImageScraper.getImagesFromURL(url,
-                                                                      filedir=filedir,
-                                                                      filename=filename,
-                                                                      start_index=start_index)
+        (filedir, filename, imgindex, (w,h)) = ImageScraper.getImagesFromURL(url,
+                                                                             filedir=filedir,
+                                                                             filename=filename,
+                                                                             start_index=start_index)
         if filename:
             try:
                 (filedir, filename) = imageutils.resize_image(filedir, filename)
@@ -199,6 +199,8 @@ def scrape_image(request):
         'filename':filename,
         'imgpath':imgpath,
         'imgindex':imgindex,
+        'width':str(w),
+        'height':str(h),
         'imgHTML':imgHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
@@ -206,6 +208,8 @@ def scrape_image(request):
 def do_crop(request):
     uid = request.user.id
     filename = request.POST.get('filename')
+    width = request.POST.get('width')
+    height = request.POST.get('height')
     crop_for = request.POST.get('type')
     crop_x1 = int(float(request.POST.get('crop_x1')))
     crop_y1 = int(float(request.POST.get('crop_y1')))
@@ -222,18 +226,19 @@ def do_crop(request):
     
     try:
         (filedir, filename) = imageutils.crop_image(filedir, filename, cropbox)
-        imgHTML = '<img src="%s/%s"></img>' % (imgpath, filename)
         status = 'ok'
     except Exception, e:
         print "unable to do crop: %s" % str(e)
         status = 'error'
         filename = ''
-        imgHTML = ''
+        imgpath = ''
 
     response = {
+        'width':width,
+        'height':height,
         'status':status,
         'filename':filename,
-        'imgHTML':imgHTML
+        'imgpath':'%s/%s'%(imgpath, filename)
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
     
@@ -244,7 +249,9 @@ def add_store(request, viewmode):
     url = request.POST.get('url')
     tags = request.POST.get('tags')
     is_private = request.POST.get('is_private', 'off')
-    filename = request.POST.get('overlayimagefile')
+    filename = request.POST.get('filename')
+    width = int(request.POST.get('width'))
+    height = int(request.POST.get('height'))
 
     addStoreFormHTML = ''
     mallHTML = ''
@@ -273,7 +280,7 @@ def add_store(request, viewmode):
             newfilename = urlutils.getStoreImageFilename(name, new_store.id)
             sysutils.move_file("%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, filename),
                                "%s/%s" % (MyGlobals.STOREIMG_ROOT % { 'uid':uid }, newfilename))
-            si = StoreImages(user=request.user, store=new_store, path=newfilename)
+            si = StoreImages(user=request.user, store=new_store, path=newfilename, width=width, height=height)
             si.save()
 
             addStoreFormHTML = render_to_string("add_store_snippet.html",

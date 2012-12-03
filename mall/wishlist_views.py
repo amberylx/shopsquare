@@ -56,7 +56,7 @@ def _getwishlist(request, userid):
     return ctx_dict
 
 def _getwishlistHTML(request):
-    ctx_dict = _getwishlist(request)
+    ctx_dict = _getwishlist(request, request.user.id)
     html = render_to_string("wishlist_snippet.html", ctx_dict, context_instance=RequestContext(request))
     return html
     
@@ -91,7 +91,9 @@ def add_to_wishlist(request):
     url = request.POST.get('url')
     tags = request.POST.get('tags')
     is_private = request.POST.get('is_private', 'off')
-    filename = request.POST.get('overlayimagefile')
+    filename = request.POST.get('filename')
+    width = request.POST.get('width')
+    height = request.POST.get('height')
 
     wishlistHTML = ''
     successMsg = ''
@@ -113,7 +115,7 @@ def add_to_wishlist(request):
             newfilename = urlutils.getWishlistImageFilename(wli.id)
             sysutils.move_file("%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, filename),
                                "%s/%s" % (MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }, newfilename))
-            wi = WishlistImages(user=request.user, wishlistitem=wli, path=newfilename)
+            wi = WishlistImages(user=request.user, wishlistitem=wli, path=newfilename, width=width, height=height)
             wi.save()
 
             wishlistHTML = _getwishlistHTML(request)

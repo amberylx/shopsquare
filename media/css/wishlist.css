@@ -8,9 +8,9 @@ div.overlayicon.addtowishlisticon {
 }
 div.addwishlistoverlay,
 div.addtowishlistoverlay {
-    width: 50%;
-    left: 24%;
-    min-width: 400px;
+    width: 60%;
+    left: 20%;
+    min-width: 640px;
 }
 
 /* wishlist styling */

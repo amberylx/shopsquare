@@ -51,7 +51,7 @@ def getImagesFromURL(url, filedir="/Users/slee/shopsquare/media/images/usrimg/",
         print "scraped image index %s to file: %s" % (imgindex, imgpath)
         break
 
-    return (filedir, filename, imgindex) if didScrape else ('', '', -1)
+    return (filedir, filename, imgindex, (w,h)) if didScrape else ('', '', -1)
 
 def getsizes(uri):
     # get file size *and* image size (None if not known)

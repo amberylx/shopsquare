@@ -3,18 +3,16 @@ $(function() {
 	transitionToStep(1, 2);
     });
     $(".overlay").on("click", ".step2button", function() {
-	var selectimg = $(".overlayimages img.selectimage");
-	var img = $('<img class="cropimg">');
-	img.attr('src', selectimg.attr('src'));
-	
-	$(".overlaycropimg").append(img);
-	$("#overlayimagefile").val(selectimg.data("filename"));
-	initJcrop($(".cropimg"));
+	selectImage();
 	transitionToStep(2, 3);
     });
     $(".overlay").on("click", ".back3button", function() {
-	killJcrop($(".cropimg"));
-	$('.cropimg').remove();
+	try {
+	    killJcrop($(".cropimg"));
+	    $('.cropimg').remove();
+	} catch(e) {}
+	$('.finalimg').remove();
+	$('.cropbutton').show();
 	transitionToStep(3, 2);
     });
     $(".overlay").on("click", ".back2button", function() {
@@ -88,6 +86,8 @@ function scrapeImage(url, type, start_index) {
 		// first image scraped
 		var imgEl = imgContainer.children().last();
 		imgEl.data("filename", response.filename);
+		imgEl.data("width", response.width);
+		imgEl.data("height", response.height);
 		if (imgContainer.hasClass("noimages")) {
 		    imgContainer.removeClass("noimages");
 		    $(".overlayimages").show();
@@ -110,20 +110,46 @@ function scrapeImage(url, type, start_index) {
 	$(".loadingicon").hide();
     });
 }
+function selectImage() {
+    selectimg = $(".overlayimages img.selectimage");
+    imgEl = $('<img class="cropimg">');
+    imgEl.attr('src', selectimg.attr('src'));
+    imgEl.data("width", selectimg.data('width'));
+    imgEl.data("height", selectimg.data('height'));
+    imgEl.data("filename", selectimg.data('filename'));
+
+    $(".overlaycropimg").append(imgEl);
+    initJcrop($(".cropimg"));
+}
 function doCrop(type) {
+    imgEl = $(".cropimg");
+    width = imgEl.data("width");
+    height = imgEl.data("height");
+    filename = imgEl.data("filename");
+
     crop_x1 = $('#crop_x1').val();
     crop_y1 = $('#crop_y1').val();
     crop_x2 = $('#crop_x2').val();
     crop_y2 = $('#crop_y2').val();
-    filename = $("#overlayimagefile").val();
     $.post(doCropURL,
-          { 'crop_x1':crop_x1, 'crop_y1':crop_y1, 'crop_x2':crop_x2, 'crop_y2':crop_y2, 'filename':filename, 'type':type },
-          function(response) {
+          { 'crop_x1':crop_x1,
+	    'crop_y1':crop_y1,
+	    'crop_x2':crop_x2,
+	    'crop_y2':crop_y2,
+	    'type':type,
+	    'filename':filename },
+           function(response) {
               if (response.status == 'ok') {
-                  $(".overlayimages").html(response.imgHTML);
-                  $("#overlayimagefile").val(response.filename);
 		  killJcrop($(".cropimg"));
+		  $(".cropimg").remove();
 		  $(".cropbutton").hide();
+
+		  imgEl = $('<img class="finalimg">');
+		  imgEl.attr('src', response.imgpath);
+		  imgEl.data("width", width);
+		  imgEl.data("height", height);
+		  imgEl.data("filename", filename);
+                  $(".overlaycropimg").append(imgEl);
               } else {
                   alert('error');
               }
