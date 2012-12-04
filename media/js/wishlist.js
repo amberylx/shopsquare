@@ -60,11 +60,12 @@ function addToWishlist() {
 	      }
           });
 }
+/*
 function resetAddtowishlistForm() {
     $("#addtowishlistform")[0].reset();
     $(".overlayimage").html("");
     $(".overlayimagecontainer").hide();
-}
+}*/
 
 /* move wishlistitem */
 function moveItemCallback(response) {
