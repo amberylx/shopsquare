@@ -112,11 +112,12 @@ function scrapeImage(url, type, start_index) {
 }
 function selectImage() {
     selectimg = $(".overlayimages img.selectimage");
+    selectimgdata = $(".overlayimages img.selectimage").parent(".selectimgcontainer");
     imgEl = $('<img class="cropimg">');
     imgEl.attr('src', selectimg.attr('src'));
-    imgEl.data("width", selectimg.data('width'));
-    imgEl.data("height", selectimg.data('height'));
-    imgEl.data("filename", selectimg.data('filename'));
+    imgEl.data("width", selectimgdata.data('width'));
+    imgEl.data("height", selectimgdata.data('height'));
+    imgEl.data("filename", selectimgdata.data('filename'));
 
     $(".overlaycropimg").append(imgEl);
     initJcrop($(".cropimg"));
