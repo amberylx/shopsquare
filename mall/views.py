@@ -172,6 +172,8 @@ def scrape_image(request):
         filedir = MyGlobals.WISHLISTIMG_ROOT % { 'uid':uid }
         imgpath = MyGlobals.WISHLISTIMG_ROOT_SRV % { 'uid':uid }
 
+    width = '??'
+    height = '??'
     try:
         (filedir, filename, imgindex, (w,h)) = ImageScraper.getImagesFromURL(url,
                                                                              filedir=filedir,
@@ -182,7 +184,20 @@ def scrape_image(request):
                 (filedir, filename) = imageutils.resize_image(filedir, filename)
             except Exception, e:
                 print "unable to resize image: %s" % str(e)
-            imgHTML = '<img src="%s/%s"></img>' % (imgpath, filename)
+
+            try:
+                width = str(w)
+                height = str(h)
+            except:
+                pass
+                
+            ctx_dict = {
+                'width':width,
+                'height':height,
+                'imgpath':imgpath,
+                'filename':filename
+                }
+            imgHTML = render_to_string("select_img_snippet.html", ctx_dict, context_instance=RequestContext(request))
         else:
             raise Exception("no image to scrape")
         status = 'ok'
@@ -199,8 +214,8 @@ def scrape_image(request):
         'filename':filename,
         'imgpath':imgpath,
         'imgindex':imgindex,
-        'width':str(w),
-        'height':str(h),
+        'width':width,
+        'height':height,
         'imgHTML':imgHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
