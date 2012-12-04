@@ -95,6 +95,7 @@ def add_to_wishlist(request):
     width = request.POST.get('width')
     height = request.POST.get('height')
 
+    addToWishlistFormHTML = ''
     wishlistHTML = ''
     successMsg = ''
     errorMsg = ''
@@ -118,6 +119,9 @@ def add_to_wishlist(request):
             wi = WishlistImages(user=request.user, wishlistitem=wli, path=newfilename, width=width, height=height)
             wi.save()
 
+            addToWishlistFormHTML = render_to_string("add_to_wishlist_snippet.html", 
+                                                     { 'add_wli_form': WishlistItemForm() },
+                                                     context_instance=RequestContext(request))
             wishlistHTML = _getwishlistHTML(request)
             status = 'ok'
             successMsg = '%s has been added to your wishlist.' % url
@@ -131,7 +135,8 @@ def add_to_wishlist(request):
         'status':status,
         'successMsg':successMsg,
         'errorMsg':errorMsg,
-        'wishlistHTML':wishlistHTML
+        'wishlistHTML':wishlistHTML,
+        'addToWishlistFormHTML':addToWishlistFormHTML
         }
     return HttpResponse(json.dumps(response), mimetype="application/json")
     

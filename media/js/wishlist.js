@@ -54,7 +54,7 @@ function addToWishlist() {
 		  addtowishlisttrigger.overlay().close();
 		  showMessage($(".successMsg"), response.successMsg);
 		  loadWishlists(response.wishlistHTML);
-		  resetAddtowishlistForm(); //
+		  $("#addtowishlistoverlay").html(response.addToWishlistFormHTML);
 	      } else {
 		  showMessage($(".errorMsg"), response.errorMsg);
 	      }
